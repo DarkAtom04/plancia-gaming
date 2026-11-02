@@ -1,0 +1,76 @@
+name: Aggiorna Plancia Gaming
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # ogni 10 minuti (GitHub a volte ritarda di qualche minuto)
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: aggiorna
+  cancel-in-progress: false
+
+jobs:
+  aggiorna:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Recupera la memoria dell'ultimo giro
+        uses: actions/cache/restore@v4
+        with:
+          path: state
+          key: stato-${{ github.run_id }}
+          restore-keys: stato-
+
+      - name: Raccogli notizie, offerte, gratis e uscite
+        env:
+          ITAD_KEY: ${{ secrets.ITAD_KEY }}
+          RAWG_KEY: ${{ secrets.RAWG_KEY }}
+        run: node scripts/build.mjs
+
+      - name: Salva la memoria per il prossimo giro
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state
+          key: stato-${{ github.run_id }}
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+      # GitHub sospende i lavori programmati dopo 60 giorni senza attività nel repository:
+      # una volta al mese registra un piccolo segno di vita per tenerli accesi.
+      - name: Tieni vivo il lavoro programmato
+        if: github.event_name == 'schedule'
+        run: |
+          last=$(git log -1 --format=%ct)
+          now=$(date +%s)
+          if [ $((now - last)) -gt 2592000 ]; then
+            date -u +%FT%TZ > .keepalive
+            git config user.name "plancia-bot"
+            git config user.email "plancia-bot@users.noreply.github.com"
+            git add .keepalive
+            git commit -m "Segno di vita mensile per il lavoro programmato"
+            git push
+          fi

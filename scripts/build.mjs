@@ -1,0 +1,474 @@
+// Plancia Gaming — raccoglitore automatico.
+// Legge feed RSS di testate italiane, offerte (Steam, GOG, IsThereAnyDeal), giochi gratis (Epic, GamerPower),
+// uscite (Steam, RAWG, elenco manuale) e scrive dist/data.json + i file del sito.
+// Nessuna dipendenza esterna: gira con Node 20+.
+import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const CFG = JSON.parse(await fs.readFile(path.join(ROOT, "config/sources.json"), "utf8"));
+const OUT = process.env.OUT_DIR || path.join(ROOT, "dist");
+const STATE_FILE = process.env.STATE_FILE || path.join(ROOT, "state/state.json");
+const FIXTURES = process.env.FIXTURES_DIR || "";
+const NOW = process.env.FAKE_NOW ? new Date(process.env.FAKE_NOW) : new Date();
+const ITAD_KEY = process.env.ITAD_KEY || "";
+const RAWG_KEY = process.env.RAWG_KEY || "";
+const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36 PlanciaGaming/1.0";
+const log = (...a) => console.log("[plancia]", ...a);
+
+/* ------------------------------------------------------------------ rete */
+let FIX = null;
+async function fixtures() {
+  if (FIX || !FIXTURES) return FIX;
+  FIX = JSON.parse(await fs.readFile(path.join(FIXTURES, "index.json"), "utf8"));
+  return FIX;
+}
+async function fetchText(url, { timeout = 15000, max = 4_000_000, accept = "*/*" } = {}) {
+  const fx = await fixtures();
+  if (fx) {
+    const f = fx[url];
+    if (!f) return { ok: false, status: 404, text: "", url };
+    return { ok: true, status: 200, text: await fs.readFile(path.join(FIXTURES, f), "utf8"), url };
+  }
+  const ctl = new AbortController();
+  const t = setTimeout(() => ctl.abort(), timeout);
+  try {
+    const r = await fetch(url, { signal: ctl.signal, redirect: "follow",
+      headers: { "user-agent": UA, "accept": accept, "accept-language": "it-IT,it;q=0.9,en;q=0.6" } });
+    let text = "";
+    if (r.body) {
+      const reader = r.body.getReader(); const dec = new TextDecoder(); let size = 0;
+      while (true) { const { done, value } = await reader.read(); if (done) break; size += value.length; text += dec.decode(value, { stream: true }); if (size > max) { ctl.abort(); break; } }
+    }
+    return { ok: r.ok, status: r.status, text, url: r.url || url };
+  } catch (e) {
+    return { ok: false, status: 0, text: "", url, error: String(e && e.name === "AbortError" ? "timeout" : e && e.message || e) };
+  } finally { clearTimeout(t); }
+}
+async function fetchJSON(url, opt) {
+  const r = await fetchText(url, { accept: "application/json", ...opt });
+  if (!r.ok) throw new Error(`HTTP ${r.status}${r.error ? " " + r.error : ""}`);
+  return JSON.parse(r.text);
+}
+async function pool(items, n, fn) {
+  const out = new Array(items.length); let i = 0;
+  await Promise.all(Array.from({ length: Math.min(n, items.length) }, async () => { while (i < items.length) { const k = i++; try { out[k] = await fn(items[k], k); } catch (e) { out[k] = undefined; } } }));
+  return out;
+}
+
+/* --------------------------------------------------------------- testo */
+const NAMED = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ", hellip: "…", ndash: "–", mdash: "—", rsquo: "’", lsquo: "‘", rdquo: "”", ldquo: "“", laquo: "«", raquo: "»", euro: "€", deg: "°", middot: "·", bull: "•", copy: "©", reg: "®", trade: "™",
+  agrave: "à", aacute: "á", egrave: "è", eacute: "é", igrave: "ì", iacute: "í", ograve: "ò", oacute: "ó", ugrave: "ù", uacute: "ú", Agrave: "À", Egrave: "È", Eacute: "É", Igrave: "Ì", Ograve: "Ò", Ugrave: "Ù", ccedil: "ç", ntilde: "ñ", ouml: "ö", uuml: "ü", auml: "ä", szlig: "ß" };
+export function decode(s) {
+  return String(s || "").replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e) => {
+    if (e[0] === "#") { const n = e[1].toLowerCase() === "x" ? parseInt(e.slice(2), 16) : parseInt(e.slice(1), 10); try { return String.fromCodePoint(n); } catch { return m; } }
+    return NAMED[e] ?? NAMED[e.toLowerCase()] ?? m;
+  });
+}
+const unCdata = s => String(s || "").replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1");
+export function stripHtml(s) {
+  let t = unCdata(s);
+  if (/&lt;\w/.test(t)) t = decode(t); // HTML codificato due volte
+  t = t.replace(/<(script|style)[\s\S]*?<\/\1>/gi, " ").replace(/<br\s*\/?>/gi, " ").replace(/<\/p>/gi, " ").replace(/<[^>]+>/g, " ");
+  return decode(t).replace(/\s+/g, " ").trim();
+}
+function cut(s, n) { s = String(s || ""); if (s.length <= n) return s; const c = s.slice(0, n); const i = c.lastIndexOf(" "); return (i > n * 0.6 ? c.slice(0, i) : c).replace(/[\s,.;:–-]+$/, "") + "…"; }
+function cleanSummary(s, title) {
+  let t = stripHtml(s)
+    .replace(/(L'articolo|The post) .{3,200}? (proviene da|appeared first on) .*$/i, "")
+    .replace(/(Continua a leggere|Leggi (tutto|l'articolo|di più)|Read more)[\s\S]*$/i, "")
+    .replace(/\[(…|\.\.\.)\]\s*$/, "").trim();
+  if (title && t.toLowerCase().startsWith(title.toLowerCase())) t = t.slice(title.length).replace(/^[\s:–-]+/, "");
+  return cut(t, 230);
+}
+function tag(xml, name) {
+  const re = new RegExp(`<${name.replace(":", "\\:")}(?:\\s[^>]*)?>([\\s\\S]*?)</${name.replace(":", "\\:")}>`, "i");
+  const m = xml.match(re); return m ? unCdata(m[1]).trim() : "";
+}
+function tagsAll(xml, name) {
+  const re = new RegExp(`<${name.replace(":", "\\:")}(?:\\s[^>]*)?>([\\s\\S]*?)</${name.replace(":", "\\:")}>`, "gi");
+  return [...xml.matchAll(re)].map(m => unCdata(m[1]).trim());
+}
+function attrs(s) { const o = {}; for (const m of String(s).matchAll(/([\w:-]+)\s*=\s*("([^"]*)"|'([^']*)')/g)) o[m[1].toLowerCase()] = decode(m[3] ?? m[4] ?? ""); return o; }
+function openTags(xml, name) { const re = new RegExp(`<${name.replace(":", "\\:")}(\\s[^>]*?)\\/?>`, "gi"); return [...xml.matchAll(re)].map(m => attrs(m[1])); }
+function absUrl(u, base) {
+  if (!u) return ""; u = decode(String(u).trim());
+  if (u.startsWith("//")) u = "https:" + u;
+  try { const x = new URL(u, base || undefined); if (!/^https?:$/.test(x.protocol)) return ""; if (x.protocol === "http:") x.protocol = "https:"; return x.href; } catch { return ""; }
+}
+const BAD_IMG = /(gravatar|feedburner|pixel|tracking|spacer|blank\.gif|1x1|emoji|wp-includes|logo[-_]?(small|feed)|\/ads?\/|doubleclick)/i;
+function imgFromHtml(html, base) {
+  const h = unCdata(html); const t = /&lt;img/i.test(h) ? decode(h) : h;
+  for (const m of t.matchAll(/<img\b([^>]*)>/gi)) {
+    const a = attrs(m[1]);
+    if ((a.width && +a.width < 80) || (a.height && +a.height < 60)) continue;
+    let src = a["data-src"] || a["data-lazy-src"] || a["data-original"] || a.src || "";
+    if (!src && a.srcset) src = a.srcset.split(",")[0].trim().split(" ")[0];
+    const u = absUrl(src, base); if (u && !BAD_IMG.test(u)) return u;
+  }
+  return "";
+}
+function upgradeImg(u) {
+  // miniature WordPress "-150x150.jpg" -> originale; alcune CDN accettano parametri di dimensione
+  return u.replace(/-\d{2,4}x\d{2,4}(\.(jpe?g|png|webp))(\?.*)?$/i, "$1$3");
+}
+
+/* ----------------------------------------------------------- feed RSS */
+export function parseFeed(xml, base) {
+  const out = [];
+  const isAtom = /<feed[\s>]/i.test(xml) && !/<rss[\s>]/i.test(xml);
+  const blocks = xml.match(isAtom ? /<entry\b[\s\S]*?<\/entry>/gi : /<item\b[\s\S]*?<\/item>/gi) || [];
+  for (const b of blocks) {
+    const title = stripHtml(tag(b, "title"));
+    let link = stripHtml(tag(b, "link"));
+    if (!/^https?:/i.test(link)) {
+      const ls = openTags(b, "link"); const alt = ls.find(l => !l.rel || l.rel === "alternate") || ls[0];
+      link = alt && alt.href || "";
+    }
+    if (!/^https?:/i.test(link)) { const g = stripHtml(tag(b, "guid")); if (/^https?:/i.test(g)) link = g; }
+    link = absUrl(link, base);
+    if (!title || !link) continue;
+    const dateStr = tag(b, "pubDate") || tag(b, "dc:date") || tag(b, "published") || tag(b, "updated") || tag(b, "a10:updated");
+    const html = tag(b, "content:encoded") || tag(b, "content") || "";
+    const desc = tag(b, "description") || tag(b, "summary") || "";
+    let img = "";
+    for (const e of openTags(b, "enclosure")) { if ((e.type || "").startsWith("image") || /\.(jpe?g|png|webp|gif)(\?|$)/i.test(e.url || "")) { img = e.url; break; } }
+    if (!img) { const mc = openTags(b, "media:content").filter(m => m.url && (!m.medium || m.medium === "image") && (!m.type || m.type.startsWith("image"))); mc.sort((x, y) => (+y.width || 0) - (+x.width || 0)); if (mc[0]) img = mc[0].url; }
+    if (!img) { const mt = openTags(b, "media:thumbnail")[0]; if (mt) img = mt.url; }
+    if (!img) { const it = openTags(b, "itunes:image")[0]; if (it) img = it.href; }
+    if (!img) { const im = tag(b, "image"); const u = tag(im || "", "url") || (/^https?:/.test(im) ? im : ""); if (u) img = u; }
+    if (!img) img = imgFromHtml(html, link) || imgFromHtml(desc, link);
+    img = absUrl(img, link); if (img && BAD_IMG.test(img)) img = "";
+    out.push({ title, url: link, dateStr: stripHtml(dateStr), summary: cleanSummary(desc || html, title), img: img ? upgradeImg(img) : "", tags: tagsAll(b, "category").map(stripHtml).filter(Boolean).slice(0, 8) });
+  }
+  return out;
+}
+function discoverFeed(html, base) {
+  for (const m of String(html).matchAll(/<link\b([^>]+)>/gi)) {
+    const a = attrs(m[1]);
+    if (/alternate/i.test(a.rel || "") && /(rss|atom)\+xml/i.test(a.type || "") && a.href) return absUrl(a.href, base);
+  }
+  return "";
+}
+
+/* ---------------------------------------------------- classificazione */
+const RX = {
+  offerte: /(offert[ae]\b|in sconto|sconti\b|sconto\b|prezzo (minimo|più basso|stracciato)|minimo storico|black friday|cyber monday|prime day|coupon|codice sconto|a soli \d|\b\d{1,2}\s?% di sconto|-\d{1,2}\s?%)/i,
+  hardware: /\b(rtx\s?\d{3,4}|radeon|geforce|nvidia|scheda video|schede video|gpu|cpu|processore|ryzen|intel core|core ultra|ssd|nvme|monitor|ddr5|ram|alimentatore|mouse|tastiera|cuffie|headset|case pc|dlss|fsr|pc gaming|notebook gaming|laptop gaming|overclock|benchmark)\b/i,
+  handheld: /\b(steam deck|rog (xbox )?ally|xbox ally|legion go|msi claw|handheld|console portatil[ei]|pc portatil[ei] da gioco|ayaneo|gpd win|onexplayer|steam machine|switch 2 lite)\b/i,
+  ia: /(intelligenza artificiale|\bIA generativa\b|\bchatgpt\b|\bopenai\b|\bgemini\b|\bclaude\b|\banthropic\b|\bcopilot\b|\bllm\b|\bdeepseek\b|\bmistral ai\b|\bgrok\b|\bmidjourney\b|\bsora\b|machine learning|deep learning)/i,
+  iaCase: /\b(AI|IA)\b/,
+  uscite: /(data di uscita|data d'uscita|in uscita|uscirà|esce il|esce oggi|uscita fissata|disponibile dal|arriva il \d|arriverà il|al lancio|day one|rinviato|rinvio)/i,
+  recensioni: /\b(recensione|review|provato|abbiamo provato|prova su strada|anteprima|hands-on)\b/i,
+  gaming: /\b(videogioc|gioco|giochi|gameplay|trailer|dlc|playstation|ps5|xbox|nintendo|switch|steam|epic games|game pass|gta|rpg|fps|remake|remaster|sequel|esports?)\b/i
+};
+const PLAT = [["PS5", /\b(ps5|playstation 5|playstation)\b/i], ["Xbox", /\bxbox\b|game pass/i], ["Switch 2", /switch 2/i], ["Switch", /\bswitch\b(?! 2)|\bnintendo\b/i], ["PC", /\b(pc|steam|epic games store|gog)\b/i]];
+export function classify(text, sourceCat) {
+  const cats = new Set([sourceCat]);
+  for (const k of ["offerte", "hardware", "handheld", "ia", "uscite", "recensioni"]) if (RX[k].test(text)) cats.add(k);
+  if (RX.iaCase.test(text)) cats.add("ia");
+  if (RX.gaming.test(text)) cats.add("gaming");
+  if (cats.has("handheld")) cats.add("hardware");
+  const plats = PLAT.filter(([, r]) => r.test(text)).map(([p]) => p);
+  return { cats: [...cats], plats };
+}
+
+/* -------------------------------------------------- raggruppamento */
+const STOP = new Set("per con dei del della delle degli gli una uno che non sono come dal dalla dalle nel nella nelle sul sulla sulle alla alle agli all anche più tra fra suo sua suoi loro questo questa questi queste ecco ora oggi già solo tutto tutti tutte molto quando dove cosa chi perché però ancora dopo prima nuovo nuova nuovi nuove sarà saranno stato stata viene arriva arrivano the and for with from new will has have are was its your into you about".split(" "));
+export function tokens(t) { return new Set(String(t).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]+/g, " ").split(/\s+/).filter(w => w.length >= 3 && !STOP.has(w))); }
+function similar(a, b) { let inter = 0; for (const w of a) if (b.has(w)) inter++; const uni = a.size + b.size - inter; return { j: uni ? inter / uni : 0, inter }; }
+export function cluster(items) {
+  const cl = [];
+  for (const it of items) {
+    const tk = tokens(it.title); let best = null, bs = 0;
+    for (const c of cl) {
+      if (Math.abs(c.t - it.t) > 36 * 3600e3) continue;
+      const { j, inter } = similar(tk, c.tk);
+      if (inter >= 3 && j >= 0.34 && j > bs) { best = c; bs = j; }
+    }
+    if (best) { best.items.push(it); for (const w of tk) best.tk.add(w); }
+    else cl.push({ tk, t: it.t, items: [it] });
+  }
+  return cl;
+}
+
+/* ------------------------------------------------------------- date */
+const MON = { jan: 0, january: 0, gen: 0, gennaio: 0, feb: 1, february: 1, febbraio: 1, mar: 2, march: 2, marzo: 2, apr: 3, april: 3, aprile: 3, may: 4, mag: 4, maggio: 4, jun: 5, june: 5, giu: 5, giugno: 5, jul: 6, july: 6, lug: 6, luglio: 6, aug: 7, august: 7, ago: 7, agosto: 7, sep: 8, sept: 8, september: 8, set: 8, settembre: 8, oct: 9, october: 9, ott: 9, ottobre: 9, nov: 10, november: 10, novembre: 10, dec: 11, december: 11, dic: 11, dicembre: 11 };
+const pad = n => String(n).padStart(2, "0");
+const ymd = d => `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
+export function parseLooseDate(s) {
+  s = String(s || "").toLowerCase().replace(/,/g, " ").replace(/\s+/g, " ").trim();
+  let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+  m = s.match(/^(\d{1,2})\s+([a-z]+)\.?\s+(\d{4})$/); if (m && MON[m[2]] != null) return `${m[3]}-${pad(MON[m[2]] + 1)}-${pad(+m[1])}`;
+  m = s.match(/^([a-z]+)\.?\s+(\d{1,2})\s+(\d{4})$/); if (m && MON[m[1]] != null) return `${m[3]}-${pad(MON[m[1]] + 1)}-${pad(+m[2])}`;
+  m = s.match(/^([a-z]+)\s+(\d{4})$/); if (m && MON[m[1]] != null) return `${m[2]}-${pad(MON[m[1]] + 1)}`;
+  m = s.match(/^q([1-4])\s+(\d{4})$/); if (m) return `${m[2]}-${pad((+m[1]) * 3)}`;
+  return "";
+}
+
+/* ---------------------------------------------------------- stato */
+async function loadState() { try { return JSON.parse(await fs.readFile(STATE_FILE, "utf8")); } catch { return { seen: {}, og: {}, steamRel: {}, firstRun: NOW.toISOString() }; } }
+async function saveState(st) {
+  const lim = NOW.getTime() - 8 * 864e5;
+  for (const k of Object.keys(st.seen)) if (Date.parse(st.seen[k]) < lim) delete st.seen[k];
+  for (const k of Object.keys(st.og)) if (!st.seen[k]) delete st.og[k];
+  for (const k of Object.keys(st.steamRel || {})) if (Date.parse(st.steamRel[k].at) < NOW.getTime() - 3 * 864e5) delete st.steamRel[k];
+  await fs.mkdir(path.dirname(STATE_FILE), { recursive: true });
+  await fs.writeFile(STATE_FILE, JSON.stringify(st));
+}
+
+/* ---------------------------------------------------------- notizie */
+async function readSource(src, st) {
+  const tried = [];
+  for (const u of src.feeds || []) {
+    const r = await fetchText(u, { accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*" });
+    tried.push(`${u} → ${r.status || r.error}`);
+    if (r.ok && /<(rss|feed|rdf)[\s>]/i.test(r.text)) { const it = parseFeed(r.text, u); if (it.length) return { items: it, feed: u }; }
+  }
+  if (src.home) {
+    const h = await fetchText(src.home, { max: 1_500_000, accept: "text/html" });
+    const f = h.ok ? discoverFeed(h.text, src.home) : "";
+    tried.push(`autodiscovery ${src.home} → ${f || h.status || h.error}`);
+    if (f) { const r = await fetchText(f); if (r.ok) { const it = parseFeed(r.text, f); if (it.length) return { items: it, feed: f }; } }
+  }
+  throw new Error(tried.join(" | "));
+}
+async function ogImage(url) {
+  const r = await fetchText(url, { max: 600_000, timeout: 12000, accept: "text/html" });
+  if (!r.ok) return "";
+  const t = r.text;
+  const m = t.match(/<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url)?|twitter:image(?::src)?)["'][^>]*>/i);
+  if (!m) return "";
+  const a = attrs(m[0]); const u = absUrl(a.content, url);
+  return u && !BAD_IMG.test(u) ? u : "";
+}
+async function collectNews(st, health) {
+  const keepMs = (CFG.keepHours || 72) * 3600e3;
+  const res = await pool(CFG.feeds, 6, async src => {
+    try { const r = await readSource(src, st); health.push({ id: src.id, name: src.name, ok: true, count: r.items.length, feed: r.feed }); return r.items.map(x => ({ ...x, src })); }
+    catch (e) { health.push({ id: src.id, name: src.name, ok: false, count: 0, error: String(e.message || e).slice(0, 600) }); log("ERRORE", src.name, String(e.message || e).slice(0, 300)); return []; }
+  });
+  let all = res.flat().filter(Boolean);
+  const seenUrl = new Set();
+  all = all.filter(x => { const k = x.url.replace(/[?#].*$/, ""); if (seenUrl.has(k)) return false; seenUrl.add(k); return true; });
+  for (const x of all) {
+    if (!st.seen[x.url]) st.seen[x.url] = NOW.toISOString();
+    let t = Date.parse(x.dateStr);
+    if (!isFinite(t) || t > NOW.getTime() + 10 * 60e3) t = Date.parse(st.seen[x.url]);
+    x.t = t;
+  }
+  all = all.filter(x => NOW.getTime() - x.t <= keepMs).sort((a, b) => b.t - a.t);
+  // immagini mancanti: prova og:image dalla pagina dell'articolo (con cache)
+  const need = all.filter(x => !x.img && st.og[x.url] === undefined).slice(0, 45);
+  await pool(need, 6, async x => { st.og[x.url] = await ogImage(x.url); });
+  for (const x of all) if (!x.img && st.og[x.url]) x.img = st.og[x.url];
+  // classificazione + raggruppamento delle stesse notizie da più testate
+  for (const x of all) { const c = classify(`${x.title} ${x.summary} ${x.tags.join(" ")}`, x.src.cat); x.cats = c.cats; x.plats = c.plats; }
+  const cls = cluster(all);
+  const news = cls.map((c, i) => {
+    const lead = c.items.find(x => x.img) || c.items[0];
+    const bySrc = new Map(); for (const x of c.items) if (!bySrc.has(x.src.id)) bySrc.set(x.src.id, x);
+    const cats = new Set(), plats = new Set(); c.items.forEach(x => { x.cats.forEach(k => cats.add(k)); x.plats.forEach(k => plats.add(k)); });
+    const first = Math.min(...c.items.map(x => x.t));
+    return {
+      id: "n" + i + "-" + lead.src.id, title: lead.title, url: lead.url, source: lead.src.name, sourceId: lead.src.id,
+      date: new Date(Math.max(...c.items.map(x => x.t))).toISOString(), first: new Date(first).toISOString(),
+      img: lead.img || (c.items.find(x => x.img) || {}).img || "", summary: lead.summary || (c.items.find(x => x.summary) || {}).summary || "",
+      cats: [...cats], plats: [...plats], tags: lead.tags.slice(0, 5),
+      also: [...bySrc.values()].filter(x => x !== lead && x.src.id !== lead.src.id).map(x => ({ source: x.src.name, sourceId: x.src.id, url: x.url, title: x.title })),
+      size: bySrc.size
+    };
+  });
+  news.sort((a, b) => Date.parse(b.date) - Date.parse(a.date));
+  return news.slice(0, CFG.maxNews || 450);
+}
+
+/* ---------------------------------------------------------- offerte */
+const priceNum = s => { if (typeof s === "number") return s; const m = String(s || "").replace(/\s/g, "").match(/(\d{1,3}(?:[.\s]\d{3})*|\d+)(?:[,.](\d{1,2}))?/); if (!m) return null; return parseFloat(m[1].replace(/[.\s]/g, "") + "." + (m[2] || "0")); };
+async function steamFeatured(health) {
+  try {
+    const j = await fetchJSON(`https://store.steampowered.com/api/featuredcategories?cc=${CFG.steam.cc}&l=${CFG.steam.lang}`);
+    health.push({ id: "steam-featured", name: "Steam (vetrina)", ok: true });
+    return j;
+  } catch (e) { health.push({ id: "steam-featured", name: "Steam (vetrina)", ok: false, error: String(e.message) }); return {}; }
+}
+function steamItem(x) {
+  return { title: x.name, store: "Steam", price: (x.final_price ?? 0) / 100, regular: (x.original_price ?? x.final_price ?? 0) / 100, cut: x.discount_percent || 0,
+    img: x.header_image || x.large_capsule_image || x.small_capsule_image || "", url: `https://store.steampowered.com/app/${x.id}/`, appid: x.id,
+    until: x.discount_expiration ? new Date(x.discount_expiration * 1000).toISOString() : null, plats: ["PC"] };
+}
+export function parseSteamSearch(html) {
+  const out = [];
+  for (const m of String(html).matchAll(/<a\b[^>]*href="https:\/\/store\.steampowered\.com\/(app|bundle|sub)\/(\d+)[^"]*"[^>]*>([\s\S]*?)<\/a>/g)) {
+    const kind = m[1], id = m[2], body = m[3];
+    const title = stripHtml((body.match(/<span class="title">([\s\S]*?)<\/span>/) || [])[1] || "");
+    if (!title) continue;
+    const img = (body.match(/<img[^>]+src="([^"]+)"/) || [])[1] || "";
+    const pct = (body.match(/discount_pct">\s*-?(\d+)%/) || [])[1];
+    const orig = (body.match(/discount_original_price">([^<]+)</) || [])[1];
+    const fin = (body.match(/discount_final_price">([^<]+)</) || [])[1];
+    const rel = stripHtml((body.match(/search_released[^>]*>([\s\S]*?)<\/div>/) || [])[1] || "");
+    const header = kind === "app" ? `https://cdn.akamai.steamstatic.com/steam/apps/${id}/header.jpg` : img.replace(/capsule_sm_120/, "header");
+    out.push({ title, id: +id, kind, img: header || img, cut: pct ? +pct : 0, regular: priceNum(orig), price: priceNum(fin), released: rel, url: `https://store.steampowered.com/${kind}/${id}/` });
+  }
+  return out;
+}
+async function steamSearch(params, health, label) {
+  try {
+    const j = await fetchJSON(`https://store.steampowered.com/search/results/?${params}&cc=${CFG.steam.cc}&l=english&infinite=1&json=1`);
+    const r = parseSteamSearch(j.results_html || ""); health.push({ id: "steam-" + label, name: "Steam (" + label + ")", ok: true, count: r.length }); return r;
+  } catch (e) { health.push({ id: "steam-" + label, name: "Steam (" + label + ")", ok: false, error: String(e.message) }); return []; }
+}
+async function gogDeals(health) {
+  const g = CFG.gog;
+  try {
+    const j = await fetchJSON(`https://catalog.gog.com/v1/catalog?limit=60&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=1&countryCode=${g.country}&locale=${g.locale}&currencyCode=${g.currency}`);
+    const out = (j.products || []).map(p => {
+      const pr = p.price || {}; const fin = priceNum(pr.finalMoney && pr.finalMoney.amount || pr.final); const base = priceNum(pr.baseMoney && pr.baseMoney.amount || pr.base);
+      let c = priceNum(String(pr.discount || "").replace("-", "")); if (!c && fin != null && base) c = Math.round((1 - fin / base) * 100);
+      const img = absUrl(p.coverHorizontal || p.coverVertical || "");
+      return { title: p.title, store: "GOG", price: fin, regular: base, cut: c || 0, img, url: absUrl(p.storeLink || (p.slug ? `https://www.gog.com/it/game/${p.slug}` : "")), plats: ["PC"] };
+    }).filter(d => d.title && d.url && d.price != null);
+    health.push({ id: "gog", name: "GOG", ok: true, count: out.length }); return out;
+  } catch (e) { health.push({ id: "gog", name: "GOG", ok: false, error: String(e.message) }); return []; }
+}
+async function itadDeals(health) {
+  if (!ITAD_KEY) { health.push({ id: "itad", name: "IsThereAnyDeal", ok: false, error: "chiave non impostata (facoltativa)" }); return []; }
+  try {
+    const j = await fetchJSON(`https://api.isthereanydeal.com/deals/v2?key=${encodeURIComponent(ITAD_KEY)}&country=${CFG.itad.country}&limit=${CFG.itad.limit}&sort=-trending`);
+    const out = (j.list || []).filter(x => x.type === "game" || !x.type).map(x => {
+      const d = x.deal || {}; const a = x.assets || {};
+      return { title: x.title, store: d.shop && d.shop.name || "Store", price: d.price && d.price.amount, regular: d.regular && d.regular.amount, cut: d.cut || 0,
+        img: a.banner600 || a.banner400 || a.banner300 || a.boxart || "", url: d.url, until: d.expiry || null,
+        lowest: !!(d.historyLow && d.historyLow.amount != null && d.price && d.price.amount <= d.historyLow.amount), plats: ["PC"] };
+    }).filter(d => d.title && d.url);
+    health.push({ id: "itad", name: "IsThereAnyDeal", ok: true, count: out.length }); return out;
+  } catch (e) { health.push({ id: "itad", name: "IsThereAnyDeal", ok: false, error: String(e.message) }); return []; }
+}
+const normTitle = t => String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[™®©:’'!?.,\-–—()[\]]/g, " ").replace(/\b(the|edition|edizione|standard|digital|deluxe|goty|game of the year)\b/g, " ").replace(/\s+/g, " ").trim();
+async function collectDeals(featured, health) {
+  const steam = [];
+  for (const k of ["specials", "top_sellers", "new_releases"]) for (const x of (featured[k] && featured[k].items) || []) if (x.discounted && x.discount_percent > 0) steam.push(steamItem(x));
+  const s1 = await steamSearch("specials=1&start=0&count=100", health, "offerte");
+  for (const x of s1) if (x.cut > 0 && x.price != null && x.kind === "app") steam.push({ title: x.title, store: "Steam", price: x.price, regular: x.regular, cut: x.cut, img: x.img, url: x.url, appid: x.id, plats: ["PC"] });
+  const [gog, itad] = await Promise.all([gogDeals(health), itadDeals(health)]);
+  const all = [...steam, ...gog, ...itad].filter(d => typeof d.price === "number" && isFinite(d.price));
+  const seen = new Map(); const out = [];
+  for (const d of all) { const k = normTitle(d.title) + "|" + d.store.toLowerCase(); if (seen.has(k)) { const o = seen.get(k); if (!o.until && d.until) o.until = d.until; if (!o.img && d.img) o.img = d.img; continue; } seen.set(k, d); out.push(d); }
+  // confronto prezzi tra store per lo stesso gioco
+  const byT = new Map(); for (const d of out) { const k = normTitle(d.title); if (!byT.has(k)) byT.set(k, []); byT.get(k).push(d); }
+  for (const L of byT.values()) if (L.length > 1) { L.sort((a, b) => a.price - b.price); L.forEach(d => { d.alt = L.filter(x => x !== d).map(x => ({ store: x.store, price: x.price, url: x.url })); d.best = d === L[0]; }); }
+  return out.slice(0, 320);
+}
+
+/* ---------------------------------------------------------- gratis */
+async function epicFree(health) {
+  try {
+    const j = await fetchJSON("https://store-site-backend-static.ext.epicgames.com/freeGamesPromotions?locale=it&country=IT&allowCountries=IT");
+    const els = (((j.data || {}).Catalog || {}).searchStore || {}).elements || [];
+    const out = [];
+    for (const e of els) {
+      const pick = arr => (arr || []).flatMap(p => p.promotionalOffers || []).find(o => o.discountSetting && o.discountSetting.discountPercentage === 0);
+      const now = pick(e.promotions && e.promotions.promotionalOffers), next = pick(e.promotions && e.promotions.upcomingPromotionalOffers);
+      const o = now || next; if (!o) continue;
+      const imgs = e.keyImages || []; const img = (imgs.find(i => i.type === "OfferImageWide") || imgs.find(i => i.type === "DieselStoreFrontWide") || imgs.find(i => i.type === "Thumbnail") || imgs[0] || {}).url || "";
+      const slug = (e.productSlug && e.productSlug !== "[]" ? e.productSlug : "") || ((e.offerMappings || [])[0] || {}).pageSlug || (((e.catalogNs || {}).mappings || [])[0] || {}).pageSlug || "";
+      out.push({ title: e.title, service: "Epic Games Store", img: absUrl(img), url: slug ? `https://store.epicgames.com/it/p/${slug.replace(/\/home$/, "")}` : "https://store.epicgames.com/it/free-games",
+        from: now ? null : o.startDate, until: o.endDate, keep: true, plats: ["PC"], worth: e.price && e.price.totalPrice && e.price.totalPrice.originalPrice ? e.price.totalPrice.originalPrice / 100 : null });
+    }
+    health.push({ id: "epic", name: "Epic Games (gratis)", ok: true, count: out.length }); return out;
+  } catch (e) { health.push({ id: "epic", name: "Epic Games (gratis)", ok: false, error: String(e.message) }); return []; }
+}
+async function gamerPower(health) {
+  try {
+    const j = await fetchJSON("https://www.gamerpower.com/api/giveaways?type=game&sort-by=date");
+    const out = (Array.isArray(j) ? j : []).filter(g => !g.status || /active/i.test(g.status)).map(g => {
+      const p = String(g.platforms || ""); const plats = [];
+      if (/pc|steam|epic|gog|itch|ubisoft|origin|ea|battle/i.test(p)) plats.push("PC"); if (/ps4|ps5|playstation/i.test(p)) plats.push("PS5"); if (/xbox/i.test(p)) plats.push("Xbox"); if (/switch|nintendo/i.test(p)) plats.push("Switch");
+      const service = (p.split(",").map(s => s.trim()).find(s => !/^pc$/i.test(s)) || p || "Giveaway");
+      const until = g.end_date && !/n\/a/i.test(g.end_date) ? new Date(g.end_date.replace(" ", "T") + "Z").toISOString() : null;
+      const worth = priceNum(g.worth);
+      return { title: String(g.title || "").replace(/\s*giveaway\s*$/i, "").replace(/\s*\([^)]*\)\s*$/, "").trim(),
+        service, img: absUrl(g.image || g.thumbnail), url: absUrl(g.open_giveaway_url || g.gamerpower_url), until, keep: !/prime gaming|game pass/i.test(p), plats, worth: worth || null, note: stripHtml(g.instructions || "").slice(0, 160) };
+    }).filter(g => g.title && g.url);
+    health.push({ id: "gamerpower", name: "GamerPower (gratis)", ok: true, count: out.length }); return out;
+  } catch (e) { health.push({ id: "gamerpower", name: "GamerPower (gratis)", ok: false, error: String(e.message) }); return []; }
+}
+async function collectFree(health) {
+  const [ep, gp] = await Promise.all([epicFree(health), gamerPower(health)]);
+  const out = []; const seen = new Set();
+  for (const f of [...ep, ...gp]) { const k = normTitle(f.title) + "|" + (/epic/i.test(f.service) ? "epic" : f.service.toLowerCase()); if (seen.has(k)) continue; seen.add(k); out.push(f); }
+  return out.filter(f => !f.until || Date.parse(f.until) > NOW.getTime() - 3600e3).slice(0, 80);
+}
+
+/* ---------------------------------------------------------- uscite */
+async function collectReleases(featured, st, health) {
+  const today = ymd(NOW); const limit = ymd(new Date(NOW.getTime() + 400 * 864e5)); const out = [];
+  // Steam: più attesi in arrivo (data dalla pagina di ricerca, in inglese)
+  const up = await steamSearch("filter=popularcomingsoon&start=0&count=100", health, "in arrivo");
+  for (const x of up) { if (x.kind !== "app") continue; const d = parseLooseDate(x.released); if (!d) continue; out.push({ date: d, title: x.title, img: x.img, url: x.url, plats: ["PC"], src: "Steam" }); }
+  // Steam: vetrina "prossimamente" con data dai dettagli (cache 3 giorni)
+  const cs = ((featured.coming_soon || {}).items || []).slice(0, 20);
+  await pool(cs, 4, async x => {
+    let c = st.steamRel[x.id];
+    if (!c) { try { const j = await fetchJSON(`https://store.steampowered.com/api/appdetails?appids=${x.id}&cc=${CFG.steam.cc}&l=english&filters=release_date`); const rd = j[x.id] && j[x.id].data && j[x.id].data.release_date; c = { date: rd ? parseLooseDate(rd.date) : "", at: NOW.toISOString() }; st.steamRel[x.id] = c; } catch { return; } }
+    if (c.date) out.push({ date: c.date, title: x.name, img: x.header_image || x.large_capsule_image, url: `https://store.steampowered.com/app/${x.id}/`, plats: ["PC"], src: "Steam" });
+  });
+  // RAWG (facoltativo): uscite su tutte le piattaforme con copertina
+  if (RAWG_KEY) {
+    try {
+      const to = ymd(new Date(NOW.getTime() + 180 * 864e5)); let n = 0;
+      for (const page of [1, 2, 3]) {
+        const j = await fetchJSON(`https://api.rawg.io/api/games?key=${encodeURIComponent(RAWG_KEY)}&dates=${today},${to}&ordering=-added&page_size=40&page=${page}`);
+        for (const g of j.results || []) {
+          const plats = []; for (const p of g.platforms || []) { const nm = p.platform && p.platform.name || ""; if (/^pc$/i.test(nm)) plats.push("PC"); else if (/playstation 5/i.test(nm)) plats.push("PS5"); else if (/xbox series/i.test(nm)) plats.push("Xbox"); else if (/switch 2/i.test(nm)) plats.push("Switch 2"); else if (/nintendo switch/i.test(nm)) plats.push("Switch"); }
+          if (g.released) { out.push({ date: g.released, title: g.name, img: absUrl(g.background_image), url: `https://rawg.io/games/${g.slug}`, plats: [...new Set(plats)], src: "RAWG", added: g.added || 0 }); n++; }
+        }
+        if (!j.next) break;
+      }
+      health.push({ id: "rawg", name: "RAWG (uscite)", ok: true, count: n });
+    } catch (e) { health.push({ id: "rawg", name: "RAWG (uscite)", ok: false, error: String(e.message) }); }
+  } else health.push({ id: "rawg", name: "RAWG (uscite)", ok: false, error: "chiave non impostata (facoltativa)" });
+  // elenco manuale (console e titoli attesi)
+  let manual = []; try { manual = JSON.parse(await fs.readFile(path.join(ROOT, "data/releases-manual.json"), "utf8")); } catch {}
+  for (const r of manual) out.push({ ...r, plats: r.platforms || r.plats || [], src: "Redazione", big: !!r.big });
+  // unione per titolo: tieni data precisa, unisci piattaforme e immagini
+  const map = new Map();
+  for (const r of out) {
+    const k = normTitle(r.title).replace(/\s*\(switch 2\)$/, ""); const o = map.get(k);
+    if (!o) { map.set(k, { ...r, plats: [...new Set(r.plats || [])] }); continue; }
+    o.plats = [...new Set([...(o.plats || []), ...(r.plats || [])])];
+    if (!o.img && r.img) o.img = r.img; if (r.big) o.big = true; if (!o.note && r.note) o.note = r.note; if (!o.genre && r.genre) o.genre = r.genre;
+    if (o.src === "Redazione") { /* la data della redazione ha la precedenza */ } else if (r.src === "Redazione" || (o.date.length < 10 && r.date.length === 10)) { o.date = r.date; o.url = r.url || o.url; o.src = r.src; }
+  }
+  const res = [...map.values()].filter(r => r.date && r.date.slice(0, 7) >= today.slice(0, 7) && r.date <= limit && !(r.date.length === 10 && r.date < ymd(new Date(NOW.getTime() - 7 * 864e5))));
+  // i più popolari su RAWG/Steam diventano "attesi"
+  res.filter(r => r.src === "RAWG").sort((a, b) => (b.added || 0) - (a.added || 0)).slice(0, 15).forEach(r => r.big = true);
+  res.sort((a, b) => (a.date + (a.date.length === 7 ? "-28" : "")).localeCompare(b.date + (b.date.length === 7 ? "-28" : "")));
+  return res.slice(0, 400);
+}
+
+/* ------------------------------------------------------------- main */
+async function copySite() {
+  await fs.mkdir(OUT, { recursive: true });
+  for (const f of await fs.readdir(path.join(ROOT, "site"))) await fs.copyFile(path.join(ROOT, "site", f), path.join(OUT, f));
+}
+async function main() {
+  const t0 = Date.now(); const st = await loadState(); st.steamRel ||= {}; const health = [];
+  const featured = await steamFeatured(health);
+  const [news, deals, free, releases] = await Promise.all([collectNews(st, health), collectDeals(featured, health), collectFree(health), collectReleases(featured, st, health)]);
+  let events = []; try { events = JSON.parse(await fs.readFile(path.join(ROOT, "data/events-manual.json"), "utf8")); } catch {}
+  events = events.filter(e => !e.end || e.end >= ymd(new Date(NOW.getTime() - 864e5)));
+  const sources = CFG.feeds.map(f => ({ id: f.id, name: f.name, color: f.color, home: f.home, ...(health.find(h => h.id === f.id) || {}) }));
+  const data = { generatedAt: NOW.toISOString(), tookMs: Date.now() - t0, sources, health, news, deals, free, releases, events };
+  await copySite();
+  await fs.writeFile(path.join(OUT, "data.json"), JSON.stringify(data));
+  await saveState(st);
+  const okFeeds = sources.filter(s => s.ok).length;
+  log(`notizie ${news.length} (testate ok ${okFeeds}/${sources.length}), offerte ${deals.length}, gratis ${free.length}, uscite ${releases.length}, in ${Date.now() - t0} ms`);
+  if (okFeeds === 0 && !FIXTURES) { log("Nessuna testata raggiungibile: controllo i dettagli qui sotto"); for (const h of health) log(JSON.stringify(h)); }
+}
+if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
+  main().catch(e => { console.error(e); process.exit(1); });
+}

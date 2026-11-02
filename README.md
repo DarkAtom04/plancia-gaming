@@ -1,0 +1,41 @@
+# Plancia Gaming
+
+Il mio sito personale di videogiochi: notizie da tutte le principali testate italiane con le loro foto, offerte PC con confronto prezzi tra store, giochi gratis, calendario uscite, PC e hardware, handheld, tech e intelligenza artificiale, e una sezione **Per te** che segue i giochi che mi interessano e può mandare avvisi sul dispositivo.
+
+Si aggiorna da solo **ogni 10 minuti** grazie a GitHub Actions e viene pubblicato gratis su GitHub Pages.
+
+## Da dove arrivano i dati
+
+| Cosa | Fonti |
+|---|---|
+| Notizie | Multiplayer.it, Everyeye.it, IGN Italia, SpazioGames, Eurogamer.it, The Games Machine, GamesVillage, Gamereactor, Nintendon, PlayStationBit, Xbox Dynasty, Tom's Hardware, Hardware Upgrade, HDblog, DDay.it, Wired Italia, AI4Business, IlSoftware.it (feed RSS ufficiali) |
+| Offerte | Steam (prezzi italiani in euro), GOG, IsThereAnyDeal (facoltativo, molti altri store) |
+| Giochi gratis | Epic Games Store, GamerPower |
+| Uscite | Steam, RAWG (facoltativo), elenco curato in `data/releases-manual.json` |
+| Saldi ed eventi | `data/events-manual.json` |
+
+Le notizie uguali pubblicate da più testate vengono raggruppate in una sola card ("+N fonti"). Ogni notizia si apre sul sito originale.
+
+## Primo avvio
+
+1. **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+2. **Actions → Aggiorna Plancia Gaming → Run workflow**.
+3. Dopo un paio di minuti il sito è su `https://darkatom04.github.io/plancia-gaming/`.
+
+## Chiavi facoltative (gratis) per avere ancora di più
+
+Vanno in **Settings → Secrets and variables → Actions → New repository secret**.
+
+- `ITAD_KEY`: chiave di [IsThereAnyDeal](https://isthereanydeal.com/apps/my/) (registra un'app). Aggiunge offerte da decine di store, storico prezzi e minimi storici.
+- `RAWG_KEY`: chiave di [RAWG](https://rawg.io/apidocs). Aggiunge le uscite di tutte le console con le copertine.
+
+## Modificare le fonti
+
+Le testate sono in `config/sources.json`: basta aggiungere una riga con nome, sito e indirizzo del feed. Se l'indirizzo del feed è sbagliato, il raccoglitore lo cerca da solo nella home del sito.
+
+## Provarlo sul computer
+
+```bash
+node scripts/build.mjs        # crea la cartella dist/
+cd dist && python3 -m http.server 8000
+```
