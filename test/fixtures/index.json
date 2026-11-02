@@ -29,5 +29,7 @@
  "https://www.cheapshark.com/api/1.0/deals?storeID=11&pageSize=60&sortBy=Deal%20Rating&onSale=1": "cs11.json",
  "https://store.steampowered.com/api/storesearch/?term=Godzilla%3A%20Destroy%20All%20Monsters%20Melee%20Remastered&cc=it&l=english": "ss1.json",
  "https://store.steampowered.com/api/storesearch/?term=Crymelight&cc=it&l=english": "ss2.json",
- "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=Crymelight%20video%20game": "wiki1.json"
+ "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=Crymelight%20video%20game": "wiki1.json",
+ "https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=Steam%20Deck%20OLED&prop=imageinfo&iiprop=url|mime&iiurlwidth=900": "cm_deck.json",
+ "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&pilicense=any&titles=ROG%20Xbox%20Ally%7CROG%20Ally": "wp_ally.json"
 }

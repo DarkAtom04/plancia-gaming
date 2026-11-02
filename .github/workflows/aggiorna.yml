@@ -3,7 +3,7 @@ name: Aggiorna Plancia Gaming
 # Come resta aggiornato ogni 5 minuti:
 # il cron di GitHub sui repository nuovi spesso non parte o parte con ore di ritardo,
 # quindi ogni giro, finito il lavoro, prenota da solo il giro successivo (catena).
-# Il giro prenotato aspetta ~3 minuti e poi raccoglie di nuovo: un giro ogni ~5 minuti.
+# Il giro prenotato aspetta ~1,5 minuti e poi raccoglie di nuovo: un giro ogni ~3 minuti.
 # Il cron qui sotto resta come riserva per far ripartire la catena se si interrompe.
 on:
   schedule:
@@ -94,7 +94,7 @@ jobs:
           if [ "${altri:-0}" -gt 0 ]; then
             echo "C'è già un giro in corso o in coda ($altri): non ne prenoto un altro"
           else
-            gh workflow run aggiorna.yml --ref main -f wait=190 && echo "Prossimo giro prenotato fra ~5 minuti"
+            gh workflow run aggiorna.yml --ref main -f wait=100 && echo "Prossimo giro prenotato fra ~3 minuti"
           fi
 
       # GitHub sospende i lavori programmati dopo 60 giorni senza attività nel repository:

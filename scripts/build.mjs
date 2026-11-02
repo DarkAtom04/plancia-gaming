@@ -17,6 +17,7 @@ const ITAD_KEY = (process.env.ITAD_KEY || "").trim();
 const RAWG_KEY = (process.env.RAWG_KEY || "").trim();
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36 PlanciaGaming/1.0";
 const log = (...a) => console.log("[plancia]", ...a);
+const WIKI_H = { "user-agent": "PlanciaGaming/1.0 (https://github.com/DarkAtom04/plancia-gaming; sito personale)", "api-user-agent": "PlanciaGaming/1.0" };
 
 /* ------------------------------------------------------------------ rete */
 let FIX = null;
@@ -326,9 +327,9 @@ export function parseSteamSearch(html) {
     const cents = (body.match(/data-price-final="(\d+)"/) || [])[1];
     if (!fin && cents) fin = (+cents / 100).toFixed(2);
     const rel = stripHtml((body.match(/search_released[^>]*>([\s\S]*?)<\/div>/) || [])[1] || "");
-    const header = kind === "app" ? `https://cdn.akamai.steamstatic.com/steam/apps/${id}/header.jpg` : img.replace(/capsule_sm_120/, "header");
+    const header = kind === "app" ? `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${id}/header.jpg` : img.replace(/capsule_sm_120/, "header");
     const price = priceNum(fin); let regular = priceNum(orig); if (regular == null && price != null && pct > 0) regular = Math.round(price / (1 - pct / 100) * 100) / 100;
-    out.push({ title, id: +id, kind, img: header || img, cut: pct ? +pct : 0, regular, price, released: rel, url: `https://store.steampowered.com/${kind}/${id}/` });
+    out.push({ title, id: +id, kind, img: header || img, img2: img && img !== header ? img : "", cut: pct ? +pct : 0, regular, price, released: rel, url: `https://store.steampowered.com/${kind}/${id}/` });
   }
   return out;
 }
@@ -507,8 +508,9 @@ async function collectDeals(featured, health, st) {
   const top = new Set(((featured.top_sellers || {}).items || []).map(x => x.id));
   const s1 = [...await steamSearch("specials=1&start=0&count=100", health, "offerte"), ...await steamSearch("specials=1&start=100&count=100", health, "offerte 2"), ...await steamSearch("specials=1&start=200&count=100", health, "offerte 3")];
   if (s1.length && !s1.some(x => x.price != null)) log("Steam: risultati senza prezzo, esempio:", JSON.stringify(s1[0]));
-  s1.forEach((x, k) => { if (x.cut > 0 && x.price != null && x.kind === "app") steam.push({ title: x.title, store: "Steam", price: x.price, regular: x.regular, cut: x.cut, img: x.img, url: x.url, appid: x.id, plats: ["PC"], rank: k }); });
+  s1.forEach((x, k) => { if (x.cut > 0 && x.price != null && x.kind === "app") steam.push({ title: x.title, store: "Steam", price: x.price, regular: x.regular, cut: x.cut, img: x.img, img2: x.img2, url: x.url, appid: x.id, plats: ["PC"], rank: k }); });
   for (const d of steam) if (top.has(d.appid)) d.bestseller = true;
+  await steamImages(steam.filter(d => d.img2), st, 25);
   const [gog, itad, nin, xbox, ps, cs] = await Promise.all([gogDeals(health), itadDeals(health),
     cachedSource(st, health, "nintendo", "Nintendo eShop", 20, nintendoDeals), cachedSource(st, health, "xbox", "Xbox Store", 30, xboxDeals),
     cachedSource(st, health, "playstation", "PlayStation Store", 30, psDeals), cachedSource(st, health, "cheapshark", "Altri store PC (CheapShark)", 30, cheapShark)]);
@@ -612,17 +614,17 @@ async function xboxUpcoming() {
 // copertina per i giochi dell'elenco manuale: prima Steam, poi Wikipedia (memorizzata per 10 giorni)
 async function findCover(title, st) {
   st.covers ||= {}; const k = normTitle(title); const c = st.covers[k];
-  if (c && NOW.getTime() - Date.parse(c.at) < (c.img ? 30 : 10) * 864e5) return c;
+  if (c && !/cdn\.akamai\.steamstatic\.com\/steam\/apps/.test(c.img || "") && NOW.getTime() - Date.parse(c.at) < (c.img ? 30 : 10) * 864e5) return c;
   let res = { img: "", url: "", at: NOW.toISOString() };
   try {
     const j = await fetchJSON(`https://store.steampowered.com/api/storesearch/?term=${encodeURIComponent(title)}&cc=${CFG.steam.cc}&l=english`);
     const want = normTitle(title).replace(/\s*\(switch 2\)$/, "");
     const hit = (j.items || []).find(x => normTitle(x.name) === want) || (j.items || []).find(x => normTitle(x.name).startsWith(want) && !/soundtrack|demo|dlc|pack|kit/i.test(x.name));
-    if (hit) res = { ...res, img: `https://cdn.akamai.steamstatic.com/steam/apps/${hit.id}/header.jpg`, url: `https://store.steampowered.com/app/${hit.id}/` };
+    if (hit) res = { ...res, img: `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${hit.id}/header.jpg`, img2: hit.tiny_image || "", appid: hit.id, url: `https://store.steampowered.com/app/${hit.id}/` };
   } catch {}
   if (!res.img) {
     try {
-      const j = await fetchJSON(`https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=${encodeURIComponent(title + " video game")}`, { headers: { "api-user-agent": "PlanciaGaming/1.0 (sito personale)" } });
+      const j = await fetchJSON(`https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=${encodeURIComponent(title + " video game")}`, { headers: WIKI_H });
       const pg = Object.values((j.query && j.query.pages) || {})[0];
       const head = normTitle(title).split(" ").slice(0, 2).join(" ");
       if (pg && pg.thumbnail && pg.thumbnail.source && normTitle(pg.title).includes(head)) res = { ...res, img: pg.thumbnail.source, wiki: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}` };
@@ -630,18 +632,59 @@ async function findCover(title, st) {
   }
   st.covers[k] = res; return res;
 }
+// immagine ufficiale Steam (l'indirizzo "header.jpg" semplice non esiste per molti giochi nuovi)
+async function steamImages(items, st, max) {
+  st.steamImg ||= {}; let n = 0;
+  const need = items.filter(x => x.appid && !st.steamImg[x.appid]);
+  await pool(need, 4, async x => {
+    if (n++ >= max) return;
+    try {
+      const j = await fetchJSON(`https://store.steampowered.com/api/appdetails?appids=${x.appid}&cc=${CFG.steam.cc}&l=english&filters=basic`);
+      const d = j[x.appid] && j[x.appid].data; st.steamImg[x.appid] = { img: d && d.header_image || "", at: NOW.toISOString() };
+    } catch {}
+  });
+  for (const x of items) { const c = x.appid && st.steamImg[x.appid]; if (c && c.img) { if (x.img && x.img !== c.img) x.img2 = x.img2 || x.img; x.img = c.img; } }
+}
+// foto dei PC portatili: Wikimedia Commons, poi pagina Wikipedia (memorizzate per 7 giorni)
+async function handheldPhotos(HH, st) {
+  st.hhPhoto ||= {};
+  await pool(HH.devices || [], 3, async d => {
+    const c = st.hhPhoto[d.id];
+    if (c && NOW.getTime() - Date.parse(c.at) < (c.img ? 7 : 1) * 864e5 && !FIXTURES) { if (c.img) Object.assign(d, { photoUrl: c.img, photoPage: c.page, photoTitle: c.title }); return; }
+    const P = d.photo || {}; const re = P.match ? new RegExp(P.match, "i") : null; let res = { img: "", at: NOW.toISOString() };
+    for (const q of P.commons || []) {
+      if (res.img) break;
+      try {
+        const j = await fetchJSON(`https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=${encodeURIComponent(q)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=900`, { headers: WIKI_H });
+        const pages = Object.values((j.query && j.query.pages) || {}).sort((a, b) => (a.index || 0) - (b.index || 0));
+        const hit = pages.find(p => (!re || re.test(p.title)) && p.imageinfo && /jpe?g|png|webp/.test(p.imageinfo[0].mime || "") && !/logo|icon|screenshot|box art/i.test(p.title));
+        if (hit) res = { ...res, img: hit.imageinfo[0].thumburl || hit.imageinfo[0].url, page: hit.imageinfo[0].descriptionurl || "", title: hit.title.replace(/^File:/, "").replace(/\.\w+$/, "") };
+      } catch {}
+    }
+    if (!res.img && (P.wiki || []).length) {
+      try {
+        const j = await fetchJSON(`https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&pilicense=any&titles=${encodeURIComponent(P.wiki.join("|"))}`, { headers: WIKI_H });
+        const pages = Object.values((j.query && j.query.pages) || {});
+        for (const t of P.wiki) { const pg = pages.find(p => p.title && p.title.toLowerCase() === t.toLowerCase() && p.thumbnail); if (pg) { res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; break; } }
+        if (!res.img) { const pg = pages.find(p => p.thumbnail); if (pg) res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; }
+      } catch {}
+    }
+    st.hhPhoto[d.id] = res; if (res.img) Object.assign(d, { photoUrl: res.img, photoPage: res.page, photoTitle: res.title });
+  });
+  const ok = (HH.devices || []).filter(d => d.photoUrl).length; log(`foto handheld: ${ok}/${(HH.devices || []).length}`);
+}
 /* ---------------------------------------------------------- uscite */
 async function collectReleases(featured, st, health) {
   const today = ymd(NOW); const limit = ymd(new Date(NOW.getTime() + 400 * 864e5)); const out = [];
   // Steam: più attesi in arrivo (data dalla pagina di ricerca, in inglese)
   const up = await steamSearch("filter=popularcomingsoon&start=0&count=100", health, "in arrivo");
-  for (const x of up) { if (x.kind !== "app") continue; const d = parseLooseDate(x.released); if (!d) continue; out.push({ date: d, title: x.title, img: x.img, url: x.url, plats: ["PC"], src: "Steam" }); }
+  up.forEach((x, k) => { if (x.kind !== "app") return; const d = parseLooseDate(x.released); if (!d) return; out.push({ date: d, title: x.title, img: x.img, img2: x.img2, appid: x.id, url: x.url, plats: ["PC"], src: "Steam", pop: k }); });
   // Steam: vetrina "prossimamente" con data dai dettagli (cache 3 giorni)
   const cs = ((featured.coming_soon || {}).items || []).slice(0, 20);
   await pool(cs, 4, async x => {
     let c = st.steamRel[x.id];
     if (!c) { try { const j = await fetchJSON(`https://store.steampowered.com/api/appdetails?appids=${x.id}&cc=${CFG.steam.cc}&l=english&filters=release_date`); const rd = j[x.id] && j[x.id].data && j[x.id].data.release_date; c = { date: rd ? parseLooseDate(rd.date) : "", at: NOW.toISOString() }; st.steamRel[x.id] = c; } catch { return; } }
-    if (c.date) out.push({ date: c.date, title: x.name, img: x.header_image || x.large_capsule_image, url: `https://store.steampowered.com/app/${x.id}/`, plats: ["PC"], src: "Steam" });
+    if (c.date) out.push({ date: c.date, title: x.name, img: x.header_image || x.large_capsule_image, url: `https://store.steampowered.com/app/${x.id}/`, plats: ["PC"], src: "Steam", pop: 5 });
   });
   // RAWG (facoltativo): uscite su tutte le piattaforme con copertina
   if (RAWG_KEY) {
@@ -664,15 +707,16 @@ async function collectReleases(featured, st, health) {
   // elenco manuale (titoli attesi) con copertina trovata in automatico
   let manual = []; try { manual = JSON.parse(await fs.readFile(path.join(ROOT, "data/releases-manual.json"), "utf8")); } catch {}
   const needCover = manual.filter(r => !r.img); let looked = 0;
-  await pool(needCover, 3, async r => { const k = normTitle(r.title); const known = st.covers && st.covers[k]; if (!known && looked++ >= 30) return; const c = await findCover(r.title, st); if (c.img) r.img = c.img; if (c.url) r.url = c.url; else if (!r.url && c.wiki) r.url = c.wiki; });
+  await pool(needCover, 3, async r => { const k = normTitle(r.title); const known = st.covers && st.covers[k]; if (!known && looked++ >= 30) return; const c = await findCover(r.title, st); if (c.img) { r.img = c.img; r.img2 = c.img2 || ""; } if (c.appid) r.appid = c.appid; if (c.url) r.url = c.url; else if (!r.url && c.wiki) r.url = c.wiki; });
   for (const r of manual) out.push({ ...r, plats: r.platforms || r.plats || [], src: "Redazione", big: !!r.big });
+  await steamImages(out.filter(r => r.appid), st, 45);
   // unione per titolo: tieni data precisa, unisci piattaforme e immagini
   const map = new Map();
   for (const r of out) {
     const k = normTitle(r.title).replace(/\s*\(switch 2\)$/, ""); const o = map.get(k);
     if (!o) { map.set(k, { ...r, plats: [...new Set(r.plats || [])] }); continue; }
     o.plats = [...new Set([...(o.plats || []), ...(r.plats || [])])];
-    if ((!o.img || /wikipedia|wikimedia/.test(o.img)) && r.img && !/wikipedia|wikimedia/.test(r.img)) o.img = r.img; else if (!o.img && r.img) o.img = r.img; if (r.big) o.big = true; if (!o.note && r.note) o.note = r.note; if (!o.genre && r.genre) o.genre = r.genre;
+    if ((!o.img || /wikipedia|wikimedia/.test(o.img)) && r.img && !/wikipedia|wikimedia/.test(r.img)) { o.img = r.img; o.img2 = r.img2 || o.img2; } else if (!o.img && r.img) o.img = r.img; if (r.big) o.big = true; if (r.pop != null && (o.pop == null || r.pop < o.pop)) o.pop = r.pop; if (!o.appid && r.appid) o.appid = r.appid; if (!o.note && r.note) o.note = r.note; if (!o.genre && r.genre) o.genre = r.genre;
     if (!o.url && r.url) o.url = r.url;
     if (o.src === "Redazione") { /* la data della redazione ha la precedenza */ } else if (r.src === "Redazione" || (o.date.length < 10 && r.date.length === 10)) { o.date = r.date; o.url = r.url || o.url; o.src = r.src; }
   }
@@ -732,6 +776,7 @@ async function main() {
   const featured = await steamFeatured(health);
   const [news, deals, free, releases, videos] = await Promise.all([collectNews(st, health), collectDeals(featured, health, st), collectFree(health), collectReleases(featured, st, health), collectVideos(health)]);
   let handhelds = null; try { handhelds = JSON.parse(await fs.readFile(path.join(ROOT, "data/handhelds.json"), "utf8")); } catch (e) { log("handhelds.json non leggibile", e.message); }
+  if (handhelds) await handheldPhotos(handhelds, st);
   let events = []; try { events = JSON.parse(await fs.readFile(path.join(ROOT, "data/events-manual.json"), "utf8")); } catch {}
   events = events.filter(e => !e.end || e.end >= ymd(new Date(NOW.getTime() - 864e5)));
   const sources = CFG.feeds.map(f => ({ id: f.id, name: f.name, color: f.color, home: f.home, ...(health.find(h => h.id === f.id) || {}) }));

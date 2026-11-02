@@ -21,7 +21,7 @@ let D = null;
 const st = {
   view: "home", q: "", page: 30, newsCat: "tutte", newsSrc: "tutte", newsPlat: "tutte",
   dealStore: "tutti", dealPlat: "tutte", dealSort: "best", dealMax: null, dealLowest: false, dealPage: 48,
-  relPlat: "tutte", hhSort: "perf", hhOs: "tutti", hhMax: null, hhCmp: LS.get("hhCmp", []), hhOpen: null, cal: null, calSel: null, techSub: "tutte", vidCh: "tutti",
+  relPlat: "tutte", relView: LS.get("relView", "lista"), relMode: "evid", hhSort: "perf", hhOs: "tutti", hhGen: "attuale", hhMax: "", hhQ: "", hhCmp: LS.get("hhCmp", []), hhOpen: null, hhCmpOpen: false, cal: null, calSel: null, techSub: "tutte", vidCh: "tutti",
   seen: new Set(LS.get("seen", [])), kw: LS.get("kw", []), saved: LS.get("saved", []), prevVisit: LS.get("lastVisit", null),
   lang: LS.get("lang", "tutte"), hidden: new Set(LS.get("hidden", [])), token: LS.get("ghToken", ""), forcing: null
 };
@@ -76,11 +76,16 @@ function cover(key) {
 }
 function initials(s) { const w = String(s || "").replace(/[^\p{L}\p{N} ]/gu, " ").split(/\s+/).filter(x => x && x.length > 1); return h((w.slice(0, 2).map(x => x[0]).join("") || "?").toUpperCase()); }
 function genDiv(title) { return `<div class="gen" style='background-image:${cover(title)}'><b>${initials(title)}</b></div>`; }
-function ph(src, title, cls, extra) {
-  const u = safeUrl(src);
-  return `<div class="ph ${cls || ""}">${u ? `<img src="${h(u)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-t="${h(title)}">` : genDiv(title)}${extra || ""}</div>`;
+function steamAlts(u) { const m = String(u || "").match(/steamstatic\.com\/.*?apps\/(\d+)\/header\.jpg/); if (!m) return []; const id = m[1];
+  return [`https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${id}/header.jpg`, `https://cdn.akamai.steamstatic.com/steam/apps/${id}/header.jpg`, `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${id}/capsule_616x353.jpg`].filter(x => x !== u); }
+function ph(src, title, cls, extra, alt2) {
+  const u = safeUrl(src) || safeUrl(alt2); const alts = [...steamAlts(u), ...(alt2 && safeUrl(alt2) !== u ? [safeUrl(alt2)] : [])].filter(Boolean);
+  return `<div class="ph ${cls || ""}">${u ? `<img src="${h(u)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-t="${h(title)}"${alts.length ? ` data-alt="${h(alts.join("|"))}"` : ""}>` : genDiv(title)}${extra || ""}</div>`;
 }
-document.addEventListener("error", e => { const t = e.target; if (t && t.tagName === "IMG") { if (t.dataset.t != null && t.parentNode) t.outerHTML = genDiv(t.dataset.t); else if (t.classList.contains("fav")) t.remove(); } }, true);
+document.addEventListener("error", e => { const t = e.target; if (!t || t.tagName !== "IMG") return;
+  const alts = (t.dataset.alt || "").split("|").filter(Boolean); if (alts.length) { t.dataset.alt = alts.slice(1).join("|"); t.src = alts[0]; return; }
+  if (t.dataset.hh && t.parentNode) { const x = hhById(t.dataset.hh); t.outerHTML = x ? hhArt(x) : ""; return; }
+  if (t.dataset.t != null && t.parentNode) t.outerHTML = genDiv(t.dataset.t); else if (t.classList.contains("fav")) t.remove(); }, true);
 
 /* ------------------------------------------------------- componenti */
 function srcLabel(n) { return `<span class="src" style="--c:${h(srcColor(n.sourceId))}">${fav(n.sourceId) || "<i></i>"}${h(n.source)}${n.lang === "en" ? '<span class="en">EN</span>' : ""}</span>`; }
@@ -104,7 +109,7 @@ function newsCard(n, ss) {
 function dealCard(d) {
   const c = d.cur; const pc = dealPlat(d) === "PC";
   const alt = (d.alt || []).slice(0, 3).map(a => `<a ${ext(a.url)}>${h(a.store)} ${eur(a.price, c)}</a>`).join("");
-  return `<article class="card deal"><a class="cover-link" ${ext(d.url)}>${ph(d.img, d.title)}</a><div class="over"><span class="storeb s-${h(String(d.store).toLowerCase().replace(/\W+/g, ""))}">${h(d.store)}</span>${d.bestseller ? '<span class="storeb hotb">Più venduto</span>' : ""}</div>${d.cut ? `<span class="cutb">-${Math.round(d.cut)}%</span>` : ""}
+  return `<article class="card deal"><a class="cover-link" ${ext(d.url)}>${ph(d.img, d.title, "", "", d.img2)}</a><div class="over"><span class="storeb s-${h(String(d.store).toLowerCase().replace(/\W+/g, ""))}">${h(d.store)}</span>${d.bestseller ? '<span class="storeb hotb">Più venduto</span>' : ""}</div>${d.cut ? `<span class="cutb">-${Math.round(d.cut)}%</span>` : ""}
   <div class="body"><h3><a ${ext(d.url)}>${h(d.title)}</a></h3><div class="meta">${platTags(d.plats, 3)}${d.lowest ? '<span class="pill good">Minimo storico</span>' : ""}${d.best ? '<span class="pill good">Prezzo migliore</span>' : ""}${d.until && Date.parse(d.until) > Date.now() ? `<span class="pill warn">Scade tra ${left(d.until)}</span>` : ""}</div>
   <div class="bot"><div><span class="price">${eur(d.price, c)}</span>${typeof d.regular === "number" && d.regular > d.price ? `<span class="was">${eur(d.regular, c)}</span>` : ""}</div>${typeof d.regular === "number" && d.regular > d.price ? `<span class="save-eur">Risparmi ${eur(d.regular - d.price, c)}</span>` : ""}</div>
   ${c === "USD" ? '<p class="curnote">Prezzo del negozio USA: in Italia può variare</p>' : ""}${d.plus ? '<p class="curnote">Sconto extra con PS Plus</p>' : ""}
@@ -121,7 +126,7 @@ function freeCard(f) {
 function relCard(r) {
   const d = parseD(r.date), mo = monthOnly(r.date), n = daysTo(r.date);
   const box = d ? `<span class="datebox">${mo ? `<small>${MESI[d.getMonth()]}</small><b>${String(d.getFullYear()).slice(2)}</b>` : `<b>${d.getDate()}</b><small>${MESI[d.getMonth()]}</small>`}</span>` : "";
-  return `<article class="card"><a class="cover-link" ${ext(r.url)}>${ph(r.img, r.title, "", box)}</a>${r.big ? '<div class="over"><span class="tag offerte">Atteso</span></div>' : ""}
+  return `<article class="card"><a class="cover-link" ${ext(r.url)}>${ph(r.img, r.title, "", box, r.img2)}</a>${r.big ? '<div class="over"><span class="tag offerte">Atteso</span></div>' : ""}
   <div class="body"><h3><a ${ext(r.url)}>${h(r.title)}</a></h3><div class="meta">${platTags(r.plats, 5)}</div>${r.note || r.genre ? `<p>${h([r.genre, r.note].filter(Boolean).join(" · "))}</p>` : ""}
   <div class="bot"><span class="sub">${mo ? "Giorno da annunciare" : n === 0 ? "<b>Esce oggi</b>" : n > 0 ? "Tra " + n + (n === 1 ? " giorno" : " giorni") : "Uscito"}</span></div></div></article>`;
 }
@@ -245,35 +250,47 @@ function vVideo() {
     `<div class="filters"><button type="button" class="chip" data-vch="tutti" aria-pressed="${st.vidCh === "tutti"}">Tutti i canali</button>${ch.map(c => `<button type="button" class="chip" data-vch="${h(c)}" aria-pressed="${st.vidCh === c}">${h(c)}</button>`).join("")}</div>` +
     (L.length ? `<div class="grid">${L.map(videoCard).join("")}</div>` : empty("Nessun video al momento."));
 }
+const relEvid = r => r.big || r.src === "Redazione" || (r.pop != null && r.pop < 25);
+function relHero(r) {
+  const d = parseD(r.date), n = daysTo(r.date);
+  return `<a class="relhero" ${ext(r.url)}>${ph(r.img, r.title, "", "", r.img2)}<div class="rh-cap"><span class="rh-date"><b>${d.getDate()}</b>${MESI[d.getMonth()]}</span><div><h3>${h(r.title)}</h3><div class="meta">${platTags(r.plats, 5)}</div><span class="rh-when">${n === 0 ? "Esce oggi" : n === 1 ? "Esce domani" : GIORNI_L[d.getDay()].replace(/^./, c => c.toUpperCase()) + " · tra " + n + " giorni"}</span></div></div></a>`;
+}
 function vUscite() {
   if (!st.cal) { const t = new Date(); st.cal = { y: t.getFullYear(), m: t.getMonth() }; }
-  const { y, m } = st.cal; const first = new Date(y, m, 1); const start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7));
-  const R = rels(true); const E = D.events || []; const tk = ymd(today0()); let cells = "";
-  for (let i = 0; i < 42; i++) {
-    const d = new Date(start); d.setDate(start.getDate() + i); if (i >= 35 && d.getMonth() !== m) break; const k = ymd(d);
-    const L = R.filter(r => r.date === k).sort((a, b) => (b.big ? 1 : 0) - (a.big ? 1 : 0) || (b.img ? 1 : 0) - (a.img ? 1 : 0)); const ev = E.filter(e => e.start === k);
-    cells += `<button type="button" class="cell ${d.getMonth() !== m ? "out" : ""} ${k === tk ? "today" : ""}" data-day="${k}" aria-pressed="${st.calSel === k}" aria-label="${d.getDate()} ${MESI_L[d.getMonth()]}: ${L.length} uscite">
-      <span class="num">${d.getDate()}</span>${ev.map(e => `<span class="ev">${h(e.name)}</span>`).join("")}
-      ${L.length ? `<span class="cv">${ph((L.find(r => r.img) || L[0]).img, (L.find(r => r.img) || L[0]).title)}${L.length > 1 ? `<span class="cn">+${L.length - 1}</span>` : ""}</span>${L.slice(0, 2).map(r => `<span class="t ${r.big ? "big" : ""}">${h(r.title)}</span>`).join("")}` : ""}</button>`;
+  const { y, m } = st.cal; const all = rels(true); const R = st.relMode === "evid" ? all.filter(relEvid) : all; const E = D.events || []; const tk = ymd(today0());
+  const mk = y + "-" + pad(m + 1);
+  const week = R.filter(r => !monthOnly(r.date) && daysTo(r.date) >= 0 && daysTo(r.date) <= 7).sort((a, b) => a.date.localeCompare(b.date) || (relEvid(b) - relEvid(a)) || ((b.img ? 1 : 0) - (a.img ? 1 : 0))).slice(0, 12);
+  const seg = (key, opts) => `<div class="seg" role="group">${opts.map(([v, l]) => `<button type="button" data-seg="${key}:${v}" aria-pressed="${st[key] === v}">${l}</button>`).join("")}</div>`;
+  const tools = `<div class="cal-tools">${seg("relView", [["lista", "Elenco con copertine"], ["cal", "Calendario"]])}${seg("relMode", [["evid", "In evidenza"], ["tutti", "Tutti i giochi"]])}
+    <div class="filters">${["tutte", ...PLATS].map(p => `<button type="button" class="chip" data-rplat="${p}" aria-pressed="${st.relPlat === p}">${p === "tutte" ? "Tutte le piattaforme" : p}</button>`).join("")}</div></div>`;
+  const monthNav = `<div class="cal-head"><button class="arrow" type="button" data-cal="-1" aria-label="Mese precedente">‹</button><h3>${MESI_L[m]} ${y}</h3><button class="arrow" type="button" data-cal="1" aria-label="Mese successivo">›</button><button class="btn ghost small" type="button" data-cal="0">Oggi</button></div>`;
+  let body = "";
+  if (st.relView === "cal") {
+    const first = new Date(y, m, 1); const start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7)); let cells = "";
+    for (let i = 0; i < 42; i++) {
+      const d = new Date(start); d.setDate(start.getDate() + i); if (i >= 35 && d.getMonth() !== m) break; const k = ymd(d);
+      const L = R.filter(r => r.date === k).sort((a, b) => (relEvid(b) - relEvid(a)) || ((b.img ? 1 : 0) - (a.img ? 1 : 0))); const ev = E.filter(e => e.start === k); const lead = L[0];
+      cells += `<button type="button" class="cell ${d.getMonth() !== m ? "out" : ""} ${k === tk ? "today" : ""} ${L.length ? "has" : ""}" data-day="${k}" aria-pressed="${st.calSel === k}" aria-label="${d.getDate()} ${MESI_L[d.getMonth()]}: ${L.length} uscite">
+        ${lead ? `<span class="cbg">${ph(lead.img, lead.title, "", "", lead.img2)}</span>` : ""}<span class="num">${d.getDate()}</span>${L.length > 1 ? `<span class="cn">+${L.length - 1}</span>` : ""}
+        ${ev.map(e => `<span class="ev">${h(e.name)}</span>`).join("")}${lead ? `<span class="t">${h(lead.title)}</span>` : ""}</button>`;
+    }
+    let sel = ""; if (st.calSel) { const L = R.filter(r => r.date === st.calSel); sel = `<div id="daySel">${sh(fmtD(st.calSel), `<span class="sub">${L.length} uscite</span>`)}${L.length ? `<div class="grid g5">${L.map(relCard).join("")}</div>` : empty("Nessuna uscita in questo giorno.")}</div>`; }
+    body = monthNav + `<div class="calwrap"><div class="cal big">${["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"].map(g => `<div class="wd">${g}</div>`).join("")}${cells}</div></div>${sel}`;
+  } else {
+    const inMonth = R.filter(r => !monthOnly(r.date) && r.date.slice(0, 7) === mk && daysTo(r.date) >= -7);
+    const days = [...new Set(inMonth.map(r => r.date))].sort();
+    const list = days.map(dk => { const L = inMonth.filter(r => r.date === dk).sort((a, b) => (relEvid(b) - relEvid(a)) || ((b.img ? 1 : 0) - (a.img ? 1 : 0))); const dd = parseD(dk); const n = daysTo(dk);
+      return `<div class="dayg ${dk === tk ? "today" : ""}"><h3 class="dayh"><b>${dd.getDate()}</b><span>${GIORNI_L[dd.getDay()]}<br><small>${MESI_L[dd.getMonth()]}</small></span><em class="${n === 0 ? "hot" : ""}">${n === 0 ? "oggi" : n === 1 ? "domani" : n > 0 ? "tra " + n + " giorni" : "uscito"}</em><i>${L.length} ${L.length === 1 ? "gioco" : "giochi"}</i></h3><div class="grid g5">${L.map(relCard).join("")}</div></div>`; }).join("");
+    const tba = R.filter(r => r.date === mk);
+    body = monthNav + (list || empty(st.relMode === "evid" ? `Nessun titolo in evidenza con data precisa in ${MESI_L[m].toLowerCase()}. Prova "Tutti i giochi".` : "Nessuna uscita con data precisa in questo mese.")) +
+      (tba.length ? `<div class="dayg"><h3 class="dayh"><b>?</b><span>Giorno<br><small>da annunciare</small></span><i>${tba.length} giochi</i></h3><div class="grid g5">${tba.map(relCard).join("")}</div></div>` : "");
   }
-  const mo = R.filter(r => r.date === y + "-" + pad(m + 1));
-  let sel = ""; if (st.calSel) { const L = R.filter(r => r.date === st.calSel); sel = sh(fmtD(st.calSel)) + (L.length ? `<div class="grid">${L.map(relCard).join("")}</div>` : empty("Nessuna uscita in questo giorno.")); }
-  const mk = y + "-" + pad(m + 1); const inMonth = R.filter(r => !monthOnly(r.date) && r.date.slice(0, 7) === mk && (daysTo(r.date) >= -7));
-  const days = [...new Set(inMonth.map(r => r.date))].sort();
-  const monthList = days.map(dk => { const L = inMonth.filter(r => r.date === dk).sort((a, b) => (b.big ? 1 : 0) - (a.big ? 1 : 0) || (b.img ? 1 : 0) - (a.img ? 1 : 0)); const dd = parseD(dk); const n = daysTo(dk);
-    return `<div class="dayg" id="day-${dk}"><h3 class="dayh"><b>${dd.getDate()}</b><span>${GIORNI_L[dd.getDay()]} ${MESI_L[dd.getMonth()].toLowerCase()}</span><em>${n === 0 ? "oggi" : n === 1 ? "domani" : n > 0 ? "tra " + n + " giorni" : "uscito"}</em><small>${L.length} ${L.length === 1 ? "uscita" : "uscite"}</small></h3><div class="grid g5">${L.map(relCard).join("")}</div></div>`; }).join("");
-  const big = R.filter(r => r.big && (monthOnly(r.date) || daysTo(r.date) >= 0)).slice(0, 16);
   const ev = E.filter(e => !e.end || daysTo(e.end) >= 0).sort((a, b) => a.start.localeCompare(b.start));
-  return sh("Calendario <em>uscite</em>", `<span class="sub">${R.filter(r => monthOnly(r.date) || daysTo(r.date) >= 0).length} giochi in arrivo · tocca un giorno per vederli</span>`) +
-    `<div class="filters"><button type="button" class="chip" data-rplat="tutte" aria-pressed="${st.relPlat === "tutte"}">Tutte</button>${PLATS.map(p => `<button type="button" class="chip" data-rplat="${p}" aria-pressed="${st.relPlat === p}">${p}</button>`).join("")}</div>
-    <div class="cal-head"><button class="arrow" type="button" data-cal="-1" aria-label="Mese precedente">‹</button><h3>${MESI_L[m]} ${y}</h3><button class="arrow" type="button" data-cal="1" aria-label="Mese successivo">›</button><button class="btn ghost" type="button" data-cal="0">Oggi</button></div>
-    <div class="calwrap"><div class="cal">${["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"].map(g => `<div class="wd">${g}</div>`).join("")}${cells}</div></div>
-${sel}
-    ${ev.length ? sh("Saldi ed <em>eventi</em>") + `<div class="events">${ev.map(e => { const on = daysTo(e.start) <= 0 && (!e.end || daysTo(e.end) >= 0); return `<a class="ev-c ${on ? "on" : ""}" ${ext(e.url)}>${on ? '<span class="pill good" style="align-self:flex-start">In corso</span>' : `<span class="pill acc" style="align-self:flex-start">Tra ${daysTo(e.start)} giorni</span>`}<b>${h(e.name)}</b><span>${fmtD(e.start)}${e.end ? " → " + fmtD(e.end) : ""}</span>${e.note ? `<span>${h(e.note)}</span>` : ""}</a>`; }).join("")}</div>` : ""}
-    ${big.length ? sh("I più <em>attesi</em>") + `<div class="rail" id="rail-big">${big.map(relCard).join("")}</div>` : ""}
-    ${sh(`Tutte le uscite di <em>${MESI_L[m].toLowerCase()}</em>`, `<span class="sub">${inMonth.length} giochi · si aggiorna da solo da Steam, Nintendo eShop, Xbox Store${(D.health || []).some(x => x.id === "rawg" && x.ok) ? ", RAWG" : ""} e redazione</span>`)}
-    ${monthList || empty("Nessuna uscita con data precisa in questo mese.")}
-    ${mo.length ? sh("Nel mese, giorno <em>da annunciare</em>") + `<div class="grid g5">${mo.map(relCard).join("")}</div>` : ""}`;
+  const srcs = ["Steam", "Nintendo eShop", (D.health || []).some(x => x.id === "xbox-uscite" && x.ok) ? "Xbox Store" : "", (D.health || []).some(x => x.id === "rawg" && x.ok) ? "RAWG" : "", "redazione"].filter(Boolean).join(", ");
+  return sh("Calendario <em>uscite</em>", `<span class="sub">${all.filter(r => monthOnly(r.date) || daysTo(r.date) >= 0).length} giochi in arrivo · si aggiorna da solo da ${srcs}</span>`) + tools +
+    (week.length ? `<h2 class="wk-t">Escono <em>questa settimana</em></h2><div class="rail heroes" id="rail-week">${week.map(relHero).join("")}</div>` : "") +
+    body +
+    (ev.length ? sh("Saldi ed <em>eventi</em>") + `<div class="events">${ev.map(e => { const on = daysTo(e.start) <= 0 && (!e.end || daysTo(e.end) >= 0); return `<a class="ev-c ${on ? "on" : ""}" ${ext(e.url)}>${on ? '<span class="pill good" style="align-self:flex-start">In corso</span>' : `<span class="pill acc" style="align-self:flex-start">${daysTo(e.start) === 1 ? "Domani" : "Tra " + daysTo(e.start) + " giorni"}</span>`}<b>${h(e.name)}</b><span>${fmtD(e.start)}${e.end ? " → " + fmtD(e.end) : ""}</span>${e.note ? `<span>${h(e.note)}</span>` : ""}</a>`; }).join("")}</div>` : "");
 }
 function vCat(title, cats, sub) {
   const ss = savedSet(); let L = byCat(...cats); if (sub) L = L.filter(sub);
@@ -321,90 +338,131 @@ function vCerca() {
 }
 
 /* ---------------------------------------------------------- handheld */
-const HH_SORT = { perf: "Più potenti", price: "Prezzo più basso", screen: "Schermo più grande" };
+const HH_SORT = { perf: "Più potenti", price: "Prezzo più basso", screen: "Schermo più grande", weight: "Più leggeri", battery: "Batteria più grande" };
+const hhAll = () => (D.handhelds && D.handhelds.devices) || [];
+const hhById = id => hhAll().find(x => x.id === id);
+const numOf = s => { const m = String(s || "").replace(/\./g, "").replace(",", ".").match(/(\d+(?:\.\d+)?)\s*(kg|g|wh|gb|"|pollici)?/i); if (!m) return null; let v = parseFloat(m[1]); if (/kg/i.test(m[2] || "")) v *= 1000; return v; };
 function hhList() {
-  const H = (D.handhelds && D.handhelds.devices) || [];
-  let L = H.filter(x => st.hhOs === "tutti" || (x.os_tags || []).includes(st.hhOs));
+  let L = hhAll().filter(x => (st.hhOs === "tutti" || (x.os_tags || []).includes(st.hhOs)) && (st.hhGen === "tutti" || x.gen === st.hhGen));
   if (st.hhMax) L = L.filter(x => typeof x.price === "number" && x.price <= st.hhMax);
-  const scr = x => parseFloat(String(x.display).replace(",", ".")) || 0;
+  if (st.hhQ) L = L.filter(x => norm([x.name, x.brand, x.key && x.key.cpu, x.key && x.key.gpu].join(" ")).includes(norm(st.hhQ)));
+  const by = f => (a, b) => { const x = f(a), y = f(b); return (x == null) - (y == null) || (x == null ? 0 : x - y); };
   if (st.hhSort === "perf") L = L.slice().sort((a, b) => (b.perf ?? -1) - (a.perf ?? -1) || (b.price || 0) - (a.price || 0));
-  if (st.hhSort === "price") L = L.slice().sort((a, b) => (a.price ?? 1e9) - (b.price ?? 1e9));
-  if (st.hhSort === "screen") L = L.slice().sort((a, b) => scr(b) - scr(a));
+  if (st.hhSort === "price") L = L.slice().sort(by(x => x.price ?? null));
+  if (st.hhSort === "screen") L = L.slice().sort(by(x => { const v = numOf(x.key && x.key.screen); return v == null ? null : -v; }));
+  if (st.hhSort === "weight") L = L.slice().sort(by(x => numOf(x.key && x.key.weight)));
+  if (st.hhSort === "battery") L = L.slice().sort(by(x => { const v = numOf(x.key && x.key.battery); return v == null || !/wh/i.test(x.key.battery) ? null : -v; }));
   return L;
 }
 function hhArt(x) {
-  const c = x.color || "#334"; const sc = /OLED/.test(x.display) ? "#05070c" : "#0d1524";
-  return `<svg class="hh-art" viewBox="0 0 320 150" role="img" aria-label="${h(x.name)}"><defs><linearGradient id="g-${h(x.id)}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${h(c)}" stop-opacity=".95"/><stop offset="1" stop-color="${h(c)}" stop-opacity=".55"/></linearGradient></defs>
-  <rect x="8" y="22" width="304" height="108" rx="46" fill="url(#g-${h(x.id)})"/><rect x="84" y="32" width="152" height="88" rx="8" fill="${sc}"/><rect x="92" y="40" width="136" height="72" rx="4" fill="${h(c)}" opacity=".18"/>
-  <text x="160" y="83" text-anchor="middle" font-family="Saira Condensed, sans-serif" font-weight="800" font-size="19" fill="#fff" opacity=".92">${h(x.brand.toUpperCase())}</text>
-  <circle cx="44" cy="62" r="14" fill="#0006"/><circle cx="270" cy="96" r="14" fill="#0006"/><g fill="#0007"><circle cx="270" cy="50" r="6"/><circle cx="258" cy="62" r="6"/><circle cx="282" cy="62" r="6"/><circle cx="270" cy="74" r="6"/></g><path d="M38 96h12M44 90v12" stroke="#0008" stroke-width="5" stroke-linecap="round"/></svg>`;
+  const c = x.color || "#334"; const sc = /OLED/.test((x.key || {}).screen || "") ? "#05070c" : "#0d1524";
+  return `<svg class="hh-art" viewBox="0 0 320 170" role="img" aria-label="${h(x.name)}"><rect x="8" y="30" width="304" height="112" rx="48" fill="${h(c)}"/><rect x="8" y="30" width="304" height="112" rx="48" fill="url(#hhg)" opacity=".35"/>
+  <defs><linearGradient id="hhg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/></linearGradient></defs>
+  <rect x="84" y="40" width="152" height="92" rx="8" fill="${sc}"/><text x="160" y="92" text-anchor="middle" font-family="Saira Condensed, sans-serif" font-weight="800" font-size="20" fill="#fff" opacity=".9">${h(String(x.brand).toUpperCase())}</text>
+  <circle cx="44" cy="70" r="14" fill="#0006"/><circle cx="276" cy="104" r="14" fill="#0006"/><g fill="#0007"><circle cx="276" cy="56" r="6"/><circle cx="264" cy="68" r="6"/><circle cx="288" cy="68" r="6"/><circle cx="276" cy="80" r="6"/></g><path d="M38 104h12M44 98v12" stroke="#0008" stroke-width="5" stroke-linecap="round"/></svg>`;
 }
+function hhPhoto(x, big) { const u = safeUrl(x.photoUrl); return u ? `<img class="hh-img" src="${h(u)}" alt="${h(x.name)}" loading="${big ? "eager" : "lazy"}" decoding="async" referrerpolicy="no-referrer" data-hh="${h(x.id)}">` : hhArt(x); }
 function hhNews(x) { const kw = (x.keywords || []).map(norm); return allNews().filter(n => { const t = norm(n.title); return kw.some(k => t.includes(k)); }); }
-function hhRow(x, i, maxPerf) {
-  const on = st.hhCmp.includes(x.id); const open = st.hhOpen === x.id; const N = hhNews(x);
-  const bar = x.perf ? `<div class="perf"><span style="width:${Math.max(6, Math.round(x.perf / maxPerf * 100))}%;--c:${h(x.color)}"></span><b>${x.perf}</b></div>` : `<div class="perf na"><b>n.c.</b><small>console</small></div>`;
-  return `<article class="hh ${open ? "open" : ""}" id="hh-${h(x.id)}">
-    <div class="hh-rank ${x.perf && st.hhSort === "perf" && i < 3 ? "r" + (i + 1) : ""}">${x.perf ? i + 1 : "–"}</div>
-    <div class="hh-pic">${hhArt(x)}</div>
-    <div class="hh-main"><div class="hh-top"><span class="tier t-${h(norm(x.tier).replace(/\W+/g, ""))}">${h(x.tier)}</span>${(x.os_tags || []).map(o => `<span class="pill">${h(o)}</span>`).join("")}${N.length ? `<span class="pill acc">${N.length} notizie</span>` : ""}</div>
-      <h3>${h(x.name)}</h3><p class="hh-chip">${h(x.apu)} · ${h(x.ram)} · ${h(x.display)}</p>${bar}</div>
-    <div class="hh-side"><div class="hh-price">${h(x.priceText)}</div><div class="hh-btns"><button type="button" class="btn ghost small" data-hhopen="${h(x.id)}" aria-expanded="${open}">${open ? "Chiudi" : "Scheda completa"}</button><label class="toggle"><input type="checkbox" data-hhcmp="${h(x.id)}" ${on ? "checked" : ""}> Confronta</label></div></div>
-    ${open ? hhDetail(x, N) : ""}</article>`;
+function perfBar(x, max, sm) { return x.perf ? `<div class="perf ${sm ? "sm" : ""}" title="Indice di potenza ${x.perf} (Steam Deck OLED = 100)"><span style="width:${Math.max(6, Math.round(x.perf / max * 100))}%;--c:${h(x.color)}"></span><b>${x.perf}</b></div>` : `<div class="perf na"><b>n.c.</b><small>console, non confrontabile</small></div>`; }
+const tierCls = t => "t-" + norm(t || "").replace(/\W+/g, "");
+function hhCard(x, rank, max) {
+  const k = x.key || {}; const on = st.hhCmp.includes(x.id); const nN = hhNews(x).length;
+  return `<article class="hhc" style="--c:${h(x.color)}">
+    <button type="button" class="hhc-pic" data-hhopen="${h(x.id)}" aria-label="Apri la scheda di ${h(x.name)}">${rank ? `<span class="hhc-rank ${rank <= 3 ? "r" + rank : ""}">${rank}</span>` : ""}<span class="tier ${tierCls(x.tier)}">${h(x.tier)}</span>${hhPhoto(x)}</button>
+    <div class="hhc-body">
+      <div class="hhc-maker">${h(x.brand)} · ${h(String((x.maker || {}).hq || "").split(",").pop().trim())}${x.released ? " · " + h(x.released) : ""}</div>
+      <h3><button type="button" data-hhopen="${h(x.id)}">${h(x.name)}</button></h3>
+      <div class="hhc-price">${h(x.priceText)}</div>
+      <dl class="hhc-specs"><dt>Processore</dt><dd>${h(k.cpu)}</dd><dt>Grafica</dt><dd>${h(k.gpu)}</dd><dt>Memoria</dt><dd>${h(k.ram)}</dd><dt>Schermo</dt><dd>${h(k.screen)}</dd><dt>Batteria</dt><dd>${h(k.battery)}</dd><dt>Peso</dt><dd>${h(k.weight)}</dd></dl>
+      ${perfBar(x, max)}
+      <div class="hhc-act"><button type="button" class="btn small" data-hhopen="${h(x.id)}">Scheda completa</button><label class="toggle"><input type="checkbox" data-hhcmp="${h(x.id)}" ${on ? "checked" : ""}> Confronta</label>${nN ? `<span class="pill acc">${nN} notizie</span>` : ""}</div>
+    </div></article>`;
 }
-function hhDetail(x, N) {
-  const specs = [["Processore", x.apu], ["CPU", x.cpu], ["Grafica", x.gpu], ["Memoria", x.ram], ["Archiviazione", x.storage], ["Schermo", x.display], ["Batteria", x.battery], ["Peso", x.weight], ["Consumo massimo", x.tdp], ["Sistema", x.os]];
-  return `<div class="hh-det">
-    <div><h4>Scheda tecnica</h4><table class="spec">${specs.map(([k, v]) => `<tr><th>${k}</th><td>${h(v || "n.d.")}</td></tr>`).join("")}</table>
-      <p class="sub">${h(x.priceNote || "")}</p></div>
-    <div><h4>Pro e contro</h4><ul class="pc">${(x.pros || []).map(p => `<li class="pro">${h(p)}</li>`).join("")}${(x.cons || []).map(p => `<li class="con">${h(p)}</li>`).join("")}</ul>
-      <h4>Come girano i giochi</h4>${(x.tests || []).length ? `<table class="spec fps">${x.tests.map(t => `<tr><th>${h(t.game)}<small>${h(t.settings)}</small></th><td><b>${t.fps}</b> fps</td></tr>`).join("")}</table>` : ""}${x.testNote ? `<p class="sub">${h(x.testNote)}</p>` : ""}${!(x.tests || []).length && !x.testNote ? `<p class="sub">Nessun test affidabile ancora pubblicato.</p>` : ""}</div>
-    <div><h4>Dove comprarlo</h4><div class="buy">${(x.buy || []).map(b => `<a class="btn ${b === x.buy[0] ? "" : "ghost"} small" ${ext(b.url)}>${h(b.name)}</a>`).join("")}</div>
-      <p class="sub">I link aprono la ricerca nel negozio: confronta prezzo e venditore prima di comprare.</p>
-      <h4>Fonti</h4><ul class="srcl">${(x.sources || []).map(s => `<li><a ${ext(s.url)}>${h(s.name)}</a></li>`).join("")}</ul>
-      ${N.length ? `<h4>Ultime notizie</h4><ul class="tl">${N.slice(0, 6).map(n => `<li><a ${ext(n.url)} data-read="${h(n.url)}"><time>${ago(n.date)}</time><span>${h(n.title)}<span class="s">${h(n.source)}</span></span></a></li>`).join("")}</ul>` : ""}</div></div>`;
+function hhModal(x) {
+  const k = x.key || {}; const m = x.maker || {}; const N = hhNews(x); const max = Math.max(...hhAll().map(d => d.perf || 0));
+  const deck = hhById("steam-deck-oled");
+  const tests = (x.tests || []).map(t => { const ref = deck && deck !== x ? (deck.tests || []).find(r => r.game === t.game && r.settings === t.settings) : null; const top = Math.max(t.fps, ref ? ref.fps : 0, 60);
+    return `<div class="fpsrow"><div class="fpsg"><b>${h(t.game)}</b><small>${h(t.settings)}${t.src ? " · " + h(t.src) : ""}</small></div><div class="fpsbars"><div class="fb"><span style="width:${Math.round(t.fps / top * 100)}%;--c:${h(x.color)}"></span><em>${t.fps} fps</em></div>${ref ? `<div class="fb ref"><span style="width:${Math.round(ref.fps / top * 100)}%"></span><em>${ref.fps} fps · Steam Deck OLED</em></div>` : ""}</div></div>`; }).join("");
+  const groups = Object.entries(x.specs || {}).map(([g, rows]) => `<div class="spg"><h4>${h(g)}</h4><table class="spec">${rows.map(([a, b]) => `<tr><th>${h(a)}</th><td>${h(b)}</td></tr>`).join("")}</table></div>`).join("");
+  return `<div class="hhm" role="dialog" aria-modal="true" aria-label="${h(x.name)}"><div class="hhm-shade" data-hhclose="1"></div><div class="hhm-panel" style="--c:${h(x.color)}">
+    <div class="hhm-bar"><button type="button" class="hhm-x" data-hhclose="1" aria-label="Chiudi">✕</button></div>
+    <div class="hhm-hero"><figure class="hhm-photo">${hhPhoto(x, true)}${x.photoUrl ? `<figcaption>Foto: <a ${ext(x.photoPage)}>${h(x.photoTitle || "Wikimedia")}</a></figcaption>` : ""}</figure>
+      <div class="hhm-head"><div class="hh-top"><span class="tier ${tierCls(x.tier)}">${h(x.tier)}</span>${(x.os_tags || []).map(o => `<span class="pill">${h(o)}</span>`).join("")}</div>
+        <h2>${h(x.name)}</h2>
+        <p class="maker">Prodotto da <b>${h(m.name || x.brand)}</b><br>Sede: ${h(m.hq || "n.d.")}${m.site ? ` · <a ${ext(m.site)}>sito ufficiale</a>` : ""}${x.partner ? `<br>${h(x.partner)}` : ""}<br>Uscita: <b>${h(x.released || "n.d.")}</b></p>
+        <div class="hhm-price"><b>${h(x.priceText)}</b><small>${h(x.priceNote || "")}</small></div>
+        <div class="tiles"><div><small>Potenza</small><b>${x.perf || "n.c."}</b><span>Steam Deck OLED = 100</span></div><div><small>Schermo</small><b>${h(k.screen)}</b></div><div><small>Batteria</small><b>${h(k.battery)}</b></div><div><small>Peso</small><b>${h(k.weight)}</b></div></div>
+        ${perfBar(x, max)}
+        <div class="buy">${(x.buy || []).map((b, i) => `<a class="btn ${i ? "ghost" : ""} small" ${ext(b.url)}>${h(b.name)}</a>`).join("")}</div>
+        <label class="toggle"><input type="checkbox" data-hhcmp="${h(x.id)}" ${st.hhCmp.includes(x.id) ? "checked" : ""}> Aggiungi al confronto</label></div></div>
+    <div class="hhm-body">
+      <section><h3>Scheda tecnica completa</h3><div class="spgrid">${groups}</div><p class="sub">"n.d." = dato non ancora comunicato dal produttore.</p></section>
+      <section class="hhm-side">
+        <h3>Prestazioni nei giochi</h3>${tests || ""}${x.testNote ? `<p class="sub">${h(x.testNote)}</p>` : ""}${!tests && !x.testNote ? `<p class="sub">Nessun test affidabile ancora pubblicato.</p>` : ""}
+        ${(x.battery || []).length ? `<h3>Autonomia giocando</h3>${x.battery.map(b => `<div class="fpsrow"><div class="fpsg"><b>${h(b.game)}</b><small>a 25 W</small></div><div class="fpsbars"><div class="fb bat"><span style="width:${Math.round(b.min / 330 * 100)}%"></span><em>${Math.floor(b.min / 60)} h ${pad(b.min % 60)} min</em></div></div></div>`).join("")}` : ""}
+        <h3>Pro e contro</h3><ul class="pc">${(x.pros || []).map(p => `<li class="pro">${h(p)}</li>`).join("")}${(x.cons || []).map(p => `<li class="con">${h(p)}</li>`).join("")}</ul>
+        ${(x.sources || []).length ? `<h3>Fonti</h3><ul class="srcl">${x.sources.map(s => `<li><a ${ext(s.url)}>${h(s.name)}</a></li>`).join("")}</ul>` : ""}
+        ${N.length ? `<h3>Ultime notizie</h3><ul class="tl">${N.slice(0, 8).map(n => `<li><a ${ext(n.url)} data-read="${h(n.url)}"><time>${ago(n.date)}</time><span>${h(n.title)}<span class="s">${h(n.source)}</span></span></a></li>`).join("")}</ul>` : ""}
+      </section></div></div></div>`;
 }
 function hhCompare() {
-  const H = (D.handhelds && D.handhelds.devices) || []; const L = st.hhCmp.map(id => H.find(x => x.id === id)).filter(Boolean);
-  if (L.length < 2) return "";
-  const G = D.handhelds.games || []; const maxP = Math.max(...L.map(x => x.perf || 0));
+  const L = st.hhCmp.map(hhById).filter(Boolean); if (L.length < 2) return "";
+  const max = Math.max(...L.map(x => x.perf || 0)); const G = D.handhelds.games || [];
   const row = (k, f, best) => `<tr><th>${k}</th>${L.map(x => { const v = f(x); return `<td class="${best && best(x) ? "best" : ""}">${v == null || v === "" ? "—" : v}</td>`; }).join("")}</tr>`;
-  const num = s => parseFloat(String(s || "").replace(",", ".")) || 0;
-  const maxBy = f => x => f(x) && f(x) === Math.max(...L.map(f));
-  return `<section class="cmpbox" id="cmpbox">${sh("Confronto <em>diretto</em>", `<button type="button" class="btn ghost small" id="hhClear">Svuota confronto</button>`)}
-    <div class="tblwrap"><table class="cmpt"><thead><tr><th></th>${L.map(x => `<th><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</th>`).join("")}</tr></thead><tbody>
-    ${row("Potenza (indice)", x => x.perf ? `<div class="perf sm"><span style="width:${Math.round(x.perf / maxP * 100)}%;--c:${h(x.color)}"></span><b>${x.perf}</b></div>` : "n.c.", maxBy(x => x.perf || 0))}
-    ${row("Prezzo", x => h(x.priceText))}
-    ${row("Processore", x => h(x.apu))}${row("Grafica", x => h(x.gpu))}${row("Memoria", x => h(x.ram), maxBy(x => num(String(x.ram).match(/(\d+)\s*GB/g)?.pop())))}${row("Archiviazione", x => h(x.storage))}
-    ${row("Schermo", x => h(x.display), maxBy(x => num(x.display)))}${row("Batteria", x => h(x.battery), maxBy(x => num(x.battery)))}${row("Peso", x => h(x.weight))}${row("Sistema", x => h(x.os))}
-    ${G.map((g, i) => row(`${h(g)}<small>${h((D.handhelds.gameSettings || [])[i] || "")}</small>`, x => { const t = (x.tests || []).find(t => t.game === g); return t ? `<b>${t.fps}</b> fps` : ""; }, x => { const t = (x.tests || []).find(t => t.game === g); const all = L.map(y => ((y.tests || []).find(t => t.game === g) || {}).fps || 0); return t && t.fps === Math.max(...all) && all.filter(Boolean).length > 1; })).join("")}
-    </tbody></table></div><p class="sub">In verde il valore migliore. "—" = test non disponibile con le stesse impostazioni.</p></section>`;
+  const maxBy = f => x => { const v = f(x); const all = L.map(f).filter(z => z != null); return v != null && all.length > 1 && v === Math.max(...all); };
+  const minBy = f => x => { const v = f(x); const all = L.map(f).filter(z => z != null); return v != null && all.length > 1 && v === Math.min(...all); };
+  const groups = []; for (const x of L) for (const [g, rows] of Object.entries(x.specs || {})) { let G2 = groups.find(z => z.g === g); if (!G2) groups.push(G2 = { g, labels: [] }); for (const [a] of rows) if (!G2.labels.includes(a)) G2.labels.push(a); }
+  const val = (x, g, a) => { const r = ((x.specs || {})[g] || []).find(z => z[0] === a); return r ? h(r[1]) : ""; };
+  return `<div class="hhm" role="dialog" aria-modal="true" aria-label="Confronto"><div class="hhm-shade" data-cmpclose="1"></div><div class="hhm-panel wide">
+    <div class="hhm-bar"><button type="button" class="hhm-x" data-cmpclose="1" aria-label="Chiudi">✕</button></div>
+    <h2 class="cmp-title">Confronto <em>diretto</em></h2>
+    <div class="tblwrap"><table class="cmpt big"><thead><tr><th></th>${L.map(x => `<th><div class="cmp-pic">${hhPhoto(x)}</div><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}<button type="button" class="cmp-rm" data-hhrm="${h(x.id)}" aria-label="Togli ${h(x.name)}">✕</button></th>`).join("")}</tr></thead><tbody>
+    <tr class="grp"><th colspan="${L.length + 1}">In sintesi</th></tr>
+    ${row("Potenza (indice)", x => perfBar(x, max, true), maxBy(x => x.perf || null))}
+    ${row("Prezzo", x => h(x.priceText), minBy(x => x.price ?? null))}
+    ${row("Produttore", x => h(((x.maker || {}).name || x.brand) + " · " + ((x.maker || {}).hq || "")))}
+    ${row("Uscita", x => h(x.released || ""))}
+    ${row("Schermo", x => h((x.key || {}).screen), maxBy(x => numOf((x.key || {}).screen)))}
+    ${row("Batteria", x => h((x.key || {}).battery), maxBy(x => /wh/i.test((x.key || {}).battery || "") ? numOf(x.key.battery) : null))}
+    ${row("Peso", x => h((x.key || {}).weight), minBy(x => numOf((x.key || {}).weight)))}
+    ${groups.map(G2 => `<tr class="grp"><th colspan="${L.length + 1}">${h(G2.g)}</th></tr>` + G2.labels.map(a => row(h(a), x => val(x, G2.g, a))).join("")).join("")}
+    <tr class="grp"><th colspan="${L.length + 1}">Giochi (stessi test)</th></tr>
+    ${G.map((g, i) => row(`${h(g)}<small>${h((D.handhelds.gameSettings || [])[i] || "")}</small>`, x => { const t = (x.tests || []).find(t => t.game === g && t.settings === D.handhelds.gameSettings[i]); return t ? `<b>${t.fps}</b> fps` : ""; }, maxBy(x => { const t = (x.tests || []).find(t => t.game === g && t.settings === D.handhelds.gameSettings[i]); return t ? t.fps : null; }))).join("")}
+    </tbody></table></div><p class="sub">In verde il valore migliore. "—" = dato non disponibile.</p></div></div>`;
 }
 function vHandheld() {
   const HH = D.handhelds; const ss = savedSet();
-  if (!HH || !(HH.devices || []).length) return vCat("Handheld e <em>PC portatili da gioco</em>", ["handheld"]);
-  const L = hhList(); const ranked = L.filter(x => x.perf); const maxPerf = Math.max(...HH.devices.map(x => x.perf || 0));
-  const G = HH.games || []; const withT = HH.devices.filter(x => (x.tests || []).some(t => G.includes(t.game)));
+  if (!HH || !hhAll().length) return vCat("Handheld e <em>PC portatili da gioco</em>", ["handheld"]);
+  const L = hhList(); const max = Math.max(...hhAll().map(x => x.perf || 0)); let r = 0;
+  const G = HH.games || []; const withT = hhAll().filter(x => (x.tests || []).some(t => t.src === "SovisGames"));
   const N = byCat("handheld"); const deal = N.filter(n => (n.cats || []).includes("offerte")).slice(0, 8);
-  const oses = ["tutti", "Windows", "SteamOS", "Console"];
-  return sh("Classifica <em>handheld</em>", `<span class="sub">Dal più potente al più economico · aggiornata il ${fmtD(HH.updated)}</span>`) +
-    `<p class="lead">${h(HH.perfNote || "")}</p>
-    <div class="filters"><select id="hhSort" aria-label="Ordina">${Object.entries(HH_SORT).map(([k, v]) => `<option value="${k}" ${st.hhSort === k ? "selected" : ""}>${v}</option>`).join("")}</select>
-      ${oses.map(o => `<button type="button" class="chip" data-hhos="${o}" aria-pressed="${st.hhOs === o}">${o === "tutti" ? "Tutti i sistemi" : o}</button>`).join("")}
-      ${[700, 1000, 1600].map(v => `<button type="button" class="chip" data-hhmax="${v}" aria-pressed="${st.hhMax === v}">Fino a ${v} €</button>`).join("")}<button type="button" class="chip" data-hhmax="0" aria-pressed="${!st.hhMax}">Qualsiasi prezzo</button></div>
-    <div class="hhlist">${L.map(x => hhRow(x, ranked.indexOf(x), maxPerf)).join("") || empty("Nessun modello con questi filtri.")}</div>
-    ${hhCompare()}
-    ${withT.length ? sh("Come girano i <em>giochi</em>", `<span class="sub">fps medi negli stessi test</span>`) + `<div class="tblwrap"><table class="cmpt fpsall"><thead><tr><th>Gioco</th>${withT.map(x => `<th><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</th>`).join("")}</tr></thead><tbody>${G.map((g, i) => `<tr><th>${h(g)}<small>${h((HH.gameSettings || [])[i] || "")}</small></th>${withT.map(x => { const t = (x.tests || []).find(t => t.game === g); return `<td>${t ? `<b>${t.fps}</b>` : "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div><p class="sub">Fonte: <a ${ext("https://sovisgames.com/posts/rog-ally-x20-vs-competition/")}>SovisGames</a>. Gli altri test sono nelle schede dei singoli modelli.</p>` : ""}
+  const chips = (key, opts) => opts.map(([v, l]) => `<button type="button" class="chip" data-hhf="${key}:${v}" aria-pressed="${String(st[key]) === String(v)}">${l}</button>`).join("");
+  const top = hhAll().filter(x => x.perf && x.gen === "attuale").sort((a, b) => b.perf - a.perf)[0];
+  const sel = st.hhCmp.map(hhById).filter(Boolean);
+  return `<section class="hh-intro" style="--c:${h(top ? top.color : "#333")}"><div><span class="kicker">Guida e classifica</span><h1>PC portatili <em>da gioco</em></h1>
+      <p>${hhAll().length} modelli, dal più potente al più economico, con scheda tecnica completa, prestazioni nei giochi, produttore e dove comprarli. Spunta "Confronta" su due o più modelli per vederli fianco a fianco.</p>
+      <p class="sub">${h(HH.perfNote || "")} Aggiornata il ${fmtD(HH.updated)}.</p></div>
+      ${top ? `<button type="button" class="hh-intro-pic" data-hhopen="${h(top.id)}">${hhPhoto(top, true)}<span>Il più potente: <b>${h(top.name)}</b></span></button>` : ""}</section>
+    <div class="hh-tools">
+      <div class="filters"><label class="srch"><input id="hhQ" type="search" placeholder="Cerca modello, marca, processore…" value="${h(st.hhQ || "")}" aria-label="Cerca handheld"></label>
+        <select id="hhSort" aria-label="Ordina">${Object.entries(HH_SORT).map(([k, v]) => `<option value="${k}" ${st.hhSort === k ? "selected" : ""}>${v}</option>`).join("")}</select></div>
+      <div class="filters">${chips("hhGen", [["attuale", "In commercio"], ["precedente", "Generazione precedente"], ["tutti", "Tutti"]])}<span class="sep"></span>${chips("hhOs", [["tutti", "Tutti i sistemi"], ["Windows", "Windows"], ["SteamOS", "SteamOS"], ["Console", "Console"]])}<span class="sep"></span>${chips("hhMax", [["", "Qualsiasi prezzo"], [700, "Fino a 700 €"], [1000, "Fino a 1.000 €"], [1600, "Fino a 1.600 €"]])}</div>
+    </div>
+    <div class="hhgrid">${L.map(x => hhCard(x, st.hhSort === "perf" && x.perf ? ++r : 0, max)).join("") || empty("Nessun modello con questi filtri.")}</div>
+    ${withT.length ? sh("Come girano i <em>giochi</em>", `<span class="sub">fps medi, stessi test e stesse impostazioni</span>`) + `<div class="tblwrap"><table class="cmpt fpsall"><thead><tr><th>Gioco</th>${withT.map(x => `<th><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</th>`).join("")}</tr></thead><tbody>${G.map((g, i) => `<tr><th>${h(g)}<small>${h((HH.gameSettings || [])[i] || "")}</small></th>${withT.map(x => { const t = (x.tests || []).find(t => t.game === g && t.src === "SovisGames"); return `<td>${t ? `<b>${t.fps}</b>` : "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div><p class="sub">Fonte: <a ${ext("https://sovisgames.com/posts/rog-ally-x20-vs-competition/")}>SovisGames</a>. Gli altri test sono nelle schede dei singoli modelli.</p>` : ""}
     ${deal.length ? sh("Offerte handheld <em>dalle testate</em>") + `<div class="grid">${deal.map(n => newsCard(n, ss)).join("")}</div>` : ""}
     ${N.length ? sh("Notizie <em>handheld</em>", `<span class="sub">${N.length} notizie</span>`) + `<div class="grid g3">${N.slice(0, st.page).map(n => newsCard(n, ss)).join("")}</div>${N.length > st.page ? `<button class="btn ghost loadmore" type="button" data-more="news">Carica altre (${N.length - st.page})</button>` : ""}` : ""}
-    ${st.hhCmp.length ? `<div class="cmpbar"><span>${st.hhCmp.length === 1 ? "Scegline almeno un altro" : st.hhCmp.length + " a confronto"}</span>${st.hhCmp.length > 1 ? `<a class="btn small" href="#cmpbox" data-goto="cmpbox">Vedi confronto</a>` : ""}</div>` : ""}`;
+    ${sel.length ? `<div class="cmpbar">${sel.map(x => `<span class="cmpbar-it">${hhPhoto(x)}<button type="button" data-hhrm="${h(x.id)}" aria-label="Togli ${h(x.name)}">✕</button></span>`).join("")}<span class="cmpbar-t">${sel.length === 1 ? "Scegline almeno un altro" : sel.length + " modelli"}</span>${sel.length > 1 ? `<button type="button" class="btn small" id="cmpOpen">Confronta ora</button>` : ""}</div>` : ""}
+    ${st.hhOpen && hhById(st.hhOpen) ? hhModal(hhById(st.hhOpen)) : ""}${st.hhCmpOpen ? hhCompare() : ""}`;
 }
+
 /* ------------------------------------------------------ impostazioni */
 function renderSettings() {
   const S = (D && D.sources || []);
   $("#setBody").innerHTML = `
     <section class="${st.setHint ? "hint" : ""}"><h3>Aggiornamento immediato</h3>
-      ${st.setHint ? `<p class="notice small">Il tasto <b>Aggiorna ora</b> senza collegamento ricarica soltanto i dati dell'ultimo giro (delle ${D ? hm(D.generatedAt) : "--:--"}). Collegalo qui sotto e farà partire subito un giro completo.</p>` : ""}
-      <p class="sub">Il sito si aggiorna da solo circa ogni 5 minuti. Per far partire un aggiornamento completo quando vuoi con il tasto <b>Aggiorna ora</b>, collega GitHub una volta sola su questo dispositivo.</p>
+      ${st.setHint ? `<p class="notice small">Senza collegamento il tasto <b>Aggiorna ora</b> ricarica i dati più recenti (ultimo giro alle ${D ? hm(D.generatedAt) : "--:--"}). Con il collegamento fa partire subito un giro completo.</p>` : ""}
+      <p class="sub">Il sito si aggiorna già da solo circa ogni 3 minuti, non serve fare niente. Questo collegamento è facoltativo: serve solo se vuoi che il tasto <b>Aggiorna ora</b> faccia partire un aggiornamento completo all'istante.</p>
       ${st.token ? `<p><span class="pill good">Collegato</span> <button class="btn ghost small" type="button" id="tokDel">Scollega</button></p>` : `
       <ol class="steps"><li>Apri <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">questa pagina di GitHub</a>.</li>
       <li>Nome: <b>Plancia</b>. Scadenza: quella che preferisci.</li>
@@ -428,10 +486,12 @@ async function forceUpdate() {
   const repo = (D && D.repo) || guessRepo();
   if (!st.token || !repo) {
     const before = D && D.generatedAt; const btn0 = $("#forceBtn"); btn0.classList.add("spin");
-    await load(false, true); btn0.classList.remove("spin");
-    if (D && D.generatedAt !== before) { toast("Caricate le novità dell'ultimo giro"); return; }
-    toast(`Nessuna novità dall'ultimo giro delle ${D ? hm(D.generatedAt) : "--:--"}. Per farne partire uno subito collega GitHub (1 minuto)`);
-    st.setHint = true; openSettings(); return;
+    await load(false, true); setTimeout(() => btn0.classList.remove("spin"), 400);
+    if (!D) return;
+    const mins = Math.max(0, Math.round((Date.now() - Date.parse(D.generatedAt)) / 60000));
+    if (D.generatedAt !== before) { statusPop(`<b>Fatto: caricate le novità</b><span>Dati aggiornati alle ${hm(D.generatedAt)}.</span>`); return; }
+    statusPop(`<b>Sei già aggiornato</b><span>Ultimo aggiornamento alle <b>${hm(D.generatedAt)}</b>${mins ? " (" + (mins < 60 ? mins + " min fa" : Math.round(mins / 60) + " h fa") + ")" : ""}. Il sito si aggiorna da solo circa ogni 3 minuti: il prossimo arriva ${mins < 3 ? "tra circa " + (3 - mins) + " min" : "a momenti"}, senza fare niente.</span><button type="button" class="linkbtn" id="spConnect">Vuoi farlo partire subito? Collega GitHub (facoltativo)</button>`);
+    return;
   }
   const btn = $("#forceBtn"); const t0 = new Date(Date.now() - 5000).toISOString(); st.forcing = { t0 };
   btn.classList.add("spin"); setBanner("Avvio l'aggiornamento…");
@@ -460,6 +520,8 @@ async function forceUpdate() {
 }
 function gh() { return { "Authorization": "Bearer " + st.token, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }; }
 function guessRepo() { const m = location.hostname.match(/^([\w-]+)\.github\.io$/); const p = location.pathname.split("/").filter(Boolean)[0]; return m && p ? m[1] + "/" + p : ""; }
+function statusPop(html) { let p = $("#statusPop"); if (!p) { p = document.createElement("div"); p.id = "statusPop"; p.className = "statuspop"; p.setAttribute("role", "status"); document.body.appendChild(p); }
+  p.innerHTML = html + '<button type="button" class="sp-x" data-spclose="1" aria-label="Chiudi">✕</button>'; p.hidden = false; clearTimeout(statusPop.t); statusPop.t = setTimeout(() => { p.hidden = true; }, 12000); }
 function setBanner(t) { const b = $("#banner"); b.textContent = t; b.hidden = false; }
 function endForce(msg) { if (st.forcing && st.forcing.timer) clearTimeout(st.forcing.timer); st.forcing = null; $("#forceBtn").classList.remove("spin"); $("#banner").hidden = true; toast(msg); }
 
@@ -471,7 +533,7 @@ function renderNav() {
 }
 function renderLive() {
   const el = $("#live"), t = $("#liveTxt"); if (!D) return; const m = Math.round((Date.now() - Date.parse(D.generatedAt)) / 60000);
-  el.className = "live " + (m < 30 ? "on" : "old"); t.textContent = "Aggiornato " + (m < 1 ? "ora" : m < 60 ? m + " min fa" : Math.round(m / 60) + " h fa") + (m < 5 ? " · prossimo tra ~" + (5 - m) + " min" : m < 15 ? " · prossimo a momenti" : "");
+  el.className = "live " + (m < 30 ? "on" : "old"); t.textContent = "Aggiornato " + (m < 1 ? "ora" : m < 60 ? m + " min fa" : Math.round(m / 60) + " h fa") + (m < 3 ? " · prossimo tra ~" + (3 - m) + " min" : m < 12 ? " · prossimo a momenti" : "");
 }
 function renderTicker() {
   const L = allNews().slice(0, 16); if (!L.length) { $("#ticker").hidden = true; return; }
@@ -499,6 +561,8 @@ function findNews(url) { return (D.news || []).find(n => n.url === url) || st.sa
 document.addEventListener("click", e => {
   const t = e.target;
   if (t.closest("[data-close-set]")) { closeSettings(); return; }
+  if (t.closest("[data-spclose]")) { $("#statusPop").hidden = true; return; }
+  if (t.closest("#spConnect")) { $("#statusPop").hidden = true; st.setHint = true; openSettings(); return; }
   const sv = t.closest("[data-save]"); if (sv) {
     const u = sv.dataset.save; const i = st.saved.findIndex(x => x.url === u);
     if (i >= 0) { st.saved.splice(i, 1); toast("Tolto dai salvati"); } else { const n = findNews(u); if (n) { st.saved.push({ id: "s" + hash(u), title: n.title, url: n.url, img: n.img, source: n.source, sourceId: n.sourceId, date: n.date, cats: n.cats, summary: n.summary, lang: n.lang }); toast("Salvato in Per te"); } }
@@ -519,16 +583,19 @@ document.addEventListener("click", e => {
   if ((x = t.closest("[data-vch]"))) return set("vidCh", x.dataset.vch);
   if ((x = t.closest("[data-gosrc]"))) { st.newsSrc = x.dataset.gosrc; st.newsCat = "tutte"; location.hash = "#notizie"; return; }
   if ((x = t.closest("[data-gocat]"))) { st.newsCat = x.dataset.gocat; return; }
-  if ((x = t.closest("[data-hhopen]"))) { const id = x.dataset.hhopen; st.hhOpen = st.hhOpen === id ? null : id; render(true); const el = document.getElementById("hh-" + id); if (el && st.hhOpen) el.scrollIntoView({ block: "nearest", behavior: "smooth" }); return; }
-  if ((x = t.closest("[data-hhos]"))) { st.hhOs = x.dataset.hhos; render(true); return; }
-  if ((x = t.closest("[data-hhmax]"))) { st.hhMax = +x.dataset.hhmax || null; render(true); return; }
-  if (t.closest("#hhClear")) { st.hhCmp = []; LS.set("hhCmp", []); render(true); return; }
+  if ((x = t.closest("[data-hhopen]"))) { st.hhOpen = x.dataset.hhopen; st.hhCmpOpen = false; document.body.classList.add("lock"); render(true); return; }
+  if (t.closest("[data-hhclose]")) { st.hhOpen = null; document.body.classList.remove("lock"); render(true); return; }
+  if (t.closest("[data-cmpclose]")) { st.hhCmpOpen = false; document.body.classList.remove("lock"); render(true); return; }
+  if (t.closest("#cmpOpen")) { st.hhCmpOpen = true; st.hhOpen = null; document.body.classList.add("lock"); render(true); return; }
+  if ((x = t.closest("[data-hhrm]"))) { st.hhCmp = st.hhCmp.filter(id => id !== x.dataset.hhrm); LS.set("hhCmp", st.hhCmp); if (st.hhCmp.length < 2 && st.hhCmpOpen) { st.hhCmpOpen = false; document.body.classList.remove("lock"); } render(true); return; }
+  if ((x = t.closest("[data-hhf]"))) { const [k, v] = x.dataset.hhf.split(":"); st[k] = k === "hhMax" ? (v ? +v : "") : v; render(true); return; }
   if ((x = t.closest("[data-goto]"))) { e.preventDefault(); const el = document.getElementById(x.dataset.goto); if (el) el.scrollIntoView({ behavior: "smooth" }); return; }
   if ((x = t.closest("[data-dplat]"))) { st.dealPlat = x.dataset.dplat; st.dealStore = "tutti"; st.dealPage = 48; render(true); return; }
   if ((x = t.closest("[data-store]"))) { st.dealStore = x.dataset.store; st.dealPage = 48; document.querySelectorAll("[data-store]").forEach(b => b.setAttribute("aria-pressed", b === x ? "true" : "false")); updDeals(); return; }
   if ((x = t.closest("[data-qmax]"))) { const v = +x.dataset.qmax; st.dealMax = v || null; st.dealPage = 48; render(true); return; }
   if ((x = t.closest("[data-cal]"))) { const d = +x.dataset.cal; if (!d) { const n = new Date(); st.cal = { y: n.getFullYear(), m: n.getMonth() }; st.calSel = ymd(today0()); } else { let { y, m } = st.cal; m += d; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } st.cal = { y, m }; } render(true); return; }
-  if ((x = t.closest("[data-day]"))) { st.calSel = st.calSel === x.dataset.day ? null : x.dataset.day; render(true); return; }
+  if ((x = t.closest("[data-day]"))) { st.calSel = st.calSel === x.dataset.day ? null : x.dataset.day; render(true); const ds = $("#daySel"); if (ds && st.calSel) ds.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+  if ((x = t.closest("[data-seg]"))) { const [k, v] = x.dataset.seg.split(":"); st[k] = v; if (k === "relView") LS.set("relView", v); render(true); return; }
   if ((x = t.closest("[data-delkw]"))) { st.kw.splice(+x.dataset.delkw, 1); LS.set("kw", st.kw); render(true); return; }
   if ((x = t.closest("[data-addkw]"))) { st.kw.push(x.dataset.addkw); LS.set("kw", st.kw); toast("Ora segui: " + x.dataset.addkw); render(true); return; }
   if ((x = t.closest("[data-lang]"))) { st.lang = x.dataset.lang; LS.set("lang", st.lang); renderSettings(); render(true); return; }
@@ -546,13 +613,13 @@ document.addEventListener("change", e => {
   if (e.target.dataset && e.target.dataset.hhcmp) { const id = e.target.dataset.hhcmp; st.hhCmp = e.target.checked ? [...st.hhCmp.filter(x => x !== id), id].slice(-4) : st.hhCmp.filter(x => x !== id); LS.set("hhCmp", st.hhCmp); render(true); if (e.target.checked && st.hhCmp.length === 4) toast("Puoi confrontare fino a 4 modelli"); }
   if (e.target.dataset && e.target.dataset.hide) { const id = e.target.dataset.hide; if (e.target.checked) st.hidden.delete(id); else st.hidden.add(id); LS.set("hidden", [...st.hidden]); render(true); }
 });
-document.addEventListener("input", e => { if (e.target.id === "dealMax") { st.dealMax = +e.target.value; $("#dealMaxV").textContent = eur(st.dealMax); updDeals(); } });
+let hhT; document.addEventListener("input", e => { if (e.target.id === "hhQ") { clearTimeout(hhT); const v = e.target.value; hhT = setTimeout(() => { st.hhQ = v; render(true); const i = $("#hhQ"); if (i) { i.focus(); i.setSelectionRange(v.length, v.length); } }, 250); return; } if (e.target.id === "dealMax") { st.dealMax = +e.target.value; $("#dealMaxV").textContent = eur(st.dealMax); updDeals(); } });
 document.addEventListener("submit", e => {
   if (e.target.id === "kwForm") { e.preventDefault(); const v = $("#kwIn").value.trim(); if (v && !st.kw.some(k => norm(k) === norm(v))) { st.kw.push(v); LS.set("kw", st.kw); toast("Ora segui: " + v); } render(true); }
   if (e.target.id === "searchForm") e.preventDefault();
   if (e.target.id === "tokForm") { e.preventDefault(); const v = $("#tokIn").value.trim(); if (!/^(github_pat_|ghp_)[\w]{20,}$/.test(v)) { toast("Il codice non sembra giusto: deve iniziare con github_pat_"); return; } st.token = v; LS.set("ghToken", v); renderSettings(); toast("GitHub collegato: ora puoi usare Aggiorna ora"); }
 });
-document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#settings").hidden) closeSettings(); if (e.key === "/" && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName)) { e.preventDefault(); $("#q").focus(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && (st.hhOpen || st.hhCmpOpen)) { st.hhOpen = null; st.hhCmpOpen = false; document.body.classList.remove("lock"); render(true); return; } if (e.key === "Escape" && !$("#settings").hidden) closeSettings(); if (e.key === "/" && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName)) { e.preventDefault(); $("#q").focus(); } });
 let qT; $("#q").addEventListener("input", e => { clearTimeout(qT); qT = setTimeout(() => { st.q = e.target.value.trim(); render(); }, 180); });
 window.addEventListener("hashchange", route);
 $("#themeBtn").addEventListener("click", () => { const r = document.documentElement; const cur = r.dataset.theme || "auto"; const nx = cur === "auto" ? "dark" : cur === "dark" ? "light" : "auto"; if (nx === "auto") delete r.dataset.theme; else r.dataset.theme = nx; try { if (nx === "auto") localStorage.removeItem("pg.theme"); else localStorage.setItem("pg.theme", nx); } catch (e) {} toast(nx === "auto" ? "Tema automatico" : nx === "dark" ? "Tema scuro" : "Tema chiaro"); });

@@ -138,5 +138,10 @@ put("https://store.steampowered.com/api/storesearch/?term=" + quote("Godzilla: D
 put("https://store.steampowered.com/api/storesearch/?term=" + quote("Crymelight", safe="-_.!~*'()") + "&cc=it&l=english", "ss2.json", json.dumps({"total": 0, "items": []}))
 put("https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=" + quote("Crymelight video game", safe="-_.!~*'()"), "wiki1.json",
     json.dumps({"query": {"pages": {"123": {"pageid": 123, "title": "Crymelight", "thumbnail": {"source": img("wiki-cry"), "width": 640, "height": 360}}}}}))
+
+cm = lambda q: "https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=" + quote(q, safe="-_.!~*'()") + "&prop=imageinfo&iiprop=url|mime&iiurlwidth=900"
+put(cm("Steam Deck OLED"), "cm_deck.json", json.dumps({"query": {"pages": {"1": {"title": "File:Steam Deck logo.svg", "index": 1, "imageinfo": [{"mime": "image/png", "url": img("logo"), "thumburl": img("logo")}]}, "2": {"title": "File:Steam Deck OLED front.jpg", "index": 2, "imageinfo": [{"mime": "image/jpeg", "url": img("deck"), "thumburl": img("deck"), "descriptionurl": "https://commons.wikimedia.org/wiki/File:Steam_Deck_OLED_front.jpg"}]}}}}))
+put("https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&pilicense=any&titles=" + quote("ROG Xbox Ally|ROG Ally", safe="-_.!~*'()"), "wp_ally.json",
+    json.dumps({"query": {"pages": {"5": {"title": "ROG Ally", "thumbnail": {"source": img("ally")}}}}}))
 json.dump(idx, open(os.path.join(D, "index.json"), "w"), indent=1)
 print(len(idx), "risposte di prova")

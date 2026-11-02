@@ -1,6 +1,6 @@
 {
  "updated": "2026-11-02",
- "perfNote": "Indice di potenza stimato dai test pubblicati (Steam Deck OLED = 100). Serve a confrontare a colpo d'occhio: nei singoli giochi le differenze possono cambiare.",
+ "perfNote": "L'indice di potenza è una stima ricavata dai test pubblicati, con Steam Deck OLED = 100: serve a confrontare a colpo d'occhio. Nei singoli giochi le differenze possono cambiare. Dove manca un dato ufficiale c'è scritto \"n.d.\".",
  "games": [
   "Cyberpunk 2077",
   "Forza Horizon 6",
@@ -12,121 +12,588 @@
  "gameSettings": [
   "1080p, Medio",
   "1080p, Alto",
-  "1080p (limite 60)",
-  "1080p",
-  "1080p",
-  "1080p"
+  "1080p, Max (limite 60)",
+  "1080p, Max (limite 120)",
+  "1080p, Alto",
+  "1080p, Medio + FSR Qualità"
  ],
  "devices": [
   {
    "id": "onexfly-apex",
    "name": "OneXPlayer OneXFly Apex",
    "brand": "OneXPlayer",
+   "maker": {
+    "name": "One-Netbook Technology (marchio OneXPlayer)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://onexplayerstore.com/"
+   },
    "color": "#E4002B",
    "tier": "Estremo",
+   "gen": "attuale",
+   "released": "2026",
    "perf": 310,
-   "apu": "AMD Ryzen AI Max+ 395",
-   "cpu": "16 core / 32 thread Zen 5",
-   "gpu": "Radeon 8060S, 40 CU RDNA 3.5",
-   "ram": "fino a 128 GB LPDDR5X",
-   "storage": "SSD M.2",
-   "display": "120 Hz con VRR",
-   "battery": "n.d.",
-   "weight": "n.d.",
-   "os": "Windows 11",
-   "tdp": "fino a 75 W e oltre (raffreddamento a liquido opzionale)",
    "price": null,
-   "priceText": "fino a 2.499 $ (USA)",
-   "priceNote": "Prezzo italiano non ancora ufficiale",
+   "priceText": "da circa 1.500 $ (stima)",
+   "priceNote": "Prezzi ufficiali per l'Italia non ancora comunicati. Si compra dallo store OneXPlayer o da importatori come DroiX",
    "os_tags": [
     "Windows"
    ],
+   "key": {
+    "cpu": "Ryzen AI Max+ 395 · 16 core",
+    "gpu": "Radeon 8060S · 40 CU",
+    "ram": "32 / 64 / 128 GB",
+    "screen": "8\" 120 Hz VRR",
+    "battery": "85 Wh rimovibile",
+    "weight": "n.d."
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI Max+ 395 (Strix Halo)"
+     ],
+     [
+      "Core / thread",
+      "16 / 32 (Zen 5)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ],
+     [
+      "Alternativa",
+      "Ryzen AI Max Pro 385"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 8060S"
+     ],
+     [
+      "Unità di calcolo",
+      "40 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Bus memoria",
+      "256 bit"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "32, 64 o 128 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "slot M.2 + slot Mini SSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ],
+     [
+      "Orientamento",
+      "nativo orizzontale"
+     ],
+     [
+      "Risoluzione",
+      "n.d."
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "85 Wh, rimovibile"
+     ],
+     [
+      "Consumo massimo",
+      "fino a 120 W"
+     ],
+     [
+      "Raffreddamento",
+      "ventole + raffreddamento a liquido opzionale"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Grilletti",
+      "regolabili"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
    "pros": [
-    "Il più potente in assoluto: prestazioni da PC fisso di fascia media",
-    "Fino a 128 GB di memoria"
+    "Il più potente in assoluto: fino a 120 W con il raffreddamento a liquido",
+    "Fino a 128 GB di memoria e batteria sostituibile"
    ],
    "cons": [
-    "Prezzo altissimo",
-    "Grande e pesante, consuma molto: autonomia breve a piena potenza"
+    "Prezzo altissimo e poca assistenza in Italia",
+    "A piena potenza l'autonomia crolla"
    ],
    "tests": [
     {
      "game": "Forza Horizon 5",
      "fps": 241,
-     "settings": "1080p a 75 W"
+     "settings": "1080p a 75 W",
+     "src": "Windows Central"
     }
    ],
    "keywords": [
+    "onexfly apex",
     "onexfly",
-    "onexplayer",
-    "apex"
+    "onexplayer"
    ],
    "buy": [
     {
-     "name": "OneXPlayer",
+     "name": "Store OneXPlayer",
      "url": "https://onexplayerstore.com/"
     },
     {
      "name": "Amazon.it",
-     "url": "https://www.amazon.it/s?k=OneXPlayer+OneXFly+Apex"
+     "url": "https://www.amazon.it/s?k=OneXFly+Apex"
     },
     {
      "name": "Trovaprezzi",
-     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=OneXPlayer+OneXFly+Apex&id=-1"
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=OneXFly+Apex&id=-1"
     },
     {
      "name": "Idealo",
-     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=OneXPlayer+OneXFly+Apex"
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=OneXFly+Apex"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=OneXFly+Apex"
     }
    ],
    "sources": [
     {
-     "name": "Windows Central, migliori PC portatili da gioco",
+     "name": "Notebookcheck: OneXFly Apex",
+     "url": "https://www.notebookcheck.net/OneXFly-Apex-gaming-handheld-revealed-with-8-inch-VRR-display-AMD-Ryzen-AI-Max-395-and-up-to-128-GB-RAM.1125083.0.html"
+    },
+    {
+     "name": "3DTested: OneXFly Apex, 120 W e batteria da 85 Wh",
+     "url": "https://www.3dtested.com/video-games/handheld-gaming/onexplayer-unveils-onexfly-apex-with-ryzen-ai-max-395-and-up-to-128-gb-ram-flagship-pc-gaming-handheld-pushes-120w-tdp-with-silent-liquid-cooling-and-85wh-removable-battery"
+    },
+    {
+     "name": "Windows Central: migliori PC portatili da gioco",
      "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "OneXFly Apex",
+     "OneXPlayer OneXFly"
+    ],
+    "match": "onexfly|onexplayer",
+    "wiki": [
+     "OneXPlayer"
+    ]
+   }
+  },
+  {
+   "id": "ayaneo-next-2",
+   "name": "AYANEO NEXT 2",
+   "brand": "AYANEO",
+   "maker": {
+    "name": "AYANEO (Shenzhen Ayaneo Technology)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://ayaneo.com/"
+   },
+   "color": "#C9A227",
+   "tier": "Estremo",
+   "gen": "attuale",
+   "released": "2026",
+   "perf": 300,
+   "price": null,
+   "priceText": "da 1.799 $ (USA)",
+   "priceNote": "Prezzo della versione base da 32 GB. Le configurazioni più ricche costano molto di più, fino a diverse migliaia di dollari",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen AI Max+ 395 · 16 core",
+    "gpu": "Radeon 8060S · 40 CU",
+    "ram": "da 32 GB",
+    "screen": "9,06\" OLED 165 Hz",
+    "battery": "116 Wh",
+    "weight": "circa 1,4 kg"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI Max+ 395 (Strix Halo)"
+     ],
+     [
+      "Core / thread",
+      "16 / 32 (Zen 5)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 8060S"
+     ],
+     [
+      "Unità di calcolo",
+      "40 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Bus memoria",
+      "256 bit"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "da 32 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "da 1 TB"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "9,06 pollici"
+     ],
+     [
+      "Risoluzione",
+      "2400 x 1504"
+     ],
+     [
+      "Pannello",
+      "OLED"
+     ],
+     [
+      "Frequenza",
+      "165 Hz"
+     ],
+     [
+      "Luminosità",
+      "fino a 1.155 nit"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "116 Wh interna"
+     ],
+     [
+      "Consumo sostenuto",
+      "circa 85 W"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB-C USB4"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "TMR con resistenza regolabile"
+     ],
+     [
+      "Grilletti",
+      "Hall con blocco a doppia modalità"
+     ],
+     [
+      "Extra",
+      "2 touchpad, croce a 8 direzioni, 4 tasti posteriori"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 1,4 kg"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Schermo OLED enorme a 165 Hz e batteria gigante da 116 Wh",
+    "Controlli da appassionati: TMR, grilletti Hall, doppio touchpad"
+   ],
+   "cons": [
+    "Pesa circa 1,4 kg: più un PC compatto che una portatile",
+    "Prezzi altissimi"
+   ],
+   "tests": [],
+   "testNote": "Stesso chip di GPD WIN 5 e OneXFly Apex: prestazioni della stessa classe.",
+   "keywords": [
+    "ayaneo next 2",
+    "ayaneo"
+   ],
+   "buy": [
+    {
+     "name": "AYANEO",
+     "url": "https://ayaneo.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=AYANEO+NEXT+2"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=AYANEO+NEXT+2&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=AYANEO+NEXT+2"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=AYANEO+NEXT+2"
+    }
+   ],
+   "sources": [
+    {
+     "name": "HotHardware: AYANEO NEXT 2",
+     "url": "https://hothardware.com/news/ayaneo-next-2-preorders-open"
+    },
+    {
+     "name": "PCWorld: prezzo AYANEO NEXT 2",
+     "url": "https://www.pcworld.com/article/3057465/ayaneos-new-ryzen-handheld-costs-4300-what-are-we-doing-here.html"
+    }
+   ],
+   "photo": {
+    "commons": [
+     "AYANEO NEXT 2",
+     "AYANEO"
+    ],
+    "match": "ayaneo",
+    "wiki": [
+     "Ayaneo"
+    ]
+   }
   },
   {
    "id": "gpd-win-5",
    "name": "GPD WIN 5",
    "brand": "GPD",
-   "color": "#333C4E",
+   "maker": {
+    "name": "Shenzhen GPD Technology",
+    "hq": "Shenzhen, Cina",
+    "site": "https://gpd.hk/"
+   },
+   "color": "#3A4458",
    "tier": "Estremo",
+   "gen": "attuale",
+   "released": "2025",
    "perf": 290,
-   "apu": "AMD Ryzen AI Max+ 395 o Max 388",
-   "cpu": "fino a 16 core Zen 5",
-   "gpu": "Radeon 8060S, 40 CU RDNA 3.5 (con il 395)",
-   "ram": "32-128 GB LPDDR5X",
-   "storage": "fino a 4 TB",
-   "display": "7\" 1920x1080 120 Hz",
-   "battery": "80 Wh esterna, si stacca",
-   "weight": "n.d.",
-   "os": "Windows 11",
-   "tdp": "fino a 85 W",
-   "price": null,
-   "priceText": "da 1.722 $ (USA)",
-   "priceNote": "Versione Max 388, 32 GB, 1 TB. Si compra soprattutto da importatori",
+   "price": 2017,
+   "priceText": "da circa 2.017 € (DroiX)",
+   "priceNote": "Prezzo del rivenditore DroiX Europa. Esiste anche con Ryzen AI Max 385 (8 core, Radeon 8050S) a meno",
    "os_tags": [
     "Windows"
    ],
+   "key": {
+    "cpu": "Ryzen AI Max+ 395 · 16 core",
+    "gpu": "Radeon 8060S · 40 CU",
+    "ram": "32 / 64 / 128 GB",
+    "screen": "7\" 1080p 120 Hz",
+    "battery": "80 Wh esterna",
+    "weight": "565 g (+350 g batteria)"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI Max+ 395 (Strix Halo)"
+     ],
+     [
+      "Core / thread",
+      "16 / 32 (Zen 5)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ],
+     [
+      "Alternativa",
+      "Ryzen AI Max 385: 8 core / 16 thread, Radeon 8050S 32 CU"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 8060S"
+     ],
+     [
+      "Unità di calcolo",
+      "40 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Bus memoria",
+      "256 bit"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "32, 64 o 128 GB LPDDR5X-8000"
+     ],
+     [
+      "SSD",
+      "M.2 2280 PCIe 4.0 da 1, 2 o 4 TB"
+     ],
+     [
+      "Espansione",
+      "slot Mini SSD (fino a 2 TB) + microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080, 315 ppi"
+     ],
+     [
+      "Frequenza",
+      "120 Hz, FreeSync Premium"
+     ],
+     [
+      "Luminosità",
+      "500 nit, 100% sRGB"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh esterna, si stacca (350 g)"
+     ],
+     [
+      "Alimentatore",
+      "180 W"
+     ],
+     [
+      "Consumo",
+      "da 7 a 85 W"
+     ],
+     [
+      "Autonomia",
+      "circa 2-3 ore giocando"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB-C 3.2 Gen 2, jack 3,5 mm, ingresso DC 180 W"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "capacitivi"
+     ],
+     [
+      "Grilletti",
+      "Hall con corsa corta o lunga"
+     ],
+     [
+      "Extra",
+      "mouse ottico, lettore di impronte"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "565 g senza batteria"
+     ],
+     [
+      "Dimensioni",
+      "26,7 x 11,1 x 2,4 cm"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
    "pros": [
-    "Potenza simile alla OneXFly Apex a prezzo più basso",
-    "Batteria esterna sostituibile"
+    "Potenza da PC fisso in 565 g",
+    "Batteria esterna sostituibile: ne porti due e raddoppi l'autonomia"
    ],
    "cons": [
-    "Batteria esterna scomoda in mano",
-    "Assistenza in Italia limitata"
+    "Con la batteria attaccata diventa scomoda e pesante",
+    "Assistenza in Italia solo tramite importatori"
    ],
    "tests": [
     {
      "game": "Forza Horizon 5",
      "fps": 234,
-     "settings": "1080p a 75 W"
+     "settings": "1080p a 75 W",
+     "src": "Windows Central"
+    },
+    {
+     "game": "DOOM: The Dark Ages",
+     "fps": 120,
+     "settings": "1080p, Nightmare, 80 W",
+     "src": "DroiX"
+    },
+    {
+     "game": "Gears of War Reloaded",
+     "fps": 60,
+     "settings": "1080p, Ultra",
+     "src": "DroiX"
     }
    ],
    "keywords": [
-    "gpd win",
-    "gpd"
+    "gpd win 5",
+    "gpd win"
    ],
    "buy": [
     {
@@ -144,51 +611,134 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=GPD+WIN+5"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=GPD+WIN+5"
     }
    ],
    "sources": [
     {
-     "name": "Windows Central, migliori PC portatili da gioco",
+     "name": "DroiX: recensione GPD WIN 5",
+     "url": "https://droix.net/blogs/it/recensione-gpd-win-5-un-pc-portatile-da-gioco-dalle-prestazioni-pazzesche-che-cambia-tutto/"
+    },
+    {
+     "name": "Windows Central: migliori PC portatili da gioco",
      "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "GPD WIN 5",
+     "GPD Win"
+    ],
+    "match": "gpd.?win",
+    "wiki": [
+     "GPD Win"
+    ]
+   }
   },
   {
    "id": "claw-8-ex",
    "name": "MSI Claw 8 EX AI+",
    "brand": "MSI",
+   "maker": {
+    "name": "Micro-Star International (MSI)",
+    "hq": "Nuova Taipei, Taiwan",
+    "site": "https://it.msi.com/"
+   },
    "color": "#D3001E",
    "tier": "Top di gamma",
+   "gen": "attuale",
+   "released": "2026",
    "perf": 215,
-   "apu": "Intel Arc G3 Extreme",
-   "cpu": "Intel (Panther Lake)",
-   "gpu": "Intel Arc (Xe3)",
-   "ram": "32 GB LPDDR5X",
-   "storage": "1 TB PCIe 4.0",
-   "display": "8\" 120 Hz",
-   "battery": "n.d.",
-   "weight": "n.d.",
-   "os": "Windows 11",
-   "tdp": "35 W",
    "price": 1599,
    "priceText": "circa 1.599 €",
-   "priceNote": "Negli USA 1.699-1.799 $. In arrivo una variante di colore più economica",
+   "priceNote": "Negli USA 1.699-1.799 $. È in arrivo una variante di colore più economica",
    "os_tags": [
     "Windows"
    ],
+   "key": {
+    "cpu": "Intel Core Ultra 7 (Panther Lake)",
+    "gpu": "Intel Arc G3 Extreme",
+    "ram": "32 GB",
+    "screen": "8\" 120 Hz",
+    "battery": "80 Wh",
+    "weight": "n.d."
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Intel Core Ultra 7, piattaforma Arc G3 Extreme (Panther Lake)"
+     ],
+     [
+      "Consumo",
+      "fino a 35 W"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Intel Arc G3 Extreme (architettura Xe3)"
+     ],
+     [
+      "Upscaling",
+      "XeSS"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "32 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "1 TB PCIe 4.0"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici"
+     ],
+     [
+      "Frequenza",
+      "120 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x Thunderbolt 4"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
    "pros": [
     "Il portatile più veloce provato da IGN ad agosto 2026",
-    "Circa 42-44% più veloce di Ryzen Z2 Extreme e Core Ultra 258V nei test"
+    "Circa il 42-44% più veloce dei portatili con Ryzen Z2 Extreme"
    ],
    "cons": [
     "Costa quasi il doppio della Claw 8 AI+",
     "Driver Intel: qualche gioco può dare problemi"
    ],
    "tests": [],
-   "testNote": "Nei test circa il 42-44% più veloce dei portatili con Ryzen Z2 Extreme.",
+   "testNote": "Nei test circa il 42-44% più veloce dei portatili con Ryzen Z2 Extreme e Core Ultra 258V.",
    "keywords": [
     "claw 8 ex",
-    "claw"
+    "msi claw"
    ],
    "buy": [
     {
@@ -206,80 +756,236 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=MSI+Claw+8+EX+AI%2B"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=MSI+Claw+8+EX+AI%2B"
     }
    ],
    "sources": [
     {
-     "name": "Multiplayer.it, prezzo MSI Claw 8 EX AI+",
+     "name": "Multiplayer.it: prezzo MSI Claw 8 EX AI+",
      "url": "https://multiplayer.it/notizie/il-nuovo-msi-claw-8-ex-ai-con-intel-arc-g3-extreme-costa-quasi-il-doppio-del-precedente-rivelato-il-prezzo.html"
     },
     {
-     "name": "Windows Central, migliori PC portatili da gioco",
+     "name": "ShopSavvy: migliori PC portatili da gioco 2026",
+     "url": "https://shopsavvy.com/best-picks/best-handheld-gaming-pcs.md"
+    },
+    {
+     "name": "Windows Central: migliori PC portatili da gioco",
      "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "MSI Claw 8",
+     "MSI Claw"
+    ],
+    "match": "msi.?claw",
+    "wiki": [
+     "MSI Claw"
+    ]
+   }
   },
   {
    "id": "xbox-ally-x20",
    "name": "ROG Xbox Ally X20",
    "brand": "ASUS ROG",
+   "maker": {
+    "name": "ASUSTeK Computer (marchio Republic of Gamers)",
+    "hq": "Taipei, Taiwan",
+    "site": "https://rog.asus.com/it/"
+   },
+   "partner": "Progettata con Microsoft Xbox",
    "color": "#107C10",
    "tier": "Top di gamma",
+   "gen": "attuale",
+   "released": "ottobre 2026",
    "perf": 150,
-   "apu": "AMD Ryzen AI Z2 Extreme",
-   "cpu": "8 core / 16 thread Zen 5",
-   "gpu": "Radeon 890M, 16 CU RDNA 3.5",
-   "ram": "24 GB LPDDR5X-8000",
-   "storage": "1 TB",
-   "display": "7,4\" 1080p OLED 120 Hz VRR, HDR",
-   "battery": "80 Wh",
-   "weight": "756 g",
-   "os": "Windows 11 con schermata Xbox",
-   "tdp": "fino a 35 W",
    "price": null,
    "priceText": "1.299 $ (USA)",
-   "priceNote": "Bundle con occhiali AR e custodie a 2.499 $. Prezzo italiano da confermare",
+   "priceNote": "Bundle con occhiali AR ROG XREAL R1 e custodie a 2.499 $. Prezzo italiano non ancora confermato",
    "os_tags": [
     "Windows"
    ],
+   "key": {
+    "cpu": "Ryzen AI Z2 Extreme · 8 core",
+    "gpu": "Radeon 890M · 16 CU",
+    "ram": "24 GB LPDDR5X-8000",
+    "screen": "7,4\" OLED 120 Hz",
+    "battery": "80 Wh",
+    "weight": "756 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI Z2 Extreme"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 5 + Zen 5c)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,0 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "24 GB LPDDR5X-8000"
+     ],
+     [
+      "SSD",
+      "1 TB NVMe"
+     ],
+     [
+      "Espansione",
+      "microSD Express"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7,4 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "OLED (Nebula HDR)"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ],
+     [
+      "Luminosità",
+      "600 nit, 1.400 nit di picco HDR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh"
+     ],
+     [
+      "Autonomia",
+      "circa 2,4 ore Cyberpunk 2077, 5,3 ore Hades II (25 W)"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB-C (una USB4 / Thunderbolt 4), microSD Express, jack 3,5 mm"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "TMR (deriva quasi assente)"
+     ],
+     [
+      "Extra",
+      "4 tasti posteriori"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "756 g"
+     ],
+     [
+      "Temperatura in gioco",
+      "circa 82 °C sul processore, ventola 38 dB"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11 Home con schermata a tutto schermo Xbox"
+     ]
+    ]
+   },
    "pros": [
-    "Schermo OLED splendido",
-    "Batteria grande e schermata Xbox comoda da usare col pad"
+    "Schermo OLED splendido e HDR molto luminoso",
+    "Batteria grande e stick TMR senza deriva"
    ],
    "cons": [
-    "Stesso chip della Ally X ma costa molto di più",
-    "Windows meno comodo di SteamOS"
+    "Stesso chip della Ally X ma costa 300 $ in più",
+    "Windows meno immediato di SteamOS"
    ],
    "tests": [
     {
      "game": "Cyberpunk 2077",
      "fps": 38,
-     "settings": "1080p, Medio"
+     "settings": "1080p, Medio",
+     "src": "SovisGames"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 60,
-     "settings": "1080p, Alto"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
-     "settings": "1080p (limite 60)"
+     "settings": "1080p, Max (limite 60)",
+     "src": "SovisGames"
     },
     {
      "game": "Hades II",
      "fps": 120,
-     "settings": "1080p"
+     "settings": "1080p, Max (limite 120)",
+     "src": "SovisGames"
     },
     {
      "game": "Helldivers 2",
      "fps": 58,
-     "settings": "1080p"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 41,
-     "settings": "1080p"
+     "settings": "1080p, Medio + FSR Qualità",
+     "src": "SovisGames"
+    }
+   ],
+   "battery": [
+    {
+     "game": "Cyberpunk 2077",
+     "min": 145
+    },
+    {
+     "game": "Forza Horizon 6",
+     "min": 165
+    },
+    {
+     "game": "Hades II",
+     "min": 320
     }
    ],
    "keywords": [
@@ -303,36 +1009,48 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Xbox+Ally+X20"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=ROG+Xbox+Ally+X20"
     }
    ],
    "sources": [
     {
-     "name": "SovisGames, test ROG Xbox Ally X20 contro la concorrenza",
+     "name": "SovisGames: ROG Xbox Ally X20 contro la concorrenza (test e autonomia)",
      "url": "https://sovisgames.com/posts/rog-ally-x20-vs-competition/"
     },
     {
-     "name": "KitGuru, lancio ROG Xbox Ally X20",
+     "name": "KitGuru: lancio ROG Xbox Ally X20",
      "url": "https://www.kitguru.net/gaming/joao-silva/asus-launches-rog-xbox-ally-x20-with-oled-display-and-ryzen-ai-z2-extreme/"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "ROG Xbox Ally X",
+     "ROG Xbox Ally"
+    ],
+    "match": "xbox.?ally",
+    "wiki": [
+     "ROG Xbox Ally",
+     "ROG Ally"
+    ]
+   }
   },
   {
    "id": "legion-go-2",
    "name": "Lenovo Legion Go 2",
    "brand": "Lenovo",
+   "maker": {
+    "name": "Lenovo Group (linea Legion)",
+    "hq": "Pechino, Cina e Hong Kong",
+    "site": "https://www.lenovo.com/it/it/"
+   },
    "color": "#E2231A",
    "tier": "Top di gamma",
+   "gen": "attuale",
+   "released": "2025",
    "perf": 150,
-   "apu": "AMD Ryzen Z2 Extreme (o Z2)",
-   "cpu": "8 core / 16 thread Zen 5",
-   "gpu": "Radeon 890M, 16 CU RDNA 3.5",
-   "ram": "fino a 32 GB LPDDR5X",
-   "storage": "1 TB",
-   "display": "8,8\" 1920x1200 OLED 144 Hz",
-   "battery": "74 Wh",
-   "weight": "circa 950 g",
-   "os": "Windows 11 o SteamOS",
-   "tdp": "fino a 35 W",
    "price": 1750,
    "priceText": "1.750-2.300 €",
    "priceNote": "Listino Lenovo Italia dopo i rincari: 1.750 € con Z2, circa 2.300 € con Z2 Extreme. Alcuni negozi la vendono ancora al prezzo di lancio, da circa 1.000-1.300 €",
@@ -340,49 +1058,184 @@
     "Windows",
     "SteamOS"
    ],
+   "key": {
+    "cpu": "Ryzen Z2 Extreme · 8 core",
+    "gpu": "Radeon 890M · 16 CU",
+    "ram": "fino a 32 GB",
+    "screen": "8,8\" OLED 144 Hz",
+    "battery": "74 Wh",
+    "weight": "circa 920 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen Z2 Extreme (o Ryzen Z2)"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 5) con Z2 Extreme"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,0 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "fino a 32 GB LPDDR5X-8000"
+     ],
+     [
+      "SSD",
+      "1 o 2 TB NVMe"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8,8 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1200"
+     ],
+     [
+      "Pannello",
+      "OLED"
+     ],
+     [
+      "Frequenza",
+      "144 Hz con VRR"
+     ],
+     [
+      "Luminosità",
+      "500 nit"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "74 Wh"
+     ],
+     [
+      "Autonomia",
+      "circa 2,2 ore Cyberpunk 2077, 4,7 ore Hades II (25 W)"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB-C (una USB4), microSD, jack 3,5 mm"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "Hall"
+     ],
+     [
+      "Extra",
+      "controller staccabili, modalità mouse verticale, 3 tasti posteriori, touchpad"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 920 g"
+     ],
+     [
+      "Temperatura in gioco",
+      "circa 86 °C sul processore, ventola 42 dB"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11 Home oppure SteamOS"
+     ]
+    ]
+   },
    "pros": [
     "Lo schermo più grande e bello: OLED 8,8\" a 144 Hz",
-    "Controller staccabili, 32 GB di memoria"
+    "Controller staccabili e 32 GB di memoria"
    ],
    "cons": [
-    "Pesante",
+    "Pesante e ingombrante",
     "Prezzo salito molto in Italia"
    ],
    "tests": [
     {
      "game": "Cyberpunk 2077",
      "fps": 38,
-     "settings": "1080p, Medio"
+     "settings": "1080p, Medio",
+     "src": "SovisGames"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 60,
-     "settings": "1080p, Alto"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
-     "settings": "1080p (limite 60)"
+     "settings": "1080p, Max (limite 60)",
+     "src": "SovisGames"
     },
     {
      "game": "Hades II",
      "fps": 120,
-     "settings": "1080p"
+     "settings": "1080p, Max (limite 120)",
+     "src": "SovisGames"
     },
     {
      "game": "Helldivers 2",
      "fps": 60,
-     "settings": "1080p"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 41,
-     "settings": "1080p"
+     "settings": "1080p, Medio + FSR Qualità",
+     "src": "SovisGames"
+    }
+   ],
+   "battery": [
+    {
+     "game": "Cyberpunk 2077",
+     "min": 130
+    },
+    {
+     "game": "Forza Horizon 6",
+     "min": 145
+    },
+    {
+     "game": "Hades II",
+     "min": 280
     }
    ],
    "keywords": [
-    "legion go 2",
-    "legion go"
+    "legion go 2"
    ],
    "buy": [
     {
@@ -400,49 +1253,182 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Lenovo+Legion+Go+2"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Lenovo+Legion+Go+2"
     }
    ],
    "sources": [
     {
-     "name": "SovisGames, test ROG Xbox Ally X20 contro la concorrenza",
+     "name": "SovisGames: ROG Xbox Ally X20 contro la concorrenza (test e autonomia)",
      "url": "https://sovisgames.com/posts/rog-ally-x20-vs-competition/"
     },
     {
-     "name": "Multiplayer.it, rincari Legion Go 2 e ROG Xbox Ally in Italia",
+     "name": "Multiplayer.it: rincari Legion Go 2 e ROG Xbox Ally in Italia",
      "url": "https://multiplayer.it/notizie/lenovo-legion-go-2-prezzi-stelle-rincari-superano-listino-iniziale.html"
     },
     {
-     "name": "Tom's Guide, Ally X contro Legion Go 2 contro Claw A8",
+     "name": "Tom's Guide: Ally X contro Legion Go 2 contro Claw A8",
      "url": "https://www.tomsguide.com/gaming/handheld-gaming/rog-xbox-ally-x-vs-lenovo-legion-go-2-vs-msi-claw-a8"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "Legion Go 2",
+     "Lenovo Legion Go 2"
+    ],
+    "match": "legion.?go.?2|legion.?go(?!.?s)",
+    "wiki": [
+     "Legion Go 2",
+     "Legion Go"
+    ]
+   }
   },
   {
    "id": "xbox-ally-x",
    "name": "ROG Xbox Ally X",
    "brand": "ASUS ROG",
+   "maker": {
+    "name": "ASUSTeK Computer (marchio Republic of Gamers)",
+    "hq": "Taipei, Taiwan",
+    "site": "https://rog.asus.com/it/"
+   },
+   "partner": "Progettata con Microsoft Xbox",
    "color": "#107C10",
    "tier": "Fascia alta",
+   "gen": "attuale",
+   "released": "ottobre 2025",
    "perf": 150,
-   "apu": "AMD Ryzen AI Z2 Extreme",
-   "cpu": "8 core / 16 thread Zen 5",
-   "gpu": "Radeon 890M, 16 CU RDNA 3.5",
-   "ram": "24 GB LPDDR5X-8000",
-   "storage": "1 TB",
-   "display": "7\" 1080p IPS 120 Hz VRR",
-   "battery": "80 Wh",
-   "weight": "715 g",
-   "os": "Windows 11 con schermata Xbox",
-   "tdp": "fino a 35 W",
    "price": 999,
    "priceText": "999 €",
    "priceNote": "Era 899 € al lancio",
    "os_tags": [
     "Windows"
    ],
+   "key": {
+    "cpu": "Ryzen AI Z2 Extreme · 8 core",
+    "gpu": "Radeon 890M · 16 CU",
+    "ram": "24 GB LPDDR5X-8000",
+    "screen": "7\" IPS 120 Hz",
+    "battery": "80 Wh",
+    "weight": "715 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI Z2 Extreme"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 5 + Zen 5c)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,0 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "24 GB LPDDR5X-8000"
+     ],
+     [
+      "SSD",
+      "1 TB M.2 2280"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ],
+     [
+      "Luminosità",
+      "500 nit"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "USB4 + USB-C, microSD, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 6E, Bluetooth 5.4"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "Hall"
+     ],
+     [
+      "Grilletti",
+      "con vibrazione"
+     ],
+     [
+      "Extra",
+      "impugnature sagomate stile controller Xbox, 2 tasti posteriori"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "715 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11 Home con schermata a tutto schermo Xbox"
+     ]
+    ]
+   },
    "pros": [
     "Stesse prestazioni della X20 a molto meno",
-    "Impugnature comode, batteria da 80 Wh"
+    "Impugnature comodissime e batteria da 80 Wh"
    ],
    "cons": [
     "Schermo IPS, non OLED",
@@ -452,39 +1438,44 @@
     {
      "game": "Cyberpunk 2077",
      "fps": 38,
-     "settings": "1080p, Medio"
+     "settings": "1080p, Medio",
+     "src": "SovisGames"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 60,
-     "settings": "1080p, Alto"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
-     "settings": "1080p (limite 60)"
+     "settings": "1080p, Max (limite 60)",
+     "src": "SovisGames"
     },
     {
      "game": "Hades II",
      "fps": 120,
-     "settings": "1080p"
+     "settings": "1080p, Max (limite 120)",
+     "src": "SovisGames"
     },
     {
      "game": "Helldivers 2",
      "fps": 58,
-     "settings": "1080p"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 41,
-     "settings": "1080p"
+     "settings": "1080p, Medio + FSR Qualità",
+     "src": "SovisGames"
     }
    ],
    "testNote": "Stesso chip e stessa memoria della X20: prestazioni praticamente uguali.",
    "keywords": [
     "ally x",
-    "rog xbox ally",
-    "rog ally"
+    "rog xbox ally"
    ],
    "buy": [
     {
@@ -502,64 +1493,390 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Xbox+Ally+X"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=ROG+Xbox+Ally+X"
     }
    ],
    "sources": [
     {
-     "name": "Multiplayer.it, rincari Legion Go 2 e ROG Xbox Ally in Italia",
+     "name": "Multiplayer.it: rincari Legion Go 2 e ROG Xbox Ally in Italia",
      "url": "https://multiplayer.it/notizie/lenovo-legion-go-2-prezzi-stelle-rincari-superano-listino-iniziale.html"
     },
     {
-     "name": "Tom's Guide, Ally X contro Legion Go 2 contro Claw A8",
+     "name": "Tom's Guide: Ally X contro Legion Go 2 contro Claw A8",
      "url": "https://www.tomsguide.com/gaming/handheld-gaming/rog-xbox-ally-x-vs-lenovo-legion-go-2-vs-msi-claw-a8"
     },
     {
-     "name": "Windows Central, migliori PC portatili da gioco",
-     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+     "name": "ShopSavvy: migliori PC portatili da gioco 2026",
+     "url": "https://shopsavvy.com/best-picks/best-handheld-gaming-pcs.md"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "ROG Xbox Ally X",
+     "ROG Xbox Ally"
+    ],
+    "match": "xbox.?ally",
+    "wiki": [
+     "ROG Xbox Ally",
+     "ROG Ally"
+    ]
+   }
+  },
+  {
+   "id": "claw-a8",
+   "name": "MSI Claw A8",
+   "brand": "MSI",
+   "maker": {
+    "name": "Micro-Star International (MSI)",
+    "hq": "Nuova Taipei, Taiwan",
+    "site": "https://it.msi.com/"
+   },
+   "color": "#D3001E",
+   "tier": "Fascia alta",
+   "gen": "attuale",
+   "released": "agosto 2025",
+   "perf": 150,
+   "price": 999,
+   "priceText": "circa 999 €",
+   "priceNote": "Prezzo di lancio in Europa. Nel Regno Unito 849 £",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen Z2 Extreme · 8 core",
+    "gpu": "Radeon 890M · 16 CU",
+    "ram": "24 GB",
+    "screen": "8\" IPS 120 Hz",
+    "battery": "80 Wh",
+    "weight": "circa 770 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI Z2 Extreme"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 5 + Zen 5c)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,0 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "24 GB LPDDR5X-8000"
+     ],
+     [
+      "SSD",
+      "1 TB PCIe 4.0 x4"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1200"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh"
+     ],
+     [
+      "Autonomia",
+      "2 h 32 min nel test batteria 3DMark"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB4 Type-C, microSD, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 7, Bluetooth 5.4"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 770 g"
+     ],
+     [
+      "Dimensioni",
+      "30 x 12,7 x 2,3 cm"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Z2 Extreme con schermo da 8\" e Wi-Fi 7",
+    "Due porte USB4"
+   ],
+   "cons": [
+    "Schermo IPS",
+    "Prezzo simile alla Ally X"
+   ],
+   "tests": [
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 16,
+     "settings": "1080p Alto, 17 W, senza upscaling",
+     "src": "Tom's Guide"
+    },
+    {
+     "game": "GTA V",
+     "fps": 65,
+     "settings": "720p Alto, 17 W",
+     "src": "Tom's Guide"
+    },
+    {
+     "game": "Marvel's Spider-Man 2",
+     "fps": 60,
+     "settings": "1080p FSR, medio-alto",
+     "src": "Tom's Guide"
+    }
+   ],
+   "keywords": [
+    "claw a8",
+    "msi claw"
+   ],
+   "buy": [
+    {
+     "name": "MSI",
+     "url": "https://it.msi.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=MSI+Claw+A8"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=MSI+Claw+A8&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=MSI+Claw+A8"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=MSI+Claw+A8"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Tom's Guide: recensione MSI Claw A8",
+     "url": "https://www.tomsguide.com/gaming/handheld-gaming/msi-claw-a8-review"
+    },
+    {
+     "name": "Multiplayer.it: MSI Claw A8 in Europa sotto i 1.000 €",
+     "url": "https://multiplayer.it/notizie/msi-claw-a8-amd-ryzen-z2-europa-meno-1000-euro.html"
+    }
+   ],
+   "photo": {
+    "commons": [
+     "MSI Claw A8",
+     "MSI Claw"
+    ],
+    "match": "msi.?claw",
+    "wiki": [
+     "MSI Claw"
+    ]
+   }
   },
   {
    "id": "claw-8-ai",
    "name": "MSI Claw 8 AI+",
    "brand": "MSI",
+   "maker": {
+    "name": "Micro-Star International (MSI)",
+    "hq": "Nuova Taipei, Taiwan",
+    "site": "https://it.msi.com/"
+   },
    "color": "#D3001E",
    "tier": "Fascia alta",
+   "gen": "attuale",
+   "released": "gennaio 2025",
    "perf": 145,
-   "apu": "Intel Core Ultra 7 258V",
-   "cpu": "8 core Lunar Lake",
-   "gpu": "Intel Arc 140V",
-   "ram": "32 GB LPDDR5X",
-   "storage": "1 TB",
-   "display": "8\" 1920x1200 120 Hz VRR",
-   "battery": "80 Wh",
-   "weight": "795 g",
-   "os": "Windows 11",
-   "tdp": "fino a 30 W",
    "price": null,
    "priceText": "899 $ al lancio (USA)",
-   "priceNote": "In Italia spesso scontata: controlla i negozi qui sotto",
+   "priceNote": "In Italia si trova spesso scontata: controlla i negozi qui sotto",
    "os_tags": [
     "Windows"
    ],
+   "key": {
+    "cpu": "Core Ultra 7 258V · 8 core",
+    "gpu": "Intel Arc 140V",
+    "ram": "32 GB",
+    "screen": "8\" 120 Hz VRR",
+    "battery": "80 Wh",
+    "weight": "795 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Intel Core Ultra 7 258V (Lunar Lake)"
+     ],
+     [
+      "Core / thread",
+      "8 / 8"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 4,8 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 47 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Intel Arc 140V"
+     ],
+     [
+      "Unità di calcolo",
+      "8 core Xe2"
+     ],
+     [
+      "Upscaling",
+      "XeSS"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "32 GB LPDDR5X-8533"
+     ],
+     [
+      "SSD",
+      "1 TB"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1200"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh"
+     ],
+     [
+      "Autonomia",
+      "2 h 22 min nel test batteria 3DMark"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x Thunderbolt 4, microSD, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 7, Bluetooth 5.4"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "795 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
    "pros": [
-    "Ottima a bassi consumi: batteria che dura",
-    "32 GB di memoria"
+    "Efficientissima a bassi consumi",
+    "32 GB di memoria e due Thunderbolt 4"
    ],
    "cons": [
     "Driver Intel meno rodati di AMD",
-    "Ormai superata dalla Claw 8 EX"
+    "Superata dalla Claw 8 EX"
    ],
    "tests": [
     {
      "game": "Cyberpunk 2077",
      "fps": 59,
-     "settings": "preset Steam Deck"
+     "settings": "preset Steam Deck",
+     "src": "Windows Central"
+    },
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 15,
+     "settings": "1080p Alto, 17 W, senza upscaling",
+     "src": "Tom's Guide"
     }
    ],
    "keywords": [
     "claw 8 ai",
-    "claw"
+    "msi claw"
    ],
    "buy": [
     {
@@ -577,46 +1894,800 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=MSI+Claw+8+AI%2B"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=MSI+Claw+8+AI%2B"
     }
    ],
    "sources": [
     {
-     "name": "Windows Central, migliori PC portatili da gioco",
+     "name": "Windows Central: migliori PC portatili da gioco",
      "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    },
+    {
+     "name": "Tom's Guide: recensione MSI Claw A8",
+     "url": "https://www.tomsguide.com/gaming/handheld-gaming/msi-claw-a8-review"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "MSI Claw 8 AI",
+     "MSI Claw"
+    ],
+    "match": "msi.?claw",
+    "wiki": [
+     "MSI Claw"
+    ]
+   }
+  },
+  {
+   "id": "onexfly-f1-pro",
+   "name": "OneXPlayer OneXFly F1 Pro",
+   "brand": "OneXPlayer",
+   "maker": {
+    "name": "One-Netbook Technology (marchio OneXPlayer)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://onexplayerstore.com/"
+   },
+   "color": "#E4002B",
+   "tier": "Fascia alta",
+   "gen": "attuale",
+   "released": "2025",
+   "perf": 145,
+   "price": null,
+   "priceText": "da circa 1.000 $ (USA)",
+   "priceNote": "Su Amazon USA arriva a circa 1.440 $ nelle versioni più ricche",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen AI 9 HX 370 · 12 core",
+    "gpu": "Radeon 890M · 16 CU",
+    "ram": "fino a 64 GB",
+    "screen": "7\" OLED 144 Hz",
+    "battery": "48,5 Wh",
+    "weight": "circa 600 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI 9 HX 370"
+     ],
+     [
+      "Core / thread",
+      "12 / 24 (Zen 5 + Zen 5c)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "fino a 64 GB LPDDR5X-7500"
+     ],
+     [
+      "SSD",
+      "fino a 4 TB M.2 2280"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "OLED"
+     ],
+     [
+      "Frequenza",
+      "144 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "48,5 Wh"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 600 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "OLED a 144 Hz in un corpo leggero",
+    "Processore a 12 core, ottimo anche per lavorare"
+   ],
+   "cons": [
+    "Batteria piccola per il chip",
+    "Prezzo alto per le prestazioni in gioco"
+   ],
+   "tests": [],
+   "keywords": [
+    "onexfly f1",
+    "onexfly"
+   ],
+   "buy": [
+    {
+     "name": "Store OneXPlayer",
+     "url": "https://onexplayerstore.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=OneXFly+F1+Pro"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=OneXFly+F1+Pro&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=OneXFly+F1+Pro"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=OneXFly+F1+Pro"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Notebookcheck: OneXFly Apex",
+     "url": "https://www.notebookcheck.net/OneXFly-Apex-gaming-handheld-revealed-with-8-inch-VRR-display-AMD-Ryzen-AI-Max-395-and-up-to-128-GB-RAM.1125083.0.html"
+    }
+   ],
+   "photo": {
+    "commons": [
+     "OneXFly F1 Pro",
+     "OneXFly"
+    ],
+    "match": "onexfly",
+    "wiki": [
+     "OneXPlayer"
+    ]
+   }
+  },
+  {
+   "id": "ayaneo-3",
+   "name": "AYANEO 3",
+   "brand": "AYANEO",
+   "maker": {
+    "name": "AYANEO (Shenzhen Ayaneo Technology)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://ayaneo.com/"
+   },
+   "color": "#C9A227",
+   "tier": "Fascia alta",
+   "gen": "attuale",
+   "released": "2025",
+   "perf": 145,
+   "price": null,
+   "priceText": "prezzo variabile",
+   "priceNote": "Si compra da AYANEO o da importatori: il prezzo dipende molto dalla configurazione",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen AI 9 HX 370 o 8840U",
+    "gpu": "Radeon 890M / 780M",
+    "ram": "fino a 64 GB",
+    "screen": "7\" OLED 144 Hz o IPS",
+    "battery": "n.d.",
+    "weight": "n.d."
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI 9 HX 370"
+     ],
+     [
+      "Core / thread",
+      "12 / 24 (Zen 5 + Zen 5c)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ],
+     [
+      "Alternativa",
+      "Ryzen 7 8840U (8 core Zen 4, Radeon 780M)"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "fino a 64 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "fino a 4 TB"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "OLED 144 Hz oppure IPS"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "n.d."
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "moduli intercambiabili ai lati (stick, croce, tastierina)"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "n.d."
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Controlli modulari unici",
+    "Scelta tra schermo OLED e IPS"
+   ],
+   "cons": [
+    "Configurazioni e prezzi confusi",
+    "Assistenza solo tramite importatori"
+   ],
+   "tests": [],
+   "keywords": [
+    "ayaneo 3",
+    "ayaneo"
+   ],
+   "buy": [
+    {
+     "name": "AYANEO",
+     "url": "https://ayaneo.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=AYANEO+3"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=AYANEO+3&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=AYANEO+3"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=AYANEO+3"
+    }
+   ],
+   "sources": [],
+   "photo": {
+    "commons": [
+     "AYANEO 3",
+     "AYANEO"
+    ],
+    "match": "ayaneo",
+    "wiki": [
+     "Ayaneo"
+    ]
+   }
+  },
+  {
+   "id": "gpd-win-mini-2025",
+   "name": "GPD WIN Mini 2025",
+   "brand": "GPD",
+   "maker": {
+    "name": "Shenzhen GPD Technology",
+    "hq": "Shenzhen, Cina",
+    "site": "https://gpd.hk/"
+   },
+   "color": "#3A4458",
+   "tier": "Fascia alta",
+   "gen": "attuale",
+   "released": "2025",
+   "perf": 140,
+   "price": null,
+   "priceText": "da circa 800 $ (USA)",
+   "priceNote": "Versione 8840U più economica, HX 370 più cara",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen AI 9 HX 370 o 8840U",
+    "gpu": "Radeon 890M / 780M",
+    "ram": "fino a 32 GB",
+    "screen": "7\" 1080p 120 Hz VRR",
+    "battery": "44 Wh",
+    "weight": "circa 520 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI 9 HX 370"
+     ],
+     [
+      "Core / thread",
+      "12 / 24 (Zen 5 + Zen 5c)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ],
+     [
+      "Alternativa",
+      "Ryzen 7 8840U"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "fino a 32 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "M.2 2230"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "LTPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "circa 44 Wh"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "formato a conchiglia con tastiera QWERTY e touchpad"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 520 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Si chiude come un mini portatile e sta in tasca",
+    "Tastiera vera per lavorare"
+   ],
+   "cons": [
+    "Batteria piccola",
+    "Impugnatura meno comoda per sessioni lunghe"
+   ],
+   "tests": [],
+   "keywords": [
+    "win mini",
+    "gpd win"
+   ],
+   "buy": [
+    {
+     "name": "GPD",
+     "url": "https://gpd.hk/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=GPD+WIN+Mini+2025"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=GPD+WIN+Mini+2025&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=GPD+WIN+Mini+2025"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=GPD+WIN+Mini+2025"
+    }
+   ],
+   "sources": [],
+   "photo": {
+    "commons": [
+     "GPD Win Mini",
+     "GPD Win"
+    ],
+    "match": "gpd.?win",
+    "wiki": [
+     "GPD Win"
+    ]
+   }
+  },
+  {
+   "id": "zotac-zone",
+   "name": "ZOTAC Gaming Zone",
+   "brand": "ZOTAC",
+   "maker": {
+    "name": "ZOTAC (gruppo PC Partner)",
+    "hq": "Hong Kong",
+    "site": "https://www.zotac.com/"
+   },
+   "color": "#F5A300",
+   "tier": "Fascia media",
+   "gen": "attuale",
+   "released": "2024",
+   "perf": 118,
+   "price": null,
+   "priceText": "799 $ al lancio (USA)",
+   "priceNote": "Spesso scontata",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen 7 8840U · 8 core",
+    "gpu": "Radeon 780M · 12 CU",
+    "ram": "16 GB",
+    "screen": "7\" AMOLED 120 Hz",
+    "battery": "48,5 Wh",
+    "weight": "circa 690 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen 7 8840U"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 4)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 780M"
+     ],
+     [
+      "Unità di calcolo",
+      "12 CU, architettura RDNA 3"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16 GB LPDDR5X-7500"
+     ],
+     [
+      "SSD",
+      "512 GB M.2 2280"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "AMOLED"
+     ],
+     [
+      "Frequenza",
+      "120 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "48,5 Wh"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "Hall"
+     ],
+     [
+      "Grilletti",
+      "Hall regolabili"
+     ],
+     [
+      "Extra",
+      "due touchpad e rotelle programmabili"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 690 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Schermo AMOLED e controlli ricchi",
+    "Prezzo spesso basso"
+   ],
+   "cons": [
+    "Chip della generazione precedente",
+    "Batteria piccola"
+   ],
+   "tests": [],
+   "keywords": [
+    "zotac zone"
+   ],
+   "buy": [
+    {
+     "name": "ZOTAC",
+     "url": "https://www.zotac.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=ZOTAC+Gaming+Zone"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=ZOTAC+Gaming+Zone&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ZOTAC+Gaming+Zone"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=ZOTAC+Gaming+Zone"
+    }
+   ],
+   "sources": [],
+   "photo": {
+    "commons": [
+     "Zotac Zone"
+    ],
+    "match": "zotac",
+    "wiki": [
+     "Zotac"
+    ]
+   }
   },
   {
    "id": "legion-go-s",
    "name": "Lenovo Legion Go S",
    "brand": "Lenovo",
+   "maker": {
+    "name": "Lenovo Group (linea Legion)",
+    "hq": "Pechino, Cina e Hong Kong",
+    "site": "https://www.lenovo.com/it/it/"
+   },
    "color": "#E2231A",
    "tier": "Fascia media",
+   "gen": "attuale",
+   "released": "maggio 2025",
    "perf": 115,
-   "apu": "AMD Ryzen Z2 Go",
-   "cpu": "4 core / 8 thread Zen 3+",
-   "gpu": "Radeon, 12 CU RDNA 2",
-   "ram": "16 GB LPDDR5X",
-   "storage": "512 GB",
-   "display": "8\" 1920x1200 120 Hz VRR",
-   "battery": "55,5 Wh",
-   "weight": "730 g",
-   "os": "SteamOS o Windows 11",
-   "tdp": "fino a 30 W",
    "price": 550,
    "priceText": "circa 500-640 €",
-   "priceNote": "Il prezzo cambia molto da negozio a negozio",
+   "priceNote": "Prezzo molto variabile da negozio a negozio. Esiste anche con Z1 Extreme e 32 GB",
    "os_tags": [
     "SteamOS",
     "Windows"
    ],
+   "key": {
+    "cpu": "Ryzen Z2 Go · 4 core",
+    "gpu": "Radeon · 12 CU RDNA 2",
+    "ram": "16 GB",
+    "screen": "8\" 1200p 120 Hz",
+    "battery": "55,5 Wh",
+    "weight": "730 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen Z2 Go (oppure Z1 Extreme)"
+     ],
+     [
+      "Core / thread",
+      "4 / 8 (Zen 3+)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 4,3 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 680M"
+     ],
+     [
+      "Unità di calcolo",
+      "12 CU, architettura RDNA 2"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16 GB LPDDR5X (32 GB con Z1 Extreme)"
+     ],
+     [
+      "SSD",
+      "512 GB"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1200"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "55,5 Wh"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB4, microSD, jack 3,5 mm"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "730 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "SteamOS (prima console non Valve con SteamOS ufficiale) oppure Windows 11"
+     ]
+    ]
+   },
    "pros": [
     "SteamOS ufficiale con schermo grande",
     "Più veloce della Steam Deck"
    ],
    "cons": [
     "Batteria piccola",
-    "Chip meno moderno degli altri"
+    "Chip meno moderno"
    ],
    "tests": [],
    "keywords": [
@@ -629,50 +2700,186 @@
     },
     {
      "name": "Amazon.it",
-     "url": "https://www.amazon.it/s?k=Lenovo+Legion+Go+S+SteamOS"
+     "url": "https://www.amazon.it/s?k=Lenovo+Legion+Go+S"
     },
     {
      "name": "Trovaprezzi",
-     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Lenovo+Legion+Go+S+SteamOS&id=-1"
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Lenovo+Legion+Go+S&id=-1"
     },
     {
      "name": "Idealo",
-     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Lenovo+Legion+Go+S+SteamOS"
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Lenovo+Legion+Go+S"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Lenovo+Legion+Go+S"
     }
    ],
    "sources": [
     {
-     "name": "Windows Central, migliori PC portatili da gioco",
-     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+     "name": "ShopSavvy: migliori PC portatili da gioco 2026",
+     "url": "https://shopsavvy.com/best-picks/best-handheld-gaming-pcs.md"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "Legion Go S",
+     "Lenovo Legion Go S"
+    ],
+    "match": "legion.?go.?s",
+    "wiki": [
+     "Legion Go S",
+     "Legion Go"
+    ]
+   }
   },
   {
    "id": "steam-deck-oled",
    "name": "Steam Deck OLED",
    "brand": "Valve",
+   "maker": {
+    "name": "Valve Corporation",
+    "hq": "Bellevue, Washington, Stati Uniti",
+    "site": "https://store.steampowered.com/steamdeck"
+   },
    "color": "#1A9FFF",
    "tier": "Fascia media",
+   "gen": "attuale",
+   "released": "novembre 2023",
    "perf": 100,
-   "apu": "AMD APU personalizzato",
-   "cpu": "4 core / 8 thread Zen 2",
-   "gpu": "8 CU RDNA 2",
-   "ram": "16 GB LPDDR5-6400",
-   "storage": "512 GB o 1 TB",
-   "display": "7,4\" 1280x800 OLED 90 Hz, HDR",
-   "battery": "50 Wh",
-   "weight": "640 g",
-   "os": "SteamOS",
-   "tdp": "fino a 15 W",
    "price": 779,
    "priceText": "da 779 €",
    "priceNote": "779 € la 512 GB, oltre 900 € la 1 TB. Era 569 € prima dei rincari di maggio 2026",
    "os_tags": [
     "SteamOS"
    ],
+   "key": {
+    "cpu": "AMD Aerith · 4 core Zen 2",
+    "gpu": "8 CU RDNA 2",
+    "ram": "16 GB LPDDR5-6400",
+    "screen": "7,4\" OLED 90 Hz HDR",
+    "battery": "50 Wh",
+    "weight": "640 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "APU AMD personalizzato (Aerith / Sephiroth, 6 nm)"
+     ],
+     [
+      "Core / thread",
+      "4 / 8 (Zen 2)"
+     ],
+     [
+      "Frequenza",
+      "2,4-3,5 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "AMD RDNA 2 integrata"
+     ],
+     [
+      "Unità di calcolo",
+      "8 CU, 1,0-1,6 GHz"
+     ],
+     [
+      "Upscaling",
+      "FSR"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16 GB LPDDR5-6400"
+     ],
+     [
+      "SSD",
+      "512 GB o 1 TB NVMe"
+     ],
+     [
+      "Espansione",
+      "microSD UHS-I"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7,4 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1280 x 800"
+     ],
+     [
+      "Pannello",
+      "OLED HDR"
+     ],
+     [
+      "Frequenza",
+      "fino a 90 Hz"
+     ],
+     [
+      "Luminosità",
+      "1.000 nit di picco HDR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "50 Wh"
+     ],
+     [
+      "Consumo",
+      "fino a 15 W"
+     ],
+     [
+      "Autonomia",
+      "circa 1,5 ore Cyberpunk 2077, 4 ore Hades II"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "1 x USB-C, microSD, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 6E, Bluetooth 5.3"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "capacitivi"
+     ],
+     [
+      "Extra",
+      "2 touchpad, 4 tasti posteriori, giroscopio"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "640 g"
+     ],
+     [
+      "Dimensioni",
+      "29,8 x 11,7 x 4,9 cm"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "SteamOS"
+     ]
+    ]
+   },
    "pros": [
     "SteamOS: si accende e si gioca, migliaia di giochi verificati",
-    "Leggera e bilanciata, ottimo OLED"
+    "Leggera, silenziosa, ottimo OLED"
    ],
    "cons": [
     "La meno potente tra i PC portatili",
@@ -682,32 +2889,52 @@
     {
      "game": "Cyberpunk 2077",
      "fps": 24,
-     "settings": "1080p, Medio"
+     "settings": "1080p, Medio",
+     "src": "SovisGames"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 45,
-     "settings": "1080p, Alto"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
-     "settings": "1080p (limite 60)"
+     "settings": "1080p, Max (limite 60)",
+     "src": "SovisGames"
     },
     {
      "game": "Hades II",
      "fps": 90,
-     "settings": "1080p"
+     "settings": "1080p, Max (limite 120)",
+     "src": "SovisGames"
     },
     {
      "game": "Helldivers 2",
      "fps": 38,
-     "settings": "1080p"
+     "settings": "1080p, Alto",
+     "src": "SovisGames"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 26,
-     "settings": "1080p"
+     "settings": "1080p, Medio + FSR Qualità",
+     "src": "SovisGames"
+    }
+   ],
+   "battery": [
+    {
+     "game": "Cyberpunk 2077",
+     "min": 90
+    },
+    {
+     "game": "Forza Horizon 6",
+     "min": 110
+    },
+    {
+     "game": "Hades II",
+     "min": 240
     }
    ],
    "testNote": "Lo schermo è 800p: con impostazioni adatte i giochi girano meglio di questi valori a 1080p.",
@@ -730,44 +2957,150 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Steam+Deck+OLED"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Steam+Deck+OLED"
     }
    ],
    "sources": [
     {
-     "name": "SovisGames, test ROG Xbox Ally X20 contro la concorrenza",
+     "name": "SovisGames: ROG Xbox Ally X20 contro la concorrenza (test e autonomia)",
      "url": "https://sovisgames.com/posts/rog-ally-x20-vs-competition/"
     },
     {
-     "name": "Everyeye, quanto costa Steam Deck OLED (settembre 2026)",
+     "name": "Everyeye: quanto costa Steam Deck OLED (settembre 2026)",
      "url": "https://www.everyeye.it/notizie/costa-steam-deck-oled-settembre-2026-897755.html"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "Steam Deck OLED",
+     "Steam Deck"
+    ],
+    "match": "steam.?deck",
+    "wiki": [
+     "Steam Deck"
+    ]
+   }
   },
   {
    "id": "xbox-ally",
    "name": "ROG Xbox Ally",
    "brand": "ASUS ROG",
-   "color": "#107C10",
+   "maker": {
+    "name": "ASUSTeK Computer (marchio Republic of Gamers)",
+    "hq": "Taipei, Taiwan",
+    "site": "https://rog.asus.com/it/"
+   },
+   "partner": "Progettata con Microsoft Xbox",
+   "color": "#7A8B99",
    "tier": "Economico",
+   "gen": "attuale",
+   "released": "ottobre 2025",
    "perf": 100,
-   "apu": "AMD Ryzen Z2 A",
-   "cpu": "4 core / 8 thread Zen 2",
-   "gpu": "8 CU RDNA 2",
-   "ram": "16 GB LPDDR5-6400",
-   "storage": "512 GB",
-   "display": "7\" 1080p IPS 120 Hz VRR",
-   "battery": "60 Wh",
-   "weight": "670 g",
-   "os": "Windows 11 con schermata Xbox",
-   "tdp": "fino a 20 W",
    "price": 599,
    "priceText": "599 €",
    "priceNote": "Prezzo rimasto invariato in Italia",
    "os_tags": [
     "Windows"
    ],
+   "key": {
+    "cpu": "Ryzen Z2 A · 4 core Zen 2",
+    "gpu": "8 CU RDNA 2",
+    "ram": "16 GB LPDDR5-6400",
+    "screen": "7\" IPS 120 Hz",
+    "battery": "60 Wh",
+    "weight": "670 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen Z2 A"
+     ],
+     [
+      "Core / thread",
+      "4 / 8 (Zen 2)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 3,8 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "AMD RDNA 2 integrata"
+     ],
+     [
+      "Unità di calcolo",
+      "8 CU"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16 GB LPDDR5-6400"
+     ],
+     [
+      "SSD",
+      "512 GB M.2 2280"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "60 Wh"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB-C, microSD, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 6, Bluetooth 5.4"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "670 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11 Home con schermata a tutto schermo Xbox"
+     ]
+    ]
+   },
    "pros": [
-    "Il modo più economico per giocare al catalogo PC e Game Pass in portatile",
+    "Il modo più economico per il catalogo PC e Game Pass in portatile",
     "Impugnature comode"
    ],
    "cons": [
@@ -777,8 +3110,7 @@
    "tests": [],
    "testNote": "Chip della stessa classe della Steam Deck: prestazioni simili.",
    "keywords": [
-    "rog xbox ally",
-    "rog ally"
+    "rog xbox ally"
    ],
    "buy": [
     {
@@ -796,52 +3128,159 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Xbox+Ally"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=ROG+Xbox+Ally"
     }
    ],
    "sources": [
     {
-     "name": "Multiplayer.it, rincari Legion Go 2 e ROG Xbox Ally in Italia",
+     "name": "Multiplayer.it: rincari Legion Go 2 e ROG Xbox Ally in Italia",
      "url": "https://multiplayer.it/notizie/lenovo-legion-go-2-prezzi-stelle-rincari-superano-listino-iniziale.html"
     },
     {
-     "name": "Windows Central, migliori PC portatili da gioco",
+     "name": "Windows Central: migliori PC portatili da gioco",
      "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "ROG Xbox Ally"
+    ],
+    "match": "xbox.?ally",
+    "wiki": [
+     "ROG Xbox Ally",
+     "ROG Ally"
+    ]
+   }
   },
   {
    "id": "switch-2",
    "name": "Nintendo Switch 2",
    "brand": "Nintendo",
+   "maker": {
+    "name": "Nintendo",
+    "hq": "Kyoto, Giappone",
+    "site": "https://www.nintendo.com/it-it/"
+   },
    "color": "#E60012",
    "tier": "Console",
+   "gen": "attuale",
+   "released": "5 giugno 2025",
    "perf": null,
-   "apu": "NVIDIA T239 personalizzato",
-   "cpu": "8 core ARM",
-   "gpu": "NVIDIA Ampere con DLSS",
-   "ram": "12 GB",
-   "storage": "256 GB",
-   "display": "7,9\" 1080p LCD 120 Hz, HDR",
-   "battery": "5.220 mAh",
-   "weight": "534 g",
-   "os": "Sistema Nintendo",
-   "tdp": "n.d.",
    "price": 499.99,
    "priceText": "499,99 €",
    "priceNote": "Da 469,99 € a 499,99 € dal 1° settembre 2026",
    "os_tags": [
     "Console"
    ],
+   "key": {
+    "cpu": "NVIDIA T239 · 8 core ARM",
+    "gpu": "NVIDIA Ampere con DLSS",
+    "ram": "12 GB LPDDR5X",
+    "screen": "7,9\" 1080p 120 Hz HDR",
+    "battery": "5.220 mAh",
+    "weight": "534 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "NVIDIA T239 personalizzato"
+     ],
+     [
+      "Core",
+      "8 core ARM Cortex-A78C"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "NVIDIA architettura Ampere"
+     ],
+     [
+      "Upscaling",
+      "DLSS"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "12 GB LPDDR5X"
+     ],
+     [
+      "Archiviazione",
+      "256 GB UFS"
+     ],
+     [
+      "Espansione",
+      "microSD Express"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7,9 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "LCD HDR10"
+     ],
+     [
+      "Frequenza",
+      "fino a 120 Hz con VRR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "5.220 mAh"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB-C, jack 3,5 mm"
+     ],
+     [
+      "TV",
+      "fino a 4K 60 Hz con la base"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "Joy-Con 2 magnetici con modalità mouse"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "534 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Nintendo"
+     ]
+    ]
+   },
    "pros": [
     "Giochi Nintendo esclusivi, ottimizzati per la console",
-    "Leggera, si collega alla TV"
+    "Leggera e si collega alla TV"
    ],
    "cons": [
     "Non gioca il catalogo PC, Steam o Game Pass",
     "Prestazioni non confrontabili con i PC portatili"
    ],
    "tests": [],
-   "testNote": "Console: i giochi sono fatti apposta, quindi non ha senso un confronto in fps con i PC portatili.",
+   "testNote": "Console: i giochi sono fatti apposta, quindi un confronto in fps con i PC portatili non ha senso.",
    "keywords": [
     "switch 2"
    ],
@@ -861,14 +3300,661 @@
     {
      "name": "Idealo",
      "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Nintendo+Switch+2"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Nintendo+Switch+2"
     }
    ],
    "sources": [
     {
-     "name": "Everyeye, nuovo prezzo di Switch 2 in Italia",
+     "name": "Everyeye: nuovo prezzo di Switch 2 in Italia",
      "url": "https://www.everyeye.it/notizie/nintendo-switch-2-aumenta-prezzo-italia-costera-settembre-876754.html"
     }
-   ]
+   ],
+   "photo": {
+    "commons": [
+     "Nintendo Switch 2"
+    ],
+    "match": "switch.?2",
+    "wiki": [
+     "Nintendo Switch 2"
+    ]
+   }
+  },
+  {
+   "id": "rog-ally-x-2024",
+   "name": "ROG Ally X (2024)",
+   "brand": "ASUS ROG",
+   "maker": {
+    "name": "ASUSTeK Computer (marchio Republic of Gamers)",
+    "hq": "Taipei, Taiwan",
+    "site": "https://rog.asus.com/it/"
+   },
+   "color": "#1F1F1F",
+   "tier": "Generazione precedente",
+   "gen": "precedente",
+   "released": "luglio 2024",
+   "perf": 130,
+   "price": null,
+   "priceText": "899 € al lancio",
+   "priceNote": "Sostituita dalla ROG Xbox Ally X: si trova ancora in qualche negozio e usata",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen Z1 Extreme · 8 core",
+    "gpu": "Radeon 780M · 12 CU",
+    "ram": "24 GB LPDDR5X-7500",
+    "screen": "7\" IPS 120 Hz",
+    "battery": "80 Wh",
+    "weight": "678 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen Z1 Extreme"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 4)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 780M"
+     ],
+     [
+      "Unità di calcolo",
+      "12 CU, architettura RDNA 3"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "24 GB LPDDR5X-7500"
+     ],
+     [
+      "SSD",
+      "1 TB M.2 2280"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ],
+     [
+      "Luminosità",
+      "500 nit"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh"
+     ],
+     [
+      "Autonomia",
+      "3 h 04 min nel test batteria 3DMark"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "USB4 + USB-C 3.2, microSD, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 6E, Bluetooth 5.2"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "678 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11 con Armoury Crate SE"
+     ]
+    ]
+   },
+   "pros": [
+    "Ottimo usato, batteria da 80 Wh",
+    "Ancora valida per quasi tutti i giochi"
+   ],
+   "cons": [
+    "Chip di una generazione fa",
+    "Fuori produzione"
+   ],
+   "tests": [
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 9,
+     "settings": "1080p Alto, 17 W, senza upscaling",
+     "src": "Tom's Guide"
+    }
+   ],
+   "keywords": [
+    "rog ally x",
+    "rog ally"
+   ],
+   "buy": [
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=ROG+Ally+X"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=ROG+Ally+X&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Ally+X"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=ROG+Ally+X"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Tom's Guide: recensione MSI Claw A8",
+     "url": "https://www.tomsguide.com/gaming/handheld-gaming/msi-claw-a8-review"
+    }
+   ],
+   "photo": {
+    "commons": [
+     "ROG Ally X",
+     "ROG Ally"
+    ],
+    "match": "rog.?ally",
+    "wiki": [
+     "ROG Ally"
+    ]
+   }
+  },
+  {
+   "id": "legion-go-2023",
+   "name": "Lenovo Legion Go (2023)",
+   "brand": "Lenovo",
+   "maker": {
+    "name": "Lenovo Group (linea Legion)",
+    "hq": "Pechino, Cina e Hong Kong",
+    "site": "https://www.lenovo.com/it/it/"
+   },
+   "color": "#7A1712",
+   "tier": "Generazione precedente",
+   "gen": "precedente",
+   "released": "novembre 2023",
+   "perf": 128,
+   "price": null,
+   "priceText": "799 € al lancio",
+   "priceNote": "Sostituita dalla Legion Go 2: ottima da cercare usata",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen Z1 Extreme · 8 core",
+    "gpu": "Radeon 780M · 12 CU",
+    "ram": "16 GB LPDDR5X-7500",
+    "screen": "8,8\" 1600p 144 Hz",
+    "battery": "49,2 Wh",
+    "weight": "854 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen Z1 Extreme"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 4)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 780M"
+     ],
+     [
+      "Unità di calcolo",
+      "12 CU, architettura RDNA 3"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16 GB LPDDR5X-7500"
+     ],
+     [
+      "SSD",
+      "512 GB o 1 TB M.2 2242"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8,8 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "2560 x 1600"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "144 Hz"
+     ],
+     [
+      "Luminosità",
+      "500 nit"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "49,2 Wh"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB4, microSD, jack 3,5 mm"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "controller staccabili, modalità FPS verticale, touchpad"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "854 g con controller"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Schermo enorme ad alta risoluzione",
+    "Controller staccabili"
+   ],
+   "cons": [
+    "Batteria piccola",
+    "Pesante"
+   ],
+   "tests": [],
+   "keywords": [
+    "legion go"
+   ],
+   "buy": [
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Lenovo+Legion+Go"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Lenovo+Legion+Go&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Lenovo+Legion+Go"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Lenovo+Legion+Go"
+    }
+   ],
+   "sources": [],
+   "photo": {
+    "commons": [
+     "Lenovo Legion Go"
+    ],
+    "match": "legion.?go",
+    "wiki": [
+     "Legion Go"
+    ]
+   }
+  },
+  {
+   "id": "rog-ally-2023",
+   "name": "ROG Ally (2023)",
+   "brand": "ASUS ROG",
+   "maker": {
+    "name": "ASUSTeK Computer (marchio Republic of Gamers)",
+    "hq": "Taipei, Taiwan",
+    "site": "https://rog.asus.com/it/"
+   },
+   "color": "#E8E8E8",
+   "tier": "Generazione precedente",
+   "gen": "precedente",
+   "released": "giugno 2023",
+   "perf": 120,
+   "price": null,
+   "priceText": "799 € al lancio (Z1 Extreme)",
+   "priceNote": "Fuori produzione: si trova usata a buon prezzo",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen Z1 Extreme · 8 core",
+    "gpu": "Radeon 780M · 12 CU",
+    "ram": "16 GB LPDDR5-6400",
+    "screen": "7\" IPS 120 Hz",
+    "battery": "40 Wh",
+    "weight": "608 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen Z1 Extreme"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 4)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "Alternativa",
+      "Ryzen Z1 (6 core, 4 CU)"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 780M"
+     ],
+     [
+      "Unità di calcolo",
+      "12 CU, architettura RDNA 3"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16 GB LPDDR5-6400"
+     ],
+     [
+      "SSD",
+      "512 GB M.2 2230"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "40 Wh"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "608 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Leggera e veloce per il prezzo dell'usato"
+   ],
+   "cons": [
+    "Batteria piccola",
+    "Lo slot microSD dei primi lotti aveva problemi"
+   ],
+   "tests": [],
+   "keywords": [
+    "rog ally"
+   ],
+   "buy": [
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=ROG+Ally+Z1+Extreme"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=ROG+Ally+Z1+Extreme&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Ally+Z1+Extreme"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=ROG+Ally+Z1+Extreme"
+    }
+   ],
+   "sources": [],
+   "photo": {
+    "commons": [
+     "ROG Ally"
+    ],
+    "match": "rog.?ally",
+    "wiki": [
+     "ROG Ally"
+    ]
+   }
+  },
+  {
+   "id": "steam-deck-lcd",
+   "name": "Steam Deck LCD",
+   "brand": "Valve",
+   "maker": {
+    "name": "Valve Corporation",
+    "hq": "Bellevue, Washington, Stati Uniti",
+    "site": "https://store.steampowered.com/steamdeck"
+   },
+   "color": "#4C6B8A",
+   "tier": "Generazione precedente",
+   "gen": "precedente",
+   "released": "febbraio 2022",
+   "perf": 95,
+   "price": null,
+   "priceText": "fuori produzione",
+   "priceNote": "Valve ha smesso di venderla: si trova usata",
+   "os_tags": [
+    "SteamOS"
+   ],
+   "key": {
+    "cpu": "AMD Aerith · 4 core Zen 2",
+    "gpu": "8 CU RDNA 2",
+    "ram": "16 GB LPDDR5-5500",
+    "screen": "7\" IPS 60 Hz",
+    "battery": "40 Wh",
+    "weight": "669 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "APU AMD personalizzato (Aerith, 7 nm)"
+     ],
+     [
+      "Core / thread",
+      "4 / 8 (Zen 2)"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "AMD RDNA 2 integrata"
+     ],
+     [
+      "Unità di calcolo",
+      "8 CU"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16 GB LPDDR5-5500"
+     ],
+     [
+      "SSD",
+      "64 GB eMMC, 256 o 512 GB NVMe"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1280 x 800"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "60 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "40 Wh"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "669 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "SteamOS"
+     ]
+    ]
+   },
+   "pros": [
+    "Prezzo dell'usato bassissimo",
+    "Stesso catalogo della OLED"
+   ],
+   "cons": [
+    "Schermo e batteria peggiori della OLED"
+   ],
+   "tests": [],
+   "keywords": [
+    "steam deck"
+   ],
+   "buy": [
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Steam+Deck+LCD"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Steam+Deck+LCD&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Steam+Deck+LCD"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Steam+Deck+LCD"
+    }
+   ],
+   "sources": [],
+   "photo": {
+    "commons": [
+     "Steam Deck"
+    ],
+    "match": "steam.?deck",
+    "wiki": [
+     "Steam Deck"
+    ]
+   }
   }
  ]
 }
