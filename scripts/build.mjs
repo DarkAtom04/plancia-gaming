@@ -721,6 +721,8 @@ async function main() {
   await saveState(st);
   const okFeeds = sources.filter(s => s.ok).length;
   log(`notizie ${news.length} (testate ok ${okFeeds}/${sources.length}), offerte ${deals.length}, gratis ${free.length}, uscite ${releases.length}, video ${videos.length}, tendenze ${data.trends.map(t => t.label).join(", ")}, in ${Date.now() - t0} ms`);
+  const perStore = {}; for (const d of deals) perStore[d.store] = (perStore[d.store] || 0) + 1;
+  log("offerte per store: " + Object.entries(perStore).sort((a, b) => b[1] - a[1]).map(([k, v]) => k + " " + v).join(", "));
   for (const x of health) if (!x.ok && !CFG.feeds.some(f => f.id === x.id) && !/chiave non impostata/.test(x.error || "")) log(`fonte non riuscita: ${x.name} → ${x.error || "?"}`);
   if (okFeeds === 0 && !FIXTURES) { log("Nessuna testata raggiungibile: controllo i dettagli qui sotto"); for (const h of health) log(JSON.stringify(h)); }
 }
