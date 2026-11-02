@@ -649,15 +649,16 @@ async function steamImages(items, st, max) {
 async function handheldPhotos(HH, st) {
   st.hhPhoto ||= {};
   await pool(HH.devices || [], 3, async d => {
-    const c = st.hhPhoto[d.id];
-    if (c && NOW.getTime() - Date.parse(c.at) < (c.img ? 7 : 1) * 864e5 && !FIXTURES) { if (c.img) Object.assign(d, { photoUrl: c.img, photoPage: c.page, photoTitle: c.title }); return; }
+    const c = st.hhPhoto[d.id]; const P0 = d.photo || {};
+    if (c && /fps|kbit|\(\d{3,4}p/i.test(c.title || "")) delete st.hhPhoto[d.id];
+    else if (c && NOW.getTime() - Date.parse(c.at) < (c.img ? 7 : 1) * 864e5 && !FIXTURES) { if (c.img) { Object.assign(d, { photoUrl: c.img, photoPage: c.page, photoTitle: c.title }); if (P0.exact) d.photoExact = new RegExp(P0.exact, "i").test(c.title || ""); } return; }
     const P = d.photo || {}; const re = P.match ? new RegExp(P.match, "i") : null; let res = { img: "", at: NOW.toISOString() };
     for (const q of P.commons || []) {
       if (res.img) break;
       try {
         const j = await fetchJSON(`https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=${encodeURIComponent(q)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=900`, { headers: WIKI_H });
         const pages = Object.values((j.query && j.query.pages) || {}).sort((a, b) => (a.index || 0) - (b.index || 0));
-        const hit = pages.find(p => (!re || re.test(p.title)) && p.imageinfo && /jpe?g|png|webp/.test(p.imageinfo[0].mime || "") && !/logo|icon|screenshot|box art/i.test(p.title));
+        const hit = pages.find(p => (!re || re.test(p.title)) && p.imageinfo && /jpe?g|png|webp/.test(p.imageinfo[0].mime || "") && !/logo|icon|screenshot|box art|fps|kbit|\bAAC\b|\bAV1\b|\(\d{3,4}p|youtube|video|\.webm|\.ogv/i.test(p.title));
         if (hit) res = { ...res, img: hit.imageinfo[0].thumburl || hit.imageinfo[0].url, page: hit.imageinfo[0].descriptionurl || "", title: hit.title.replace(/^File:/, "").replace(/\.\w+$/, "") };
       } catch {}
     }
@@ -665,11 +666,12 @@ async function handheldPhotos(HH, st) {
       try {
         const j = await fetchJSON(`https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&pilicense=any&titles=${encodeURIComponent(P.wiki.join("|"))}`, { headers: WIKI_H });
         const pages = Object.values((j.query && j.query.pages) || {});
-        for (const t of P.wiki) { const pg = pages.find(p => p.title && p.title.toLowerCase() === t.toLowerCase() && p.thumbnail); if (pg) { res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; break; } }
-        if (!res.img) { const pg = pages.find(p => p.thumbnail); if (pg) res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; }
+        for (const t of P.wiki) { const pg = pages.find(p => p.title && p.title.toLowerCase() === t.toLowerCase() && p.thumbnail && !/logo|\.svg/i.test(p.thumbnail.source)); if (pg) { res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; break; } }
+        if (!res.img) { const pg = pages.find(p => p.thumbnail && !/logo|\.svg/i.test(p.thumbnail.source)); if (pg) res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; }
       } catch {}
     }
     st.hhPhoto[d.id] = res; if (res.img) Object.assign(d, { photoUrl: res.img, photoPage: res.page, photoTitle: res.title });
+    if (d.photoUrl && P.exact) d.photoExact = new RegExp(P.exact, "i").test(d.photoTitle || "");
   });
   const ok = (HH.devices || []).filter(d => d.photoUrl).length; log(`foto handheld: ${ok}/${(HH.devices || []).length} → ` + (HH.devices || []).map(d => d.id + "=" + (d.photoTitle || "-")).join("; "));
 }

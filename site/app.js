@@ -368,7 +368,7 @@ const tierCls = t => "t-" + norm(t || "").replace(/\W+/g, "");
 function hhCard(x, rank, max) {
   const k = x.key || {}; const on = st.hhCmp.includes(x.id); const nN = hhNews(x).length;
   return `<article class="hhc" style="--c:${h(x.color)}">
-    <button type="button" class="hhc-pic" data-hhopen="${h(x.id)}" aria-label="Apri la scheda di ${h(x.name)}">${rank ? `<span class="hhc-rank ${rank <= 3 ? "r" + rank : ""}">${rank}</span>` : ""}<span class="tier ${tierCls(x.tier)}">${h(x.tier)}</span>${hhPhoto(x)}</button>
+    <button type="button" class="hhc-pic" data-hhopen="${h(x.id)}" aria-label="Apri la scheda di ${h(x.name)}">${rank ? `<span class="hhc-rank ${rank <= 3 ? "r" + rank : ""}">${rank}</span>` : ""}<span class="tier ${tierCls(x.tier)}">${h(x.tier)}</span>${hhPhoto(x)}${x.photoUrl && x.photoExact === false ? '<span class="ph-note">foto indicativa</span>' : ""}</button>
     <div class="hhc-body">
       <div class="hhc-maker">${h(x.brand)} · ${h(String((x.maker || {}).hq || "").split(",").pop().trim())}${x.released ? " · " + h(x.released) : ""}</div>
       <h3><button type="button" data-hhopen="${h(x.id)}">${h(x.name)}</button></h3>
@@ -386,7 +386,7 @@ function hhModal(x) {
   const groups = Object.entries(x.specs || {}).map(([g, rows]) => `<div class="spg"><h4>${h(g)}</h4><table class="spec">${rows.map(([a, b]) => `<tr><th>${h(a)}</th><td>${h(b)}</td></tr>`).join("")}</table></div>`).join("");
   return `<div class="hhm" role="dialog" aria-modal="true" aria-label="${h(x.name)}"><div class="hhm-shade" data-hhclose="1"></div><div class="hhm-panel" style="--c:${h(x.color)}">
     <div class="hhm-bar"><button type="button" class="hhm-x" data-hhclose="1" aria-label="Chiudi">✕</button></div>
-    <div class="hhm-hero"><figure class="hhm-photo">${hhPhoto(x, true)}${x.photoUrl ? `<figcaption>Foto: <a ${ext(x.photoPage)}>${h(x.photoTitle || "Wikimedia")}</a></figcaption>` : ""}</figure>
+    <div class="hhm-hero"><figure class="hhm-photo">${hhPhoto(x, true)}${x.photoUrl ? `<figcaption>${x.photoExact === false ? "Foto indicativa di un modello simile" : "Foto"}: <a ${ext(x.photoPage)}>${h(x.photoTitle || "Wikimedia")}</a> (Wikimedia)</figcaption>` : ""}</figure>
       <div class="hhm-head"><div class="hh-top"><span class="tier ${tierCls(x.tier)}">${h(x.tier)}</span>${(x.os_tags || []).map(o => `<span class="pill">${h(o)}</span>`).join("")}</div>
         <h2>${h(x.name)}</h2>
         <p class="maker">Prodotto da <b>${h(m.name || x.brand)}</b><br>Sede: ${h(m.hq || "n.d.")}${m.site ? ` · <a ${ext(m.site)}>sito ufficiale</a>` : ""}${x.partner ? `<br>${h(x.partner)}` : ""}<br>Uscita: <b>${h(x.released || "n.d.")}</b></p>
