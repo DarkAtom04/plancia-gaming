@@ -320,12 +320,15 @@ export function parseSteamSearch(html) {
     const title = stripHtml((body.match(/<span class="title">([\s\S]*?)<\/span>/) || [])[1] || "");
     if (!title) continue;
     const img = (body.match(/<img[^>]+src="([^"]+)"/) || [])[1] || "";
-    const pct = (body.match(/discount_pct">\s*-?(\d+)%/) || [])[1];
-    const orig = (body.match(/discount_original_price">([^<]+)</) || [])[1];
-    const fin = (body.match(/discount_final_price">([^<]+)</) || [])[1];
+    let pct = (body.match(/class="[^"]*discount_pct[^"]*">\s*-?(\d+)%/) || body.match(/data-discount="(\d+)"/) || [])[1];
+    const orig = (body.match(/class="[^"]*discount_original_price[^"]*">([^<]+)</) || [])[1];
+    let fin = (body.match(/class="[^"]*discount_final_price[^"]*">([^<]+)</) || [])[1];
+    const cents = (body.match(/data-price-final="(\d+)"/) || [])[1];
+    if (!fin && cents) fin = (+cents / 100).toFixed(2);
     const rel = stripHtml((body.match(/search_released[^>]*>([\s\S]*?)<\/div>/) || [])[1] || "");
     const header = kind === "app" ? `https://cdn.akamai.steamstatic.com/steam/apps/${id}/header.jpg` : img.replace(/capsule_sm_120/, "header");
-    out.push({ title, id: +id, kind, img: header || img, cut: pct ? +pct : 0, regular: priceNum(orig), price: priceNum(fin), released: rel, url: `https://store.steampowered.com/${kind}/${id}/` });
+    const price = priceNum(fin); let regular = priceNum(orig); if (regular == null && price != null && pct > 0) regular = Math.round(price / (1 - pct / 100) * 100) / 100;
+    out.push({ title, id: +id, kind, img: header || img, cut: pct ? +pct : 0, regular, price, released: rel, url: `https://store.steampowered.com/${kind}/${id}/` });
   }
   return out;
 }
@@ -491,7 +494,8 @@ async function collectDeals(featured, health, st) {
   const steam = [];
   for (const k of ["specials", "top_sellers", "new_releases"]) for (const x of (featured[k] && featured[k].items) || []) if (x.discounted && x.discount_percent > 0) steam.push(steamItem(x));
   const top = new Set(((featured.top_sellers || {}).items || []).map(x => x.id));
-  const s1 = [...await steamSearch("specials=1&start=0&count=100", health, "offerte"), ...await steamSearch("specials=1&start=100&count=100", health, "offerte 2")];
+  const s1 = [...await steamSearch("specials=1&start=0&count=100", health, "offerte"), ...await steamSearch("specials=1&start=100&count=100", health, "offerte 2"), ...await steamSearch("specials=1&start=200&count=100", health, "offerte 3")];
+  if (s1.length && !s1.some(x => x.price != null)) log("Steam: risultati senza prezzo, esempio:", JSON.stringify(s1[0]));
   s1.forEach((x, k) => { if (x.cut > 0 && x.price != null && x.kind === "app") steam.push({ title: x.title, store: "Steam", price: x.price, regular: x.regular, cut: x.cut, img: x.img, url: x.url, appid: x.id, plats: ["PC"], rank: k }); });
   for (const d of steam) if (top.has(d.appid)) d.bestseller = true;
   const [gog, itad, nin, xbox, ps, cs] = await Promise.all([gogDeals(health), itadDeals(health),
