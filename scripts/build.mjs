@@ -387,10 +387,14 @@ async function cachedSource(st, health, id, name, minutes, fn) {
 const CS_NAMES = { 2: "GamersGate", 3: "Green Man Gaming", 8: "EA app", 11: "Humble Store", 13: "Ubisoft Store", 15: "Fanatical", 21: "WinGameStore", 23: "GameBillet", 24: "Voidu", 25: "Epic Games Store", 27: "Gamesplanet", 28: "Gamesload", 29: "2Game", 30: "IndieGala", 31: "Blizzard", 33: "DLGamer", 34: "Noctre", 35: "DreamGame" };
 async function cheapShark() {
   let names = { ...CS_NAMES };
-  try { const L = await fetchJSON("https://www.cheapshark.com/api/1.0/stores"); for (const x of L || []) if (+x.isActive === 1 && CS_NAMES[x.storeID] === undefined && !["1", "7"].includes(String(x.storeID))) names[x.storeID] = x.storeName; else if (+x.isActive === 0) delete names[x.storeID]; } catch {}
+  try { const L = await fetchJSON("https://www.cheapshark.com/api/1.0/stores", { headers: { "user-agent": "PlanciaGaming/1.0 (+https://github.com/DarkAtom04/plancia-gaming)" } }); for (const x of L || []) if (+x.isActive === 1 && CS_NAMES[x.storeID] === undefined && !["1", "7"].includes(String(x.storeID))) names[x.storeID] = x.storeName; else if (+x.isActive === 0) delete names[x.storeID]; } catch {}
   const ids = Object.keys(names); const out = []; const errs = [];
   await pool(ids, 2, async id => {
-    let L; try { L = await fetchJSON(`https://www.cheapshark.com/api/1.0/deals?storeID=${id}&pageSize=60&sortBy=Deal%20Rating&onSale=1`); } catch (e) { errs.push(e.message); return; }
+    let L = null;
+    for (const u of [`https://www.cheapshark.com/api/1.0/deals?storeID=${id}&pageSize=60&sortBy=Deal%20Rating&onSale=1`, `https://www.cheapshark.com/api/1.0/deals?storeID=${id}&pageSize=60`]) {
+      try { L = await fetchJSON(u, { headers: { "user-agent": "PlanciaGaming/1.0 (+https://github.com/DarkAtom04/plancia-gaming)", "accept-language": "en" } }); break; } catch (e) { errs.push(e.message); }
+    }
+    if (!L) return;
     (Array.isArray(L) ? L : []).forEach((x, k) => {
       const price = +x.salePrice, regular = +x.normalPrice; if (!(regular > price)) return;
       out.push({ title: decode(x.title), store: names[id], price, regular, cut: Math.round(+x.savings || (1 - price / regular) * 100), cur: "USD",
@@ -420,13 +424,29 @@ async function nintendoDeals() {
   return out;
 }
 // Microsoft Store / Xbox: elenco "Offerte" e dettagli prezzi in euro
-async function xboxDeals() {
+// ID dei prodotti dalle pagine di xbox.com (riserva se l'elenco Microsoft non risponde)
+async function xboxPageIds(urls) {
+  const ids = []; let last = "";
+  for (const u of urls) {
+    const r = await fetchText(u, { accept: "text/html" }); if (!r.ok) { last = `HTTP ${r.status}${r.error ? " " + r.error : ""}`; continue; }
+    for (const m of r.text.matchAll(/\/games\/store\/[^"'\/\s]+\/([A-Z0-9]{12})\b/g)) if (!ids.includes(m[1])) ids.push(m[1]);
+    for (const m of r.text.matchAll(/"(?:productId|ProductId|bigId)"\s*:\s*"([A-Z0-9]{12})"/g)) if (!ids.includes(m[1])) ids.push(m[1]);
+  }
+  if (!ids.length) throw new Error("pagine Xbox senza giochi" + (last ? " (" + last + ")" : ""));
+  return ids;
+}
+async function recoIds(list, max) {
   const ids = [];
   for (const skip of [0, 200]) {
-    const j = await fetchJSON(`https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/Deal?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=200&skipitems=${skip}`);
+    const j = await fetchJSON(`https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/${list}?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=200&skipitems=${skip}`);
     for (const it of j.Items || []) if (it.Id && !ids.includes(it.Id)) ids.push(it.Id);
-    if (!j.Items || j.Items.length < 200) break;
+    if (!j.Items || j.Items.length < 200 || ids.length >= max) break;
   }
+  return ids;
+}
+async function xboxDeals() {
+  let ids = [];
+  try { ids = await recoIds("Deal", 400); } catch (e) { ids = await xboxPageIds(["https://www.xbox.com/it-IT/promotions/sales/sales-and-specials", "https://www.xbox.com/it-IT/games/browse/DynamicChannel.GameDeals"]); }
   const chunks = []; for (let i = 0; i < ids.length; i += 20) chunks.push(ids.slice(i, i + 20));
   const out = [];
   await pool(chunks, 3, async ch => {
@@ -551,8 +571,10 @@ async function nintendoUpcoming() {
   }).filter(Boolean);
 }
 async function xboxUpcoming() {
-  const j = await fetchJSON("https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/ComingSoon?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=120");
-  const ids = (j.Items || []).map(x => x.Id).filter(Boolean); const out = [];
+  let ids = [];
+  try { const j = await fetchJSON("https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/ComingSoon?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=120"); ids = (j.Items || []).map(x => x.Id).filter(Boolean); }
+  catch (e) { ids = (await xboxPageIds(["https://www.xbox.com/it-IT/games/browse/DynamicChannel.ComingSoon", "https://www.xbox.com/it-IT/games/coming-soon"])).slice(0, 120); }
+  const out = [];
   const chunks = []; for (let i = 0; i < ids.length; i += 20) chunks.push(ids.slice(i, i + 20));
   await pool(chunks, 3, async ch => {
     const r = await fetchJSON(`https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=${ch.join(",")}&market=IT&languages=it-IT&MS-CV=DGU1mcuYo0WMMp%2BF.1`);
@@ -699,6 +721,7 @@ async function main() {
   await saveState(st);
   const okFeeds = sources.filter(s => s.ok).length;
   log(`notizie ${news.length} (testate ok ${okFeeds}/${sources.length}), offerte ${deals.length}, gratis ${free.length}, uscite ${releases.length}, video ${videos.length}, tendenze ${data.trends.map(t => t.label).join(", ")}, in ${Date.now() - t0} ms`);
+  for (const x of health) if (!x.ok && !CFG.feeds.some(f => f.id === x.id) && !/chiave non impostata/.test(x.error || "")) log(`fonte non riuscita: ${x.name} → ${x.error || "?"}`);
   if (okFeeds === 0 && !FIXTURES) { log("Nessuna testata raggiungibile: controllo i dettagli qui sotto"); for (const h of health) log(JSON.stringify(h)); }
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {
