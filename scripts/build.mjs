@@ -365,12 +365,21 @@ async function itadDeals(health) {
       if (!r.ok) throw new Error(`HTTP ${r.status}${r.error ? " " + r.error : ""} ${String(r.text || "").replace(/\s+/g, " ").slice(0, 160)}`.trim());
       const j = JSON.parse(r.text); list.push(...(j.list || [])); if (!j.hasMore) break;
     }
+    // negozi che nelle "tendenze" compaiono poco: Ubisoft, EA, Epic, Microsoft, Battle.net
+    try {
+      const shops = await fetchJSON(`https://api.isthereanydeal.com/service/shops/v1?country=${CFG.itad.country}`, { headers: H });
+      const ids = (Array.isArray(shops) ? shops : []).filter(x => /ubisoft|^ea\b|ea app|electronic arts|origin|epic|microsoft|blizzard|battle\.net/i.test(x.title || "")).map(x => x.id);
+      if (ids.length) {
+        const r = await fetchText(`https://api.isthereanydeal.com/deals/v2?country=${CFG.itad.country}&limit=200&sort=-cut&shops=${ids.join(",")}`, { headers: H });
+        if (r.ok) list.push(...(JSON.parse(r.text).list || []));
+      }
+    } catch {}
     const out = list.filter(x => x.type === "game" || !x.type).map(x => {
       const d = x.deal || {}; const a = x.assets || {};
       return { title: x.title, store: d.shop && d.shop.name || "Store", price: d.price && d.price.amount, regular: d.regular && d.regular.amount, cut: d.cut || 0,
         img: a.banner600 || a.banner400 || a.banner300 || a.boxart || "", url: d.url, until: d.expiry || null, rank: list.indexOf(x),
         lowest: !!(d.historyLow && d.historyLow.amount != null && d.price && d.price.amount <= d.historyLow.amount), plats: ["PC"] };
-    }).filter(d => d.title && d.url);
+    }).filter(d => d.title && d.url && !/\s(US|UK|FR|DE|AU|CA|PL)$/.test(d.store));
     health.push({ id: "itad", name: "IsThereAnyDeal", ok: true, count: out.length }); return out;
   } catch (e) { health.push({ id: "itad", name: "IsThereAnyDeal", ok: false, error: String(e.message) }); return []; }
 }
@@ -505,6 +514,11 @@ async function collectDeals(featured, health, st) {
     cachedSource(st, health, "playstation", "PlayStation Store", 30, psDeals), cachedSource(st, health, "cheapshark", "Altri store PC (CheapShark)", 30, cheapShark)]);
   // ITAD (in euro) prima di CheapShark (in dollari): a parità di gioco e store vince quello in euro
   const all = [...steam, ...gog, ...itad, ...nin, ...xbox, ...ps, ...cs].filter(d => typeof d.price === "number" && isFinite(d.price));
+  const canon = n => { const t = String(n || "Store").trim();
+    return /green\s*man/i.test(t) ? "Green Man Gaming" : /indie\s*gala/i.test(t) ? "IndieGala" : /dream\s*game/i.test(t) ? "DreamGame" : /epic/i.test(t) ? "Epic Games Store"
+      : /games\s*planet/i.test(t) ? "Gamesplanet" : /ubisoft|uplay/i.test(t) ? "Ubisoft Store" : /^ea\b|origin|electronic arts/i.test(t) ? "EA app" : /humble/i.test(t) ? "Humble Store"
+      : /microsoft/i.test(t) ? "Microsoft Store" : /^gog/i.test(t) ? "GOG" : /^steam$/i.test(t) ? "Steam" : /battle\.?net|blizzard/i.test(t) ? "Battle.net" : t; };
+  for (const d of all) d.store = canon(d.store);
   const storeKey = s => String(s).toLowerCase().replace(/ubisoft.*|uplay/, "ubisoft").replace(/^ea.*|origin/, "ea").replace(/humble.*/, "humble").replace(/green man.*|gmg/, "gmg").replace(/epic.*/, "epic").replace(/\W+/g, "");
   const seen = new Map(); const out = [];
   for (const d of all) { const k = normTitle(d.title) + "|" + storeKey(d.store); if (seen.has(k)) { const o = seen.get(k); if (!o.until && d.until) o.until = d.until; if (!o.img && d.img) o.img = d.img; continue; } seen.set(k, d); out.push(d); }
@@ -514,7 +528,7 @@ async function collectDeals(featured, health, st) {
   // tieni un numero ragionevole per store, privilegiando i più popolari
   const per = new Map(); const res = [];
   for (const d of out.sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999))) { const k = storeKey(d.store); const n = per.get(k) || 0; const cap = 320; if (n >= cap) continue; per.set(k, n + 1); res.push(d); }
-  return res.slice(0, 2200);
+  return res.slice(0, 3200);
 }
 
 /* ---------------------------------------------------------- gratis */
