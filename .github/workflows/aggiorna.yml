@@ -47,7 +47,10 @@ jobs:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
     steps:
+      # sempre l'ultima versione del sito, anche se il giro era stato prenotato prima di una modifica
       - uses: actions/checkout@v4
+        with:
+          ref: main
 
       - uses: actions/setup-node@v4
         with:

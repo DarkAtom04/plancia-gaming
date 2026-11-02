@@ -771,7 +771,12 @@ function trends(news) {
 /* ------------------------------------------------------------- main */
 async function copySite() {
   await fs.mkdir(OUT, { recursive: true });
-  for (const f of await fs.readdir(path.join(ROOT, "site"))) await fs.copyFile(path.join(ROOT, "site", f), path.join(OUT, f));
+  // versione nei link a CSS e JS: il browser scarica subito la grafica nuova dopo ogni modifica
+  let ver = ""; try { const crypto = await import("node:crypto"); const hsh = crypto.createHash("sha1"); for (const f of ["app.js", "style.css"]) hsh.update(await fs.readFile(path.join(ROOT, "site", f))); ver = hsh.digest("hex").slice(0, 10); } catch {}
+  for (const f of await fs.readdir(path.join(ROOT, "site"))) {
+    if (f === "index.html" && ver) { const t = (await fs.readFile(path.join(ROOT, "site", f), "utf8")).replace('href="style.css"', `href="style.css?v=${ver}"`).replace('src="app.js"', `src="app.js?v=${ver}"`); await fs.writeFile(path.join(OUT, f), t); }
+    else await fs.copyFile(path.join(ROOT, "site", f), path.join(OUT, f));
+  }
 }
 async function main() {
   const t0 = Date.now(); const st = await loadState(); st.steamRel ||= {}; const health = [];
