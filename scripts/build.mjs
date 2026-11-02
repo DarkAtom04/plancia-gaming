@@ -359,9 +359,11 @@ async function itadDeals(health) {
   if (!ITAD_KEY) { health.push({ id: "itad", name: "IsThereAnyDeal", ok: false, error: "chiave non impostata (facoltativa)" }); return []; }
   try {
     const list = [];
+    const H = { "ITAD-API-Key": ITAD_KEY, "user-agent": "PlanciaGaming/1.0 (+https://github.com/DarkAtom04/plancia-gaming)", accept: "application/json" };
     for (const offset of [0, 200, 400]) {
-      const j = await fetchJSON(`https://api.isthereanydeal.com/deals/v2?key=${encodeURIComponent(ITAD_KEY)}&country=${CFG.itad.country}&limit=200&offset=${offset}&sort=-trending`);
-      list.push(...(j.list || [])); if (!j.hasMore) break;
+      const r = await fetchText(`https://api.isthereanydeal.com/deals/v2?country=${CFG.itad.country}&limit=200&offset=${offset}&sort=-trending`, { headers: H });
+      if (!r.ok) throw new Error(`HTTP ${r.status}${r.error ? " " + r.error : ""} ${String(r.text || "").replace(/\s+/g, " ").slice(0, 160)}`.trim());
+      const j = JSON.parse(r.text); list.push(...(j.list || [])); if (!j.hasMore) break;
     }
     const out = list.filter(x => x.type === "game" || !x.type).map(x => {
       const d = x.deal || {}; const a = x.assets || {};
