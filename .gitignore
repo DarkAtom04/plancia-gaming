@@ -3,3 +3,5 @@ state/
 node_modules/
 test/out/
 .DS_Store
+test/shots/
+test/out-state.json
