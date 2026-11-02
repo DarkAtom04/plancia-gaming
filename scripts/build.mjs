@@ -512,7 +512,7 @@ async function collectDeals(featured, health, st) {
   // tieni un numero ragionevole per store, privilegiando i più popolari
   const per = new Map(); const res = [];
   for (const d of out.sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999))) { const k = storeKey(d.store); const n = per.get(k) || 0; const cap = 320; if (n >= cap) continue; per.set(k, n + 1); res.push(d); }
-  return res.slice(0, 1600);
+  return res.slice(0, 2200);
 }
 
 /* ---------------------------------------------------------- gratis */
