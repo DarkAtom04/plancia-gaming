@@ -671,7 +671,7 @@ async function handheldPhotos(HH, st) {
     }
     st.hhPhoto[d.id] = res; if (res.img) Object.assign(d, { photoUrl: res.img, photoPage: res.page, photoTitle: res.title });
   });
-  const ok = (HH.devices || []).filter(d => d.photoUrl).length; log(`foto handheld: ${ok}/${(HH.devices || []).length}`);
+  const ok = (HH.devices || []).filter(d => d.photoUrl).length; log(`foto handheld: ${ok}/${(HH.devices || []).length} → ` + (HH.devices || []).map(d => d.id + "=" + (d.photoTitle || "-")).join("; "));
 }
 /* ---------------------------------------------------------- uscite */
 async function collectReleases(featured, st, health) {
