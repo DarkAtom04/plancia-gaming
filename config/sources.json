@@ -1,45 +1,433 @@
 {
-  "feeds": [
-    { "id": "multiplayer", "name": "Multiplayer.it", "home": "https://multiplayer.it/", "color": "#E4002B", "cat": "gaming",
-      "feeds": ["https://multiplayer.it/feed/rss/", "https://multiplayer.it/feed/rss/notizie/"] },
-    { "id": "everyeye", "name": "Everyeye.it", "home": "https://www.everyeye.it/", "color": "#0A66C2", "cat": "gaming",
-      "feeds": ["https://www.everyeye.it/feed_news_rss.asp", "https://www.everyeye.it/feed/"] },
-    { "id": "ign", "name": "IGN Italia", "home": "https://it.ign.com/", "color": "#BF1313", "cat": "gaming",
-      "feeds": ["https://it.ign.com/feed.xml"] },
-    { "id": "spaziogames", "name": "SpazioGames", "home": "https://www.spaziogames.it/", "color": "#F28C00", "cat": "gaming",
-      "feeds": ["https://www.spaziogames.it/feed", "https://www.spaziogames.it/feed/"] },
-    { "id": "eurogamer", "name": "Eurogamer.it", "home": "https://www.eurogamer.it/", "color": "#1C9AD6", "cat": "gaming",
-      "feeds": ["https://www.eurogamer.it/feed", "https://www.eurogamer.it/feed/news"] },
-    { "id": "tgm", "name": "The Games Machine", "home": "https://www.thegamesmachine.it/", "color": "#D7263D", "cat": "gaming",
-      "feeds": ["https://www.thegamesmachine.it/feed/"] },
-    { "id": "gamesvillage", "name": "GamesVillage", "home": "https://www.gamesvillage.it/", "color": "#7AB800", "cat": "gaming",
-      "feeds": ["https://www.gamesvillage.it/feed/"] },
-    { "id": "gamereactor", "name": "Gamereactor", "home": "https://www.gamereactor.it/", "color": "#E2001A", "cat": "gaming",
-      "feeds": ["https://www.gamereactor.it/rss/rss.php?texttype=4", "https://www.gamereactor.it/rss/rss.php"] },
-    { "id": "nintendon", "name": "Nintendon", "home": "https://www.nintendon.it/", "color": "#E60012", "cat": "gaming",
-      "feeds": ["https://www.nintendon.it/feed/"] },
-    { "id": "playstationbit", "name": "PlayStationBit", "home": "https://www.playstationbit.com/", "color": "#003791", "cat": "gaming",
-      "feeds": ["https://www.playstationbit.com/feed/"] },
-    { "id": "xboxdynasty", "name": "Xbox Dynasty", "home": "https://www.xboxdynasty.it/", "color": "#107C10", "cat": "gaming",
-      "feeds": ["https://www.xboxdynasty.it/feed/"] },
-    { "id": "tomshw", "name": "Tom's Hardware", "home": "https://www.tomshw.it/", "color": "#E30613", "cat": "hardware",
-      "feeds": ["https://www.tomshw.it/feed", "https://www.tomshw.it/feed/"] },
-    { "id": "hwupgrade", "name": "Hardware Upgrade", "home": "https://www.hwupgrade.it/", "color": "#2C5AA0", "cat": "hardware",
-      "feeds": ["https://www.hwupgrade.it/rss_hwup.xml", "https://www.hwupgrade.it/rss_news.xml"] },
-    { "id": "hdblog", "name": "HDblog", "home": "https://www.hdblog.it/", "color": "#00A0E3", "cat": "tech",
-      "feeds": ["https://www.hdblog.it/feed/", "https://www.hdblog.it/rss/"] },
-    { "id": "dday", "name": "DDay.it", "home": "https://www.dday.it/", "color": "#E2231A", "cat": "tech",
-      "feeds": ["https://www.dday.it/rss", "https://www.dday.it/feed"] },
-    { "id": "wired", "name": "Wired Italia", "home": "https://www.wired.it/", "color": "#111111", "cat": "tech",
-      "feeds": ["https://www.wired.it/feed/rss", "https://www.wired.it/feed/"] },
-    { "id": "ai4business", "name": "AI4Business", "home": "https://www.ai4business.it/", "color": "#6D28D9", "cat": "ia",
-      "feeds": ["https://www.ai4business.it/feed/"] },
-    { "id": "ilsoftware", "name": "IlSoftware.it", "home": "https://www.ilsoftware.it/", "color": "#0B7A75", "cat": "tech",
-      "feeds": ["https://www.ilsoftware.it/feed/"] }
-  ],
-  "steam": { "cc": "it", "lang": "italian" },
-  "gog": { "country": "IT", "currency": "EUR", "locale": "it-IT" },
-  "itad": { "country": "IT", "limit": 150 },
-  "keepHours": 72,
-  "maxNews": 450
+ "feeds": [
+  {
+   "id": "multiplayer",
+   "name": "Multiplayer.it",
+   "home": "https://multiplayer.it/",
+   "color": "#E4002B",
+   "cat": "gaming",
+   "feeds": [
+    "https://multiplayer.it/feed/rss/",
+    "https://multiplayer.it/feed/rss/notizie/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "everyeye",
+   "name": "Everyeye.it",
+   "home": "https://www.everyeye.it/",
+   "color": "#0A66C2",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.everyeye.it/feed_news_rss.asp",
+    "https://www.everyeye.it/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "ign",
+   "name": "IGN Italia",
+   "home": "https://it.ign.com/",
+   "color": "#BF1313",
+   "cat": "gaming",
+   "feeds": [
+    "https://it.ign.com/feed.xml"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "spaziogames",
+   "name": "SpazioGames",
+   "home": "https://www.spaziogames.it/",
+   "color": "#F28C00",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.spaziogames.it/feed",
+    "https://www.spaziogames.it/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "eurogamer",
+   "name": "Eurogamer.it",
+   "home": "https://www.eurogamer.it/",
+   "color": "#1C9AD6",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.eurogamer.it/feed",
+    "https://www.eurogamer.it/feed/news"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "tgm",
+   "name": "The Games Machine",
+   "home": "https://www.thegamesmachine.it/",
+   "color": "#D7263D",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.thegamesmachine.it/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "gamereactor",
+   "name": "Gamereactor",
+   "home": "https://www.gamereactor.it/",
+   "color": "#E2001A",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.gamereactor.it/rss/rss.php?texttype=4",
+    "https://www.gamereactor.it/rss/rss.php"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "nintendon",
+   "name": "Nintendon",
+   "home": "https://www.nintendon.it/",
+   "color": "#E60012",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.nintendon.it/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "tomshw",
+   "name": "Tom's Hardware",
+   "home": "https://www.tomshw.it/",
+   "color": "#E30613",
+   "cat": "hardware",
+   "feeds": [
+    "https://www.tomshw.it/feed",
+    "https://www.tomshw.it/feed/"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "hwupgrade",
+   "name": "Hardware Upgrade",
+   "home": "https://www.hwupgrade.it/",
+   "color": "#2C5AA0",
+   "cat": "hardware",
+   "feeds": [
+    "https://www.hwupgrade.it/rss_hwup.xml",
+    "https://www.hwupgrade.it/rss_news.xml"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "hdblog",
+   "name": "HDblog",
+   "home": "https://www.hdblog.it/",
+   "color": "#00A0E3",
+   "cat": "tech",
+   "feeds": [
+    "https://www.hdblog.it/feed/",
+    "https://www.hdblog.it/rss/"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "dday",
+   "name": "DDay.it",
+   "home": "https://www.dday.it/",
+   "color": "#E2231A",
+   "cat": "tech",
+   "feeds": [
+    "https://www.dday.it/rss",
+    "https://www.dday.it/feed"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "wired",
+   "name": "Wired Italia",
+   "home": "https://www.wired.it/",
+   "color": "#111111",
+   "cat": "tech",
+   "feeds": [
+    "https://www.wired.it/feed/rss",
+    "https://www.wired.it/feed/"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "ai4business",
+   "name": "AI4Business",
+   "home": "https://www.ai4business.it/",
+   "color": "#6D28D9",
+   "cat": "ia",
+   "feeds": [
+    "https://www.ai4business.it/feed/"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "ilsoftware",
+   "name": "IlSoftware.it",
+   "home": "https://www.ilsoftware.it/",
+   "color": "#0B7A75",
+   "cat": "tech",
+   "feeds": [
+    "https://www.ilsoftware.it/feed/"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "nerd4life",
+   "name": "Nerd4Life",
+   "home": "https://www.nerd4.life/",
+   "color": "#E11D48",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.nerd4.life/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "gamelegends",
+   "name": "GameLegends",
+   "home": "https://www.gamelegends.it/",
+   "color": "#0EA5E9",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.gamelegends.it/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "gamesoul",
+   "name": "Gamesoul",
+   "home": "https://www.gamesoul.it/",
+   "color": "#22C55E",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.gamesoul.it/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "gamingtalker",
+   "name": "GamingTalker",
+   "home": "https://www.gamingtalker.it/",
+   "color": "#F59E0B",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.gamingtalker.it/feed/"
+   ],
+   "lang": "it"
+  },
+  {
+   "id": "leganerd",
+   "name": "Lega Nerd",
+   "home": "https://leganerd.com/",
+   "color": "#111827",
+   "cat": "gaming",
+   "feeds": [
+    "https://leganerd.com/feed/"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "smartworld",
+   "name": "SmartWorld",
+   "home": "https://www.smartworld.it/",
+   "color": "#16A34A",
+   "cat": "tech",
+   "feeds": [
+    "https://www.smartworld.it/feed"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "tuttotech",
+   "name": "TuttoTech",
+   "home": "https://www.tuttotech.net/",
+   "color": "#2563EB",
+   "cat": "tech",
+   "feeds": [
+    "https://www.tuttotech.net/feed/"
+   ],
+   "lang": "it",
+   "filter": true
+  },
+  {
+   "id": "ign-en",
+   "name": "IGN",
+   "home": "https://www.ign.com/",
+   "color": "#BF1313",
+   "cat": "gaming",
+   "feeds": [
+    "https://feeds.feedburner.com/ign/all",
+    "https://www.ign.com/rss/articles/feed"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "gamespot",
+   "name": "GameSpot",
+   "home": "https://www.gamespot.com/",
+   "color": "#F2C400",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.gamespot.com/feeds/mashup/",
+    "https://www.gamespot.com/feeds/news/"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "vgc",
+   "name": "VGC",
+   "home": "https://www.videogameschronicle.com/",
+   "color": "#E4002B",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.videogameschronicle.com/feed/"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "pcgamer",
+   "name": "PC Gamer",
+   "home": "https://www.pcgamer.com/",
+   "color": "#C8102E",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.pcgamer.com/rss/"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "eurogamer-en",
+   "name": "Eurogamer.net",
+   "home": "https://www.eurogamer.net/",
+   "color": "#1C9AD6",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.eurogamer.net/feed"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "rps",
+   "name": "Rock Paper Shotgun",
+   "home": "https://www.rockpapershotgun.com/",
+   "color": "#E8412B",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.rockpapershotgun.com/feed"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "pushsquare",
+   "name": "Push Square",
+   "home": "https://www.pushsquare.com/",
+   "color": "#1F4FBF",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.pushsquare.com/feeds/latest"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "purexbox",
+   "name": "Pure Xbox",
+   "home": "https://www.purexbox.com/",
+   "color": "#107C10",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.purexbox.com/feeds/latest"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "nintendolife",
+   "name": "Nintendo Life",
+   "home": "https://www.nintendolife.com/",
+   "color": "#E60012",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.nintendolife.com/feeds/latest"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "gematsu",
+   "name": "Gematsu",
+   "home": "https://www.gematsu.com/",
+   "color": "#6B7280",
+   "cat": "gaming",
+   "feeds": [
+    "https://www.gematsu.com/feed"
+   ],
+   "lang": "en"
+  },
+  {
+   "id": "theverge",
+   "name": "The Verge",
+   "home": "https://www.theverge.com/",
+   "color": "#5200FF",
+   "cat": "tech",
+   "feeds": [
+    "https://www.theverge.com/rss/index.xml"
+   ],
+   "lang": "en",
+   "filter": true
+  }
+ ],
+ "steam": {
+  "cc": "it",
+  "lang": "italian"
+ },
+ "gog": {
+  "country": "IT",
+  "currency": "EUR",
+  "locale": "en-US",
+  "pages": 2
+ },
+ "itad": {
+  "country": "IT",
+  "limit": 150
+ },
+ "keepHours": 96,
+ "maxNews": 900,
+ "videos": [
+  {
+   "id": "yt-playstation",
+   "name": "PlayStation",
+   "channel": "UC-2Y8dQb0S6DtpxNgAKoJKA"
+  },
+  {
+   "id": "yt-xbox",
+   "name": "Xbox",
+   "channel": "UCjBp_7RuDBUYbd1LegWEJ8g"
+  },
+  {
+   "id": "yt-nintendo",
+   "name": "Nintendo",
+   "channel": "UCGIY_O-8vW4rfX98KlMkvRg"
+  },
+  {
+   "id": "yt-ign",
+   "name": "IGN",
+   "channel": "UCKy1dAqELo0zrOtPkf0eTMw"
+  },
+  {
+   "id": "yt-gamespot",
+   "name": "GameSpot",
+   "channel": "UCbu2SsF-Or3Rsn3NxqODImw"
+  }
+ ]
 }

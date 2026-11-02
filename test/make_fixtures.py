@@ -10,6 +10,8 @@ def rfc(dt): return dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
 img = lambda k: f"https://img.test/{k}.jpg"
 
 stories = [
+ ("Dyson Supersonic, il prezzo scende a 249 euro su Amazon", "Il phon scende di prezzo."),
+ ("Rocket Lab prepara un satellite che non teme il buio", "Un nuovo satellite radar."),
  ("GTA 6, il pre-download partirà il 12 novembre su PS5 e Xbox", "Rockstar conferma il pre-download di GTA 6 su PS5 e Xbox Series X|S a partire dal 12 novembre, una settimana prima dell'uscita."),
  ("Zelda Ocarina of Time remake: il nuovo trailer per Switch 2 mostra Hyrule rinnovata", "Nintendo pubblica un nuovo filmato del remake in arrivo il 5 novembre su Switch 2."),
  ("Diablo IV in sconto del 75% su Steam: è il minimo storico", "Il gioco Blizzard scende a 12,49 euro per la promozione di metà autunno su Steam."),
@@ -50,19 +52,19 @@ def make(src, feed_url, mode, picks, title_tweak=None, ogs=()):
         if i in ogs: put(u, f"og_{src}_{i}.html", f'<html><head><meta property="og:image" content="{img("og"+src+str(i))}"></head><body></body></html>')
     put(feed_url, f"{src}.xml", rss(items))
 
-make("multiplayer.it", "https://multiplayer.it/feed/rss/", "media", range(0, 15))
+make("multiplayer.it", "https://multiplayer.it/feed/rss/", "media", range(2, 17))
 # Everyeye: i due feed noti falliscono, il feed si trova dalla home (autodiscovery)
 put("https://www.everyeye.it/", "everyeye_home.html", '<html><head><link rel="alternate" type="application/rss+xml" title="News" href="/feed/news.xml"></head></html>')
-make("www.everyeye.it", "https://www.everyeye.it/feed/news.xml", "enclosure", [0, 1, 2, 5, 8, 9, 12, 13], lambda t: t.replace("GTA 6, il pre-download partirà", "GTA 6: pre-download dal").replace("trailer", "video"))
+make("www.everyeye.it", "https://www.everyeye.it/feed/news.xml", "enclosure", [2, 3, 4, 7, 10, 11, 14, 15], lambda t: t.replace("GTA 6, il pre-download partirà", "GTA 6: pre-download dal").replace("trailer", "video"))
 # IGN in formato Atom
 entries = []
-for k, i in enumerate([0, 1, 3, 7, 11, 13]):
+for k, i in enumerate([2, 3, 5, 9, 13, 15]):
     t, d = stories[i]; when = NOW - datetime.timedelta(minutes=30 + i * 150); u = f"https://it.ign.com/articoli/{i}"
     entries.append(f'<entry><title type="html">{html.escape(t)}</title><link rel="alternate" href="{u}"/><id>{u}</id><published>{when.isoformat()}</published><summary type="html">{html.escape(d)}</summary><media:thumbnail url="{img("ign"+str(i))}"/></entry>')
 put("https://it.ign.com/feed.xml", "ign.xml", '<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/"><title>IGN</title>' + "".join(entries) + "</feed>")
-make("www.spaziogames.it", "https://www.spaziogames.it/feed", "content", [2, 4, 9, 12, 14])
-make("www.tomshw.it", "https://www.tomshw.it/feed", "media", [5, 7, 14, 4], ogs=(5, 14))
-make("www.hdblog.it", "https://www.hdblog.it/feed/", "enclosure", [6, 10, 5])
+make("www.spaziogames.it", "https://www.spaziogames.it/feed", "content", [4, 6, 11, 14, 16])
+make("www.tomshw.it", "https://www.tomshw.it/feed", "media", [7, 9, 16, 6, 0, 1], ogs=(7, 16))
+make("www.hdblog.it", "https://www.hdblog.it/feed/", "enclosure", [8, 12, 7])
 
 # Steam
 def steam_app(i, n, fin, orig, pct): return {"id": i, "name": n, "discounted": True, "discount_percent": pct, "original_price": orig, "final_price": fin, "currency": "EUR", "header_image": img(f"steam{i}"), "discount_expiration": int((NOW + datetime.timedelta(days=3)).timestamp())}
@@ -83,17 +85,20 @@ put("https://store.steampowered.com/api/appdetails?appids=9002&cc=it&l=english&f
 # GOG
 gog = {"products": [{"title": t, "slug": t.lower().replace(" ", "_"), "storeLink": f"https://www.gog.com/it/game/{t.lower().replace(' ', '_')}", "coverHorizontal": img("gog" + str(k)),
         "price": {"final": f"€{f}", "base": f"€{b}", "discount": f"-{d}%", "finalMoney": {"amount": f, "currency": "EUR"}, "baseMoney": {"amount": b, "currency": "EUR"}}} for k, (t, f, b, d) in enumerate([("The Witcher 3 Wild Hunt", "9.99", "29.99", 67), ("Cyberpunk 2077", "26.99", "59.99", 55), ("Disco Elysium", "9.99", "39.99", 75), ("Baldur's Gate 3", "47.99", "59.99", 20)])]}
-put("https://catalog.gog.com/v1/catalog?limit=60&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=1&countryCode=IT&locale=it-IT&currencyCode=EUR", "gog.json", json.dumps(gog))
+gog["pages"]=1
+put("https://catalog.gog.com/v1/catalog?limit=48&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=1&countryCode=IT&locale=en-US&currencyCode=EUR", "gog.json", json.dumps(gog))
 # Epic
 def ep(t, slug, s, e, upcoming=False):
     po = {"promotionalOffers": [{"startDate": s, "endDate": e, "discountSetting": {"discountType": "PERCENTAGE", "discountPercentage": 0}}]}
     return {"title": t, "productSlug": slug, "keyImages": [{"type": "OfferImageWide", "url": img("epic" + slug)}], "price": {"totalPrice": {"originalPrice": 1999}},
             "promotions": {"promotionalOffers": [] if upcoming else [po], "upcomingPromotionalOffers": [po] if upcoming else []}}
 epic = {"data": {"Catalog": {"searchStore": {"elements": [ep("Sorry We're Closed", "sorry-were-closed", "2026-10-29T15:00:00.000Z", "2026-11-05T16:00:00.000Z"), ep("Flotsam", "flotsam", "2026-11-05T16:00:00.000Z", "2026-11-12T16:00:00.000Z", True), {"title": "Gioco a pagamento", "keyImages": [], "promotions": None}]}}}}
-put("https://store-site-backend-static.ext.epicgames.com/freeGamesPromotions?locale=it&country=IT&allowCountries=IT", "epic.json", json.dumps(epic))
+put("https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=it&country=IT&allowCountries=IT", "epic.json", json.dumps(epic))
 gp = [{"id": 1, "title": "Radiant Exodus (Steam) Giveaway", "worth": "$9.99", "image": img("gp1"), "open_giveaway_url": "https://www.gamerpower.com/open/radiant", "platforms": "PC, Steam", "end_date": "2026-11-17 23:59:00", "status": "Active", "instructions": "Clicca e aggiungi alla libreria."},
       {"id": 2, "title": "Sorry We're Closed (Epic Games) Giveaway", "worth": "$19.99", "image": img("gp2"), "open_giveaway_url": "https://www.gamerpower.com/open/sorry", "platforms": "PC, Epic Games Store", "end_date": "2026-11-05 16:00:00", "status": "Active"},
       {"id": 3, "title": "Vampire: The Masquerade - Swansong (Prime Gaming)", "worth": "$49.99", "image": img("gp3"), "open_giveaway_url": "https://www.gamerpower.com/open/vtm", "platforms": "PC, Prime Gaming", "end_date": "N/A", "status": "Active"}]
 put("https://www.gamerpower.com/api/giveaways?type=game&sort-by=date", "gp.json", json.dumps(gp))
+yt = '<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://www.youtube.com/xml/schemas/2015">' + "".join(f'<entry><yt:videoId>vid{k}AAAA</yt:videoId><title>{t}</title><link rel="alternate" href="https://www.youtube.com/watch?v=vid{k}AAAA"/><published>{(NOW-datetime.timedelta(hours=k*5)).isoformat()}</published><media:group><media:thumbnail url="https://i.ytimg.com/vi/vid{k}AAAA/hqdefault.jpg" width="480" height="360"/></media:group></entry>' for k,t in enumerate(["Ghost of Yotei - Launch Trailer | PS5","Astro Bot DLC Gameplay","#shorts quick tip","Days of Play recap"])) + "</feed>"
+put("https://www.youtube.com/feeds/videos.xml?channel_id=UC-2Y8dQb0S6DtpxNgAKoJKA", "yt.xml", yt)
 json.dump(idx, open(os.path.join(D, "index.json"), "w"), indent=1)
 print(len(idx), "risposte di prova")

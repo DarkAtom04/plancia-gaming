@@ -2,7 +2,7 @@ name: Aggiorna Plancia Gaming
 
 on:
   schedule:
-    - cron: "*/10 * * * *"   # ogni 10 minuti (GitHub a volte ritarda di qualche minuto)
+    - cron: "*/5 * * * *"    # ogni 5 minuti (GitHub a volte ritarda di qualche minuto)
   push:
     branches: [main]
   workflow_dispatch:
@@ -19,7 +19,7 @@ concurrency:
 jobs:
   aggiorna:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}

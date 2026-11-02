@@ -154,25 +154,37 @@ function discoverFeed(html, base) {
 
 /* ---------------------------------------------------- classificazione */
 const RX = {
-  offerte: /(offert[ae]\b|in sconto|sconti\b|sconto\b|prezzo (minimo|più basso|stracciato)|minimo storico|black friday|cyber monday|prime day|coupon|codice sconto|a soli \d|\b\d{1,2}\s?% di sconto|-\d{1,2}\s?%)/i,
-  hardware: /\b(rtx\s?\d{3,4}|radeon|geforce|nvidia|scheda video|schede video|gpu|cpu|processore|ryzen|intel core|core ultra|ssd|nvme|monitor|ddr5|ram|alimentatore|mouse|tastiera|cuffie|headset|case pc|dlss|fsr|pc gaming|notebook gaming|laptop gaming|overclock|benchmark)\b/i,
-  handheld: /\b(steam deck|rog (xbox )?ally|xbox ally|legion go|msi claw|handheld|console portatil[ei]|pc portatil[ei] da gioco|ayaneo|gpd win|onexplayer|steam machine|switch 2 lite)\b/i,
-  ia: /(intelligenza artificiale|\bIA generativa\b|\bchatgpt\b|\bopenai\b|\bgemini\b|\bclaude\b|\banthropic\b|\bcopilot\b|\bllm\b|\bdeepseek\b|\bmistral ai\b|\bgrok\b|\bmidjourney\b|\bsora\b|machine learning|deep learning)/i,
+  offerte: /(offert[ae]\b|in sconto|sconti\b|sconto\b|prezzo (minimo|più basso|stracciato)|minimo storico|black friday|cyber monday|prime day|coupon|codice sconto|a soli \d|\b\d{1,2}\s?% di sconto|-\d{1,2}\s?%|\bdeals?\b|\bon sale\b|\bdiscount|\d+% off|price drop|lowest price|cheapest)/i,
+  hardware: /\b(rtx\s?\d{3,4}|radeon|geforce|nvidia|amd|intel|arc b\d{3}|scheda video|schede video|graphics cards?|gpu|cpu|processor[ei]?|ryzen|core ultra|ssd|nvme|monitor|ddr5|memoria ram|ram ddr|alimentatore|scheda madre|motherboard|mouse|tastiera|keyboard|cuffie|headset|headphones|case pc|dlss|fsr|pc gaming|gaming pc|notebook gaming|laptop gaming|gaming laptop|overclock|benchmark|driver|steam machine|nintendo switch 2 oled|hyperx|logitech|razer|corsair|steelseries|asus rog|msi|nzxt|elgato|8bitdo|controller|joypad|gamepad)\b/i,
+  handheld: /\b(steam deck|rog (xbox )?ally|xbox ally|legion go|msi claw|handhelds?|console portatil[ei]|pc portatil[ei] da gioco|ayaneo|gpd win|onexplayer|switch 2 lite)\b/i,
+  ia: /(intelligenza artificiale|\bia generativa\b|\bchatgpt\b|\bopenai\b|\bgemini\b|\bclaude\b|\banthropic\b|\bcopilot\b|\bllm\b|\bdeepseek\b|\bmistral ai\b|\bgrok\b|\bmidjourney\b|\bsora\b|machine learning|deep learning|artificial intelligence|generative ai)/i,
   iaCase: /\b(AI|IA)\b/,
-  uscite: /(data di uscita|data d'uscita|in uscita|uscirà|esce il|esce oggi|uscita fissata|disponibile dal|arriva il \d|arriverà il|al lancio|day one|rinviato|rinvio)/i,
-  recensioni: /\b(recensione|review|provato|abbiamo provato|prova su strada|anteprima|hands-on)\b/i,
-  gaming: /\b(videogioc|gioco|giochi|gameplay|trailer|dlc|playstation|ps5|xbox|nintendo|switch|steam|epic games|game pass|gta|rpg|fps|remake|remaster|sequel|esports?)\b/i
+  uscite: /(data di uscita|data d'uscita|in uscita|uscirà|esce il|esce oggi|uscita fissata|disponibile dal|arriva il \d|arriverà il|al lancio|day one|rinviato|rinvio|release date|launches|out now|delayed)/i,
+  recensioni: /\b(recensione|review|provato|abbiamo provato|prova su strada|anteprima|hands-on|preview)\b/i,
+  gaming: /\b(videogioc\w*|gioco|giochi|gameplay|trailer|dlc|playstation|ps5|ps4|xbox|nintendo|switch|steam|epic games|game pass|ps plus|gta|rpg|fps|remake|remaster|sequel|esports?|videogames?|video games?|gaming|console|gamers?)\b/i
 };
-const PLAT = [["PS5", /\b(ps5|playstation 5|playstation)\b/i], ["Xbox", /\bxbox\b|game pass/i], ["Switch 2", /switch 2/i], ["Switch", /\bswitch\b(?! 2)|\bnintendo\b/i], ["PC", /\b(pc|steam|epic games store|gog)\b/i]];
-export function classify(text, sourceCat) {
-  const cats = new Set([sourceCat]);
+const TECH = /\b(smartphone|iphone|ipad|android|samsung|galaxy|xiaomi|pixel|apple|google|microsoft|windows|macos|linux|software|app|chip|tablet|notebook|laptop|\bpc\b|smart ?tv|oled|televisor[ei]|auricolari|earbuds|smartwatch|wearable|streaming|netflix|disney\+|prime video|spotify|youtube|twitch|sicurezza informatica|hacker|attacco informatico|malware|ransomware|cyber\w*|5g|wi-?fi|router|browser|chrome|firefox|whatsapp|instagram|telegram|tiktok|meta|social network|internet|cloud|data center|semiconduttor\w*|tsmc|qualcomm|snapdragon|mediatek|processore|smart glasses|visore|vr|realtà virtuale|realtà aumentata)\b/i;
+const OFFTOPIC = /(auto elettric\w*|\bauto\b|automobil\w*|\bsuv\b|\bev\b|veicol\w*|xpeng|\bbyd\b|tesla model|motori\b|\bmoto\b|bici\w*|monopattin\w*|satellit\w*|razz[oi]\b|spazial\w*|\bnasa\b|\besa\b|rocket lab|astronom\w*|pannell[io] solar\w*|fotovoltaic\w*|energia rinnovabil\w*|bollett\w*|climatizzator\w*|condizionator\w*|aspirapolvere|robot aspira\w*|friggitric\w*|lavatric\w*|lavastovigli\w*|frigorifer\w*|asciugacapelli|\bphon\b|dyson|makita|bosch|trapano|sega circolare|avvitatore|utensil\w*|giardin\w*|macchina del caffè|materass\w*|lampadin\w*|aqara|termostat\w*|sanità|farmac\w*|\bcalcio\b|serie a|mutu[oi]|fisco|pensioni|bitcoin|criptovalut\w*|binance|calendari dell'avvento lego|\blego\b)/i;
+export function classify(text, src) {
+  src = typeof src === "string" ? { cat: src } : (src || {});
+  const cats = new Set(); if (src.cat === "gaming") cats.add("gaming");
   for (const k of ["offerte", "hardware", "handheld", "ia", "uscite", "recensioni"]) if (RX[k].test(text)) cats.add(k);
   if (RX.iaCase.test(text)) cats.add("ia");
-  if (RX.gaming.test(text)) cats.add("gaming");
+  const isGaming = RX.gaming.test(text); if (isGaming) cats.add("gaming");
   if (cats.has("handheld")) cats.add("hardware");
+  if (src.cat === "ia") cats.add("ia");
+  if (TECH.test(text) || ((src.cat === "tech" || src.cat === "hardware") && !cats.size)) cats.add("tech");
+  let keep = true;
+  if (src.filter) {
+    const strong = isGaming || cats.has("hardware") || cats.has("ia") || cats.has("handheld");
+    if (OFFTOPIC.test(text) && !strong) keep = false;
+    else keep = strong || TECH.test(text);
+  }
+  if (cats.has("offerte") && !(cats.has("gaming") || cats.has("hardware") || TECH.test(text))) { cats.delete("offerte"); if (src.filter) keep = false; }
   const plats = PLAT.filter(([, r]) => r.test(text)).map(([p]) => p);
-  return { cats: [...cats], plats };
+  return { cats: [...cats], plats, keep };
 }
+const PLAT = [["PS5", /\b(ps5|playstation 5|playstation)\b/i], ["Xbox", /\bxbox\b|game pass/i], ["Switch 2", /switch 2/i], ["Switch", /\bswitch\b(?! 2)|\bnintendo\b/i], ["PC", /\b(pc|steam|epic games store|gog)\b/i]];
 
 /* -------------------------------------------------- raggruppamento */
 const STOP = new Set("per con dei del della delle degli gli una uno che non sono come dal dalla dalle nel nella nelle sul sulla sulle alla alle agli all anche più tra fra suo sua suoi loro questo questa questi queste ecco ora oggi già solo tutto tutti tutte molto quando dove cosa chi perché però ancora dopo prima nuovo nuova nuovi nuove sarà saranno stato stata viene arriva arrivano the and for with from new will has have are was its your into you about".split(" "));
@@ -264,19 +276,20 @@ async function collectNews(st, health) {
   await pool(need, 6, async x => { st.og[x.url] = await ogImage(x.url); });
   for (const x of all) if (!x.img && st.og[x.url]) x.img = st.og[x.url];
   // classificazione + raggruppamento delle stesse notizie da più testate
-  for (const x of all) { const c = classify(`${x.title} ${x.summary} ${x.tags.join(" ")}`, x.src.cat); x.cats = c.cats; x.plats = c.plats; }
+  for (const x of all) { const c = classify(`${x.title} ${x.summary} ${x.tags.join(" ")}`, x.src); x.cats = c.cats; x.plats = c.plats; x.keep = c.keep; }
+  const dropped = all.filter(x => !x.keep).length; all = all.filter(x => x.keep); log(`notizie fuori tema scartate: ${dropped}`);
   const cls = cluster(all);
   const news = cls.map((c, i) => {
-    const lead = c.items.find(x => x.img) || c.items[0];
+    const lead = c.items.find(x => x.img && x.src.lang !== "en") || c.items.find(x => x.img) || c.items[0];
     const bySrc = new Map(); for (const x of c.items) if (!bySrc.has(x.src.id)) bySrc.set(x.src.id, x);
     const cats = new Set(), plats = new Set(); c.items.forEach(x => { x.cats.forEach(k => cats.add(k)); x.plats.forEach(k => plats.add(k)); });
     const first = Math.min(...c.items.map(x => x.t));
     return {
-      id: "n" + i + "-" + lead.src.id, title: lead.title, url: lead.url, source: lead.src.name, sourceId: lead.src.id,
+      id: "n" + i + "-" + lead.src.id, title: lead.title, url: lead.url, source: lead.src.name, sourceId: lead.src.id, lang: lead.src.lang || "it",
       date: new Date(Math.max(...c.items.map(x => x.t))).toISOString(), first: new Date(first).toISOString(),
       img: lead.img || (c.items.find(x => x.img) || {}).img || "", summary: lead.summary || (c.items.find(x => x.summary) || {}).summary || "",
       cats: [...cats], plats: [...plats], tags: lead.tags.slice(0, 5),
-      also: [...bySrc.values()].filter(x => x !== lead && x.src.id !== lead.src.id).map(x => ({ source: x.src.name, sourceId: x.src.id, url: x.url, title: x.title })),
+      also: [...bySrc.values()].filter(x => x !== lead && x.src.id !== lead.src.id).map(x => ({ source: x.src.name, sourceId: x.src.id, url: x.url, title: x.title, lang: x.src.lang || "it" })),
       size: bySrc.size
     };
   });
@@ -321,17 +334,21 @@ async function steamSearch(params, health, label) {
   } catch (e) { health.push({ id: "steam-" + label, name: "Steam (" + label + ")", ok: false, error: String(e.message) }); return []; }
 }
 async function gogDeals(health) {
-  const g = CFG.gog;
+  const g = CFG.gog; const out = [];
   try {
-    const j = await fetchJSON(`https://catalog.gog.com/v1/catalog?limit=60&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=1&countryCode=${g.country}&locale=${g.locale}&currencyCode=${g.currency}`);
-    const out = (j.products || []).map(p => {
-      const pr = p.price || {}; const fin = priceNum(pr.finalMoney && pr.finalMoney.amount || pr.final); const base = priceNum(pr.baseMoney && pr.baseMoney.amount || pr.base);
-      let c = priceNum(String(pr.discount || "").replace("-", "")); if (!c && fin != null && base) c = Math.round((1 - fin / base) * 100);
-      const img = absUrl(p.coverHorizontal || p.coverVertical || "");
-      return { title: p.title, store: "GOG", price: fin, regular: base, cut: c || 0, img, url: absUrl(p.storeLink || (p.slug ? `https://www.gog.com/it/game/${p.slug}` : "")), plats: ["PC"] };
-    }).filter(d => d.title && d.url && d.price != null);
-    health.push({ id: "gog", name: "GOG", ok: true, count: out.length }); return out;
-  } catch (e) { health.push({ id: "gog", name: "GOG", ok: false, error: String(e.message) }); return []; }
+    for (let page = 1; page <= (g.pages || 1); page++) {
+      const j = await fetchJSON(`https://catalog.gog.com/v1/catalog?limit=48&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=${page}&countryCode=${g.country}&locale=${g.locale}&currencyCode=${g.currency}`);
+      for (const [k, p] of (j.products || []).entries()) {
+        const pr = p.price || {}; const fin = priceNum(pr.finalMoney && pr.finalMoney.amount || pr.final); const base = priceNum(pr.baseMoney && pr.baseMoney.amount || pr.base);
+        let c = priceNum(String(pr.discount || "").replace("-", "")); if (!c && fin != null && base) c = Math.round((1 - fin / base) * 100);
+        const link = absUrl(p.storeLink || (p.slug ? `https://www.gog.com/en/game/${p.slug}` : "")).replace("/en/game/", "/it/game/");
+        out.push({ title: p.title, store: "GOG", price: fin, regular: base, cut: c || 0, img: absUrl(p.coverHorizontal || p.coverVertical || ""), url: link, plats: ["PC"], rank: (page - 1) * 48 + k, rating: p.reviewsRating || null });
+      }
+      if (!j.pages || page >= j.pages) break;
+    }
+    const ok = out.filter(d => d.title && d.url && d.price != null);
+    health.push({ id: "gog", name: "GOG", ok: ok.length > 0, count: ok.length, ...(ok.length ? {} : { error: "nessuna offerta ricevuta" }) }); return ok;
+  } catch (e) { health.push({ id: "gog", name: "GOG", ok: false, error: String(e.message) }); return out; }
 }
 async function itadDeals(health) {
   if (!ITAD_KEY) { health.push({ id: "itad", name: "IsThereAnyDeal", ok: false, error: "chiave non impostata (facoltativa)" }); return []; }
@@ -350,8 +367,10 @@ const normTitle = t => String(t || "").toLowerCase().normalize("NFD").replace(/[
 async function collectDeals(featured, health) {
   const steam = [];
   for (const k of ["specials", "top_sellers", "new_releases"]) for (const x of (featured[k] && featured[k].items) || []) if (x.discounted && x.discount_percent > 0) steam.push(steamItem(x));
-  const s1 = await steamSearch("specials=1&start=0&count=100", health, "offerte");
-  for (const x of s1) if (x.cut > 0 && x.price != null && x.kind === "app") steam.push({ title: x.title, store: "Steam", price: x.price, regular: x.regular, cut: x.cut, img: x.img, url: x.url, appid: x.id, plats: ["PC"] });
+  const top = new Set(((featured.top_sellers || {}).items || []).map(x => x.id));
+  const s1 = [...await steamSearch("specials=1&start=0&count=100", health, "offerte"), ...await steamSearch("specials=1&start=100&count=100", health, "offerte 2")];
+  s1.forEach((x, k) => { if (x.cut > 0 && x.price != null && x.kind === "app") steam.push({ title: x.title, store: "Steam", price: x.price, regular: x.regular, cut: x.cut, img: x.img, url: x.url, appid: x.id, plats: ["PC"], rank: k }); });
+  for (const d of steam) if (top.has(d.appid)) d.bestseller = true;
   const [gog, itad] = await Promise.all([gogDeals(health), itadDeals(health)]);
   const all = [...steam, ...gog, ...itad].filter(d => typeof d.price === "number" && isFinite(d.price));
   const seen = new Map(); const out = [];
@@ -359,13 +378,17 @@ async function collectDeals(featured, health) {
   // confronto prezzi tra store per lo stesso gioco
   const byT = new Map(); for (const d of out) { const k = normTitle(d.title); if (!byT.has(k)) byT.set(k, []); byT.get(k).push(d); }
   for (const L of byT.values()) if (L.length > 1) { L.sort((a, b) => a.price - b.price); L.forEach(d => { d.alt = L.filter(x => x !== d).map(x => ({ store: x.store, price: x.price, url: x.url })); d.best = d === L[0]; }); }
-  return out.slice(0, 320);
+  return out.slice(0, 450);
 }
 
 /* ---------------------------------------------------------- gratis */
 async function epicFree(health) {
   try {
-    const j = await fetchJSON("https://store-site-backend-static.ext.epicgames.com/freeGamesPromotions?locale=it&country=IT&allowCountries=IT");
+    let j = null; let last = null;
+    for (const host of ["store-site-backend-static-ipv4.ak.epicgames.com", "store-site-backend-static.ext.epicgames.com"]) {
+      try { j = await fetchJSON(`https://${host}/freeGamesPromotions?locale=it&country=IT&allowCountries=IT`); break; } catch (e) { last = e; }
+    }
+    if (!j) throw last || new Error("nessuna risposta");
     const els = (((j.data || {}).Catalog || {}).searchStore || {}).elements || [];
     const out = [];
     for (const e of els) {
@@ -449,6 +472,45 @@ async function collectReleases(featured, st, health) {
   return res.slice(0, 400);
 }
 
+/* ------------------------------------------------------------ video */
+async function collectVideos(health) {
+  const out = [];
+  await pool(CFG.videos || [], 5, async v => {
+    const r = await fetchText(`https://www.youtube.com/feeds/videos.xml?channel_id=${v.channel}`);
+    if (!r.ok) { health.push({ id: v.id, name: "YouTube " + v.name, ok: false, error: `HTTP ${r.status || r.error}` }); return; }
+    const it = parseFeed(r.text, "https://www.youtube.com/").filter(x => !/#shorts?\b/i.test(x.title)).slice(0, 12);
+    health.push({ id: v.id, name: "YouTube " + v.name, ok: true, count: it.length });
+    for (const x of it) {
+      const id = (x.url.match(/[?&]v=([\w-]{6,})/) || x.url.match(/\/(?:shorts|embed)\/([\w-]{6,})/) || [])[1];
+      const t = Date.parse(x.dateStr); if (!id || !isFinite(t) || NOW.getTime() - t > 7 * 864e5) continue;
+      out.push({ title: x.title, url: `https://www.youtube.com/watch?v=${id}`, img: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`, channel: v.name, date: new Date(t).toISOString(), trailer: /trailer|gameplay|reveal|announce|teaser/i.test(x.title) });
+    }
+  });
+  return out.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).slice(0, 80);
+}
+
+/* --------------------------------------------------------- tendenze */
+const TREND_STOP = new Set("il lo la i gli le un una uno di da in con su per tra fra e ed o ma se che non è sono ecco ufficiale nuovo nuova nuovi nuove video trailer gameplay recensione offerta offerte sconto prezzo amazon giochi gioco data uscita oggi novembre dicembre ottobre gennaio annunciato disponibile the a an of to for and in on with new".split(" "));
+function trends(news) {
+  const since = NOW.getTime() - 30 * 3600e3; const counts = new Map();
+  for (const n of news) {
+    if (n.lang === "en" || Date.parse(n.date) < since) continue;
+    const seen = new Set();
+    const re = /\b([A-Z][\p{L}'’]+|[A-Z0-9]{2,})((?:\s+(?:[A-Z0-9][\p{L}\p{N}'’]*|\d+|of|the|di|da|e|&)){0,3})/gu;
+    for (const m of n.title.matchAll(re)) {
+      let ph = (m[1] + m[2]).replace(/\s+(of|the|di|da|e|&)$/i, "").trim();
+      const words = ph.split(/\s+/);
+      if (m.index === 0 && words.length === 1 && !/\d|^[A-Z0-9]{2,}$/.test(ph)) continue;
+      if (words.every(w => TREND_STOP.has(w.toLowerCase())) || ph.length < 3 || /^\d+$/.test(ph) || /^(Il|La|Lo|Le|Gli|Un|Una|Ecco|Come|Perché|Quando|Dove|Cosa|Nuovo|Nuova|Ufficiale)$/i.test(words[0]) && words.length === 1) continue;
+      const k = ph.toLowerCase(); if (seen.has(k)) continue; seen.add(k);
+      const c = counts.get(k) || { label: ph, n: 0, w: n.size || 1 }; c.n += 1; c.w += n.size || 1; counts.set(k, c);
+    }
+  }
+  const L = [...counts.values()].filter(c => c.n >= 2).sort((a, b) => b.w - a.w || b.n - a.n);
+  const outL = []; for (const c of L) { if (outL.some(o => o.label.toLowerCase().includes(c.label.toLowerCase()) || c.label.toLowerCase().includes(o.label.toLowerCase()))) continue; outL.push({ label: c.label, n: c.n }); if (outL.length >= 14) break; }
+  return outL;
+}
+
 /* ------------------------------------------------------------- main */
 async function copySite() {
   await fs.mkdir(OUT, { recursive: true });
@@ -457,16 +519,16 @@ async function copySite() {
 async function main() {
   const t0 = Date.now(); const st = await loadState(); st.steamRel ||= {}; const health = [];
   const featured = await steamFeatured(health);
-  const [news, deals, free, releases] = await Promise.all([collectNews(st, health), collectDeals(featured, health), collectFree(health), collectReleases(featured, st, health)]);
+  const [news, deals, free, releases, videos] = await Promise.all([collectNews(st, health), collectDeals(featured, health), collectFree(health), collectReleases(featured, st, health), collectVideos(health)]);
   let events = []; try { events = JSON.parse(await fs.readFile(path.join(ROOT, "data/events-manual.json"), "utf8")); } catch {}
   events = events.filter(e => !e.end || e.end >= ymd(new Date(NOW.getTime() - 864e5)));
   const sources = CFG.feeds.map(f => ({ id: f.id, name: f.name, color: f.color, home: f.home, ...(health.find(h => h.id === f.id) || {}) }));
-  const data = { generatedAt: NOW.toISOString(), tookMs: Date.now() - t0, sources, health, news, deals, free, releases, events };
+  const data = { generatedAt: NOW.toISOString(), tookMs: Date.now() - t0, repo: process.env.GITHUB_REPOSITORY || "", every: 5, sources, health, news, deals, free, releases, events, videos, trends: trends(news) };
   await copySite();
   await fs.writeFile(path.join(OUT, "data.json"), JSON.stringify(data));
   await saveState(st);
   const okFeeds = sources.filter(s => s.ok).length;
-  log(`notizie ${news.length} (testate ok ${okFeeds}/${sources.length}), offerte ${deals.length}, gratis ${free.length}, uscite ${releases.length}, in ${Date.now() - t0} ms`);
+  log(`notizie ${news.length} (testate ok ${okFeeds}/${sources.length}), offerte ${deals.length}, gratis ${free.length}, uscite ${releases.length}, video ${videos.length}, tendenze ${data.trends.map(t => t.label).join(", ")}, in ${Date.now() - t0} ms`);
   if (okFeeds === 0 && !FIXTURES) { log("Nessuna testata raggiungibile: controllo i dettagli qui sotto"); for (const h of health) log(JSON.stringify(h)); }
 }
 if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1])) {

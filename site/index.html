@@ -19,7 +19,9 @@
 <div class="util"><div class="wrap">
   <span id="today"></span>
   <span class="util-r"><span class="live" id="live"><i></i><span id="liveTxt">Caricamento…</span></span>
-  <button type="button" class="iconbtn" id="themeBtn" aria-label="Cambia tema" title="Tema chiaro, scuro o automatico">☾</button></span>
+  <button type="button" class="forcebtn" id="forceBtn" title="Aggiorna adesso notizie e offerte"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/></svg><span>Aggiorna ora</span></button>
+  <button type="button" class="iconbtn" id="themeBtn" aria-label="Cambia tema" title="Tema chiaro, scuro o automatico">☾</button>
+  <button type="button" class="iconbtn" id="setBtn" aria-label="Impostazioni" title="Impostazioni">⚙</button></span>
 </div></div>
 
 <header class="top" id="top">
@@ -30,7 +32,10 @@
   <nav class="wrap nav" id="nav" aria-label="Sezioni"></nav>
 </header>
 
+<div class="banner" id="banner" role="status" hidden></div>
 <div class="ticker" id="ticker" hidden><div class="wrap"><span class="tk-tag">ULTIM'ORA</span><div class="tk-view"><div class="tk-track" id="tkTrack"></div></div></div></div>
+
+<div class="trends" id="trends" hidden><div class="wrap"><span class="tr-lbl">Di tendenza</span><div class="tr-list"></div></div></div>
 
 <main class="wrap" id="main"><div class="skeleton"><div></div><div></div><div></div></div></main>
 
@@ -40,6 +45,9 @@
 </div></footer>
 
 <button type="button" class="newpill" id="newPill" hidden></button>
+<button type="button" class="totop" id="toTop" aria-label="Torna in cima" hidden>↑</button>
+<div class="drawer" id="settings" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle"><div class="shade" data-close-set="1"></div>
+  <div class="panel"><div class="panel-h"><h2 id="setTitle">Impostazioni</h2><button type="button" class="iconbtn dark" id="setClose" data-close-set="1" aria-label="Chiudi">✕</button></div><div id="setBody"></div></div></div>
 <div class="toast" id="toast" role="status" hidden></div>
 <script src="app.js"></script>
 </body>

@@ -4,8 +4,8 @@
  "https://www.everyeye.it/feed/news.xml": "www.everyeye.it.xml",
  "https://it.ign.com/feed.xml": "ign.xml",
  "https://www.spaziogames.it/feed": "www.spaziogames.it.xml",
- "https://www.tomshw.it/notizie/5-rtx-5070-ti-scende-sotto-i-700": "og_www.tomshw.it_5.html",
- "https://www.tomshw.it/notizie/14-il-nuovo-firmware-ps5-migliora": "og_www.tomshw.it_14.html",
+ "https://www.tomshw.it/notizie/7-rtx-5070-ti-scende-sotto-i-700": "og_www.tomshw.it_7.html",
+ "https://www.tomshw.it/notizie/16-il-nuovo-firmware-ps5-migliora": "og_www.tomshw.it_16.html",
  "https://www.tomshw.it/feed": "www.tomshw.it.xml",
  "https://www.hdblog.it/feed/": "www.hdblog.it.xml",
  "https://store.steampowered.com/api/featuredcategories?cc=it&l=italian": "steam_featured.json",
@@ -13,7 +13,8 @@
  "https://store.steampowered.com/search/results/?filter=popularcomingsoon&start=0&count=100&cc=it&l=english&infinite=1&json=1": "steam_soon.json",
  "https://store.steampowered.com/api/appdetails?appids=9001&cc=it&l=english&filters=release_date": "ad1.json",
  "https://store.steampowered.com/api/appdetails?appids=9002&cc=it&l=english&filters=release_date": "ad2.json",
- "https://catalog.gog.com/v1/catalog?limit=60&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=1&countryCode=IT&locale=it-IT&currencyCode=EUR": "gog.json",
- "https://store-site-backend-static.ext.epicgames.com/freeGamesPromotions?locale=it&country=IT&allowCountries=IT": "epic.json",
- "https://www.gamerpower.com/api/giveaways?type=game&sort-by=date": "gp.json"
+ "https://catalog.gog.com/v1/catalog?limit=48&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=1&countryCode=IT&locale=en-US&currencyCode=EUR": "gog.json",
+ "https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=it&country=IT&allowCountries=IT": "epic.json",
+ "https://www.gamerpower.com/api/giveaways?type=game&sort-by=date": "gp.json",
+ "https://www.youtube.com/feeds/videos.xml?channel_id=UC-2Y8dQb0S6DtpxNgAKoJKA": "yt.xml"
 }
