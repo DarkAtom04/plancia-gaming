@@ -1,0 +1,874 @@
+{
+ "updated": "2026-11-02",
+ "perfNote": "Indice di potenza stimato dai test pubblicati (Steam Deck OLED = 100). Serve a confrontare a colpo d'occhio: nei singoli giochi le differenze possono cambiare.",
+ "games": [
+  "Cyberpunk 2077",
+  "Forza Horizon 6",
+  "Elden Ring",
+  "Hades II",
+  "Helldivers 2",
+  "Black Myth: Wukong"
+ ],
+ "gameSettings": [
+  "1080p, Medio",
+  "1080p, Alto",
+  "1080p (limite 60)",
+  "1080p",
+  "1080p",
+  "1080p"
+ ],
+ "devices": [
+  {
+   "id": "onexfly-apex",
+   "name": "OneXPlayer OneXFly Apex",
+   "brand": "OneXPlayer",
+   "color": "#E4002B",
+   "tier": "Estremo",
+   "perf": 310,
+   "apu": "AMD Ryzen AI Max+ 395",
+   "cpu": "16 core / 32 thread Zen 5",
+   "gpu": "Radeon 8060S, 40 CU RDNA 3.5",
+   "ram": "fino a 128 GB LPDDR5X",
+   "storage": "SSD M.2",
+   "display": "120 Hz con VRR",
+   "battery": "n.d.",
+   "weight": "n.d.",
+   "os": "Windows 11",
+   "tdp": "fino a 75 W e oltre (raffreddamento a liquido opzionale)",
+   "price": null,
+   "priceText": "fino a 2.499 $ (USA)",
+   "priceNote": "Prezzo italiano non ancora ufficiale",
+   "os_tags": [
+    "Windows"
+   ],
+   "pros": [
+    "Il più potente in assoluto: prestazioni da PC fisso di fascia media",
+    "Fino a 128 GB di memoria"
+   ],
+   "cons": [
+    "Prezzo altissimo",
+    "Grande e pesante, consuma molto: autonomia breve a piena potenza"
+   ],
+   "tests": [
+    {
+     "game": "Forza Horizon 5",
+     "fps": 241,
+     "settings": "1080p a 75 W"
+    }
+   ],
+   "keywords": [
+    "onexfly",
+    "onexplayer",
+    "apex"
+   ],
+   "buy": [
+    {
+     "name": "OneXPlayer",
+     "url": "https://onexplayerstore.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=OneXPlayer+OneXFly+Apex"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=OneXPlayer+OneXFly+Apex&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=OneXPlayer+OneXFly+Apex"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Windows Central, migliori PC portatili da gioco",
+     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    }
+   ]
+  },
+  {
+   "id": "gpd-win-5",
+   "name": "GPD WIN 5",
+   "brand": "GPD",
+   "color": "#333C4E",
+   "tier": "Estremo",
+   "perf": 290,
+   "apu": "AMD Ryzen AI Max+ 395 o Max 388",
+   "cpu": "fino a 16 core Zen 5",
+   "gpu": "Radeon 8060S, 40 CU RDNA 3.5 (con il 395)",
+   "ram": "32-128 GB LPDDR5X",
+   "storage": "fino a 4 TB",
+   "display": "7\" 1920x1080 120 Hz",
+   "battery": "80 Wh esterna, si stacca",
+   "weight": "n.d.",
+   "os": "Windows 11",
+   "tdp": "fino a 85 W",
+   "price": null,
+   "priceText": "da 1.722 $ (USA)",
+   "priceNote": "Versione Max 388, 32 GB, 1 TB. Si compra soprattutto da importatori",
+   "os_tags": [
+    "Windows"
+   ],
+   "pros": [
+    "Potenza simile alla OneXFly Apex a prezzo più basso",
+    "Batteria esterna sostituibile"
+   ],
+   "cons": [
+    "Batteria esterna scomoda in mano",
+    "Assistenza in Italia limitata"
+   ],
+   "tests": [
+    {
+     "game": "Forza Horizon 5",
+     "fps": 234,
+     "settings": "1080p a 75 W"
+    }
+   ],
+   "keywords": [
+    "gpd win",
+    "gpd"
+   ],
+   "buy": [
+    {
+     "name": "GPD",
+     "url": "https://gpd.hk/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=GPD+WIN+5"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=GPD+WIN+5&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=GPD+WIN+5"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Windows Central, migliori PC portatili da gioco",
+     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    }
+   ]
+  },
+  {
+   "id": "claw-8-ex",
+   "name": "MSI Claw 8 EX AI+",
+   "brand": "MSI",
+   "color": "#D3001E",
+   "tier": "Top di gamma",
+   "perf": 215,
+   "apu": "Intel Arc G3 Extreme",
+   "cpu": "Intel (Panther Lake)",
+   "gpu": "Intel Arc (Xe3)",
+   "ram": "32 GB LPDDR5X",
+   "storage": "1 TB PCIe 4.0",
+   "display": "8\" 120 Hz",
+   "battery": "n.d.",
+   "weight": "n.d.",
+   "os": "Windows 11",
+   "tdp": "35 W",
+   "price": 1599,
+   "priceText": "circa 1.599 €",
+   "priceNote": "Negli USA 1.699-1.799 $. In arrivo una variante di colore più economica",
+   "os_tags": [
+    "Windows"
+   ],
+   "pros": [
+    "Il portatile più veloce provato da IGN ad agosto 2026",
+    "Circa 42-44% più veloce di Ryzen Z2 Extreme e Core Ultra 258V nei test"
+   ],
+   "cons": [
+    "Costa quasi il doppio della Claw 8 AI+",
+    "Driver Intel: qualche gioco può dare problemi"
+   ],
+   "tests": [],
+   "testNote": "Nei test circa il 42-44% più veloce dei portatili con Ryzen Z2 Extreme.",
+   "keywords": [
+    "claw 8 ex",
+    "claw"
+   ],
+   "buy": [
+    {
+     "name": "MSI",
+     "url": "https://it.msi.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=MSI+Claw+8+EX+AI%2B"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=MSI+Claw+8+EX+AI%2B&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=MSI+Claw+8+EX+AI%2B"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Multiplayer.it, prezzo MSI Claw 8 EX AI+",
+     "url": "https://multiplayer.it/notizie/il-nuovo-msi-claw-8-ex-ai-con-intel-arc-g3-extreme-costa-quasi-il-doppio-del-precedente-rivelato-il-prezzo.html"
+    },
+    {
+     "name": "Windows Central, migliori PC portatili da gioco",
+     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    }
+   ]
+  },
+  {
+   "id": "xbox-ally-x20",
+   "name": "ROG Xbox Ally X20",
+   "brand": "ASUS ROG",
+   "color": "#107C10",
+   "tier": "Top di gamma",
+   "perf": 150,
+   "apu": "AMD Ryzen AI Z2 Extreme",
+   "cpu": "8 core / 16 thread Zen 5",
+   "gpu": "Radeon 890M, 16 CU RDNA 3.5",
+   "ram": "24 GB LPDDR5X-8000",
+   "storage": "1 TB",
+   "display": "7,4\" 1080p OLED 120 Hz VRR, HDR",
+   "battery": "80 Wh",
+   "weight": "756 g",
+   "os": "Windows 11 con schermata Xbox",
+   "tdp": "fino a 35 W",
+   "price": null,
+   "priceText": "1.299 $ (USA)",
+   "priceNote": "Bundle con occhiali AR e custodie a 2.499 $. Prezzo italiano da confermare",
+   "os_tags": [
+    "Windows"
+   ],
+   "pros": [
+    "Schermo OLED splendido",
+    "Batteria grande e schermata Xbox comoda da usare col pad"
+   ],
+   "cons": [
+    "Stesso chip della Ally X ma costa molto di più",
+    "Windows meno comodo di SteamOS"
+   ],
+   "tests": [
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 38,
+     "settings": "1080p, Medio"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 60,
+     "settings": "1080p, Alto"
+    },
+    {
+     "game": "Elden Ring",
+     "fps": 60,
+     "settings": "1080p (limite 60)"
+    },
+    {
+     "game": "Hades II",
+     "fps": 120,
+     "settings": "1080p"
+    },
+    {
+     "game": "Helldivers 2",
+     "fps": 58,
+     "settings": "1080p"
+    },
+    {
+     "game": "Black Myth: Wukong",
+     "fps": 41,
+     "settings": "1080p"
+    }
+   ],
+   "keywords": [
+    "ally x20",
+    "rog xbox ally",
+    "rog ally"
+   ],
+   "buy": [
+    {
+     "name": "ASUS ROG",
+     "url": "https://rog.asus.com/it/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=ROG+Xbox+Ally+X20"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=ROG+Xbox+Ally+X20&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Xbox+Ally+X20"
+    }
+   ],
+   "sources": [
+    {
+     "name": "SovisGames, test ROG Xbox Ally X20 contro la concorrenza",
+     "url": "https://sovisgames.com/posts/rog-ally-x20-vs-competition/"
+    },
+    {
+     "name": "KitGuru, lancio ROG Xbox Ally X20",
+     "url": "https://www.kitguru.net/gaming/joao-silva/asus-launches-rog-xbox-ally-x20-with-oled-display-and-ryzen-ai-z2-extreme/"
+    }
+   ]
+  },
+  {
+   "id": "legion-go-2",
+   "name": "Lenovo Legion Go 2",
+   "brand": "Lenovo",
+   "color": "#E2231A",
+   "tier": "Top di gamma",
+   "perf": 150,
+   "apu": "AMD Ryzen Z2 Extreme (o Z2)",
+   "cpu": "8 core / 16 thread Zen 5",
+   "gpu": "Radeon 890M, 16 CU RDNA 3.5",
+   "ram": "fino a 32 GB LPDDR5X",
+   "storage": "1 TB",
+   "display": "8,8\" 1920x1200 OLED 144 Hz",
+   "battery": "74 Wh",
+   "weight": "circa 950 g",
+   "os": "Windows 11 o SteamOS",
+   "tdp": "fino a 35 W",
+   "price": 1750,
+   "priceText": "1.750-2.300 €",
+   "priceNote": "Listino Lenovo Italia dopo i rincari: 1.750 € con Z2, circa 2.300 € con Z2 Extreme. Alcuni negozi la vendono ancora al prezzo di lancio, da circa 1.000-1.300 €",
+   "os_tags": [
+    "Windows",
+    "SteamOS"
+   ],
+   "pros": [
+    "Lo schermo più grande e bello: OLED 8,8\" a 144 Hz",
+    "Controller staccabili, 32 GB di memoria"
+   ],
+   "cons": [
+    "Pesante",
+    "Prezzo salito molto in Italia"
+   ],
+   "tests": [
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 38,
+     "settings": "1080p, Medio"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 60,
+     "settings": "1080p, Alto"
+    },
+    {
+     "game": "Elden Ring",
+     "fps": 60,
+     "settings": "1080p (limite 60)"
+    },
+    {
+     "game": "Hades II",
+     "fps": 120,
+     "settings": "1080p"
+    },
+    {
+     "game": "Helldivers 2",
+     "fps": 60,
+     "settings": "1080p"
+    },
+    {
+     "game": "Black Myth: Wukong",
+     "fps": 41,
+     "settings": "1080p"
+    }
+   ],
+   "keywords": [
+    "legion go 2",
+    "legion go"
+   ],
+   "buy": [
+    {
+     "name": "Lenovo",
+     "url": "https://www.lenovo.com/it/it/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Lenovo+Legion+Go+2"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Lenovo+Legion+Go+2&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Lenovo+Legion+Go+2"
+    }
+   ],
+   "sources": [
+    {
+     "name": "SovisGames, test ROG Xbox Ally X20 contro la concorrenza",
+     "url": "https://sovisgames.com/posts/rog-ally-x20-vs-competition/"
+    },
+    {
+     "name": "Multiplayer.it, rincari Legion Go 2 e ROG Xbox Ally in Italia",
+     "url": "https://multiplayer.it/notizie/lenovo-legion-go-2-prezzi-stelle-rincari-superano-listino-iniziale.html"
+    },
+    {
+     "name": "Tom's Guide, Ally X contro Legion Go 2 contro Claw A8",
+     "url": "https://www.tomsguide.com/gaming/handheld-gaming/rog-xbox-ally-x-vs-lenovo-legion-go-2-vs-msi-claw-a8"
+    }
+   ]
+  },
+  {
+   "id": "xbox-ally-x",
+   "name": "ROG Xbox Ally X",
+   "brand": "ASUS ROG",
+   "color": "#107C10",
+   "tier": "Fascia alta",
+   "perf": 150,
+   "apu": "AMD Ryzen AI Z2 Extreme",
+   "cpu": "8 core / 16 thread Zen 5",
+   "gpu": "Radeon 890M, 16 CU RDNA 3.5",
+   "ram": "24 GB LPDDR5X-8000",
+   "storage": "1 TB",
+   "display": "7\" 1080p IPS 120 Hz VRR",
+   "battery": "80 Wh",
+   "weight": "715 g",
+   "os": "Windows 11 con schermata Xbox",
+   "tdp": "fino a 35 W",
+   "price": 999,
+   "priceText": "999 €",
+   "priceNote": "Era 899 € al lancio",
+   "os_tags": [
+    "Windows"
+   ],
+   "pros": [
+    "Stesse prestazioni della X20 a molto meno",
+    "Impugnature comode, batteria da 80 Wh"
+   ],
+   "cons": [
+    "Schermo IPS, non OLED",
+    "Prezzo salito di 100 €"
+   ],
+   "tests": [
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 38,
+     "settings": "1080p, Medio"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 60,
+     "settings": "1080p, Alto"
+    },
+    {
+     "game": "Elden Ring",
+     "fps": 60,
+     "settings": "1080p (limite 60)"
+    },
+    {
+     "game": "Hades II",
+     "fps": 120,
+     "settings": "1080p"
+    },
+    {
+     "game": "Helldivers 2",
+     "fps": 58,
+     "settings": "1080p"
+    },
+    {
+     "game": "Black Myth: Wukong",
+     "fps": 41,
+     "settings": "1080p"
+    }
+   ],
+   "testNote": "Stesso chip e stessa memoria della X20: prestazioni praticamente uguali.",
+   "keywords": [
+    "ally x",
+    "rog xbox ally",
+    "rog ally"
+   ],
+   "buy": [
+    {
+     "name": "ASUS ROG",
+     "url": "https://rog.asus.com/it/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=ROG+Xbox+Ally+X"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=ROG+Xbox+Ally+X&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Xbox+Ally+X"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Multiplayer.it, rincari Legion Go 2 e ROG Xbox Ally in Italia",
+     "url": "https://multiplayer.it/notizie/lenovo-legion-go-2-prezzi-stelle-rincari-superano-listino-iniziale.html"
+    },
+    {
+     "name": "Tom's Guide, Ally X contro Legion Go 2 contro Claw A8",
+     "url": "https://www.tomsguide.com/gaming/handheld-gaming/rog-xbox-ally-x-vs-lenovo-legion-go-2-vs-msi-claw-a8"
+    },
+    {
+     "name": "Windows Central, migliori PC portatili da gioco",
+     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    }
+   ]
+  },
+  {
+   "id": "claw-8-ai",
+   "name": "MSI Claw 8 AI+",
+   "brand": "MSI",
+   "color": "#D3001E",
+   "tier": "Fascia alta",
+   "perf": 145,
+   "apu": "Intel Core Ultra 7 258V",
+   "cpu": "8 core Lunar Lake",
+   "gpu": "Intel Arc 140V",
+   "ram": "32 GB LPDDR5X",
+   "storage": "1 TB",
+   "display": "8\" 1920x1200 120 Hz VRR",
+   "battery": "80 Wh",
+   "weight": "795 g",
+   "os": "Windows 11",
+   "tdp": "fino a 30 W",
+   "price": null,
+   "priceText": "899 $ al lancio (USA)",
+   "priceNote": "In Italia spesso scontata: controlla i negozi qui sotto",
+   "os_tags": [
+    "Windows"
+   ],
+   "pros": [
+    "Ottima a bassi consumi: batteria che dura",
+    "32 GB di memoria"
+   ],
+   "cons": [
+    "Driver Intel meno rodati di AMD",
+    "Ormai superata dalla Claw 8 EX"
+   ],
+   "tests": [
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 59,
+     "settings": "preset Steam Deck"
+    }
+   ],
+   "keywords": [
+    "claw 8 ai",
+    "claw"
+   ],
+   "buy": [
+    {
+     "name": "MSI",
+     "url": "https://it.msi.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=MSI+Claw+8+AI%2B"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=MSI+Claw+8+AI%2B&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=MSI+Claw+8+AI%2B"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Windows Central, migliori PC portatili da gioco",
+     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    }
+   ]
+  },
+  {
+   "id": "legion-go-s",
+   "name": "Lenovo Legion Go S",
+   "brand": "Lenovo",
+   "color": "#E2231A",
+   "tier": "Fascia media",
+   "perf": 115,
+   "apu": "AMD Ryzen Z2 Go",
+   "cpu": "4 core / 8 thread Zen 3+",
+   "gpu": "Radeon, 12 CU RDNA 2",
+   "ram": "16 GB LPDDR5X",
+   "storage": "512 GB",
+   "display": "8\" 1920x1200 120 Hz VRR",
+   "battery": "55,5 Wh",
+   "weight": "730 g",
+   "os": "SteamOS o Windows 11",
+   "tdp": "fino a 30 W",
+   "price": 550,
+   "priceText": "circa 500-640 €",
+   "priceNote": "Il prezzo cambia molto da negozio a negozio",
+   "os_tags": [
+    "SteamOS",
+    "Windows"
+   ],
+   "pros": [
+    "SteamOS ufficiale con schermo grande",
+    "Più veloce della Steam Deck"
+   ],
+   "cons": [
+    "Batteria piccola",
+    "Chip meno moderno degli altri"
+   ],
+   "tests": [],
+   "keywords": [
+    "legion go s"
+   ],
+   "buy": [
+    {
+     "name": "Lenovo",
+     "url": "https://www.lenovo.com/it/it/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Lenovo+Legion+Go+S+SteamOS"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Lenovo+Legion+Go+S+SteamOS&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Lenovo+Legion+Go+S+SteamOS"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Windows Central, migliori PC portatili da gioco",
+     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    }
+   ]
+  },
+  {
+   "id": "steam-deck-oled",
+   "name": "Steam Deck OLED",
+   "brand": "Valve",
+   "color": "#1A9FFF",
+   "tier": "Fascia media",
+   "perf": 100,
+   "apu": "AMD APU personalizzato",
+   "cpu": "4 core / 8 thread Zen 2",
+   "gpu": "8 CU RDNA 2",
+   "ram": "16 GB LPDDR5-6400",
+   "storage": "512 GB o 1 TB",
+   "display": "7,4\" 1280x800 OLED 90 Hz, HDR",
+   "battery": "50 Wh",
+   "weight": "640 g",
+   "os": "SteamOS",
+   "tdp": "fino a 15 W",
+   "price": 779,
+   "priceText": "da 779 €",
+   "priceNote": "779 € la 512 GB, oltre 900 € la 1 TB. Era 569 € prima dei rincari di maggio 2026",
+   "os_tags": [
+    "SteamOS"
+   ],
+   "pros": [
+    "SteamOS: si accende e si gioca, migliaia di giochi verificati",
+    "Leggera e bilanciata, ottimo OLED"
+   ],
+   "cons": [
+    "La meno potente tra i PC portatili",
+    "Prezzo salito di oltre 200 €"
+   ],
+   "tests": [
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 24,
+     "settings": "1080p, Medio"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 45,
+     "settings": "1080p, Alto"
+    },
+    {
+     "game": "Elden Ring",
+     "fps": 60,
+     "settings": "1080p (limite 60)"
+    },
+    {
+     "game": "Hades II",
+     "fps": 90,
+     "settings": "1080p"
+    },
+    {
+     "game": "Helldivers 2",
+     "fps": 38,
+     "settings": "1080p"
+    },
+    {
+     "game": "Black Myth: Wukong",
+     "fps": 26,
+     "settings": "1080p"
+    }
+   ],
+   "testNote": "Lo schermo è 800p: con impostazioni adatte i giochi girano meglio di questi valori a 1080p.",
+   "keywords": [
+    "steam deck"
+   ],
+   "buy": [
+    {
+     "name": "Steam",
+     "url": "https://store.steampowered.com/steamdeck"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Steam+Deck+OLED"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Steam+Deck+OLED&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Steam+Deck+OLED"
+    }
+   ],
+   "sources": [
+    {
+     "name": "SovisGames, test ROG Xbox Ally X20 contro la concorrenza",
+     "url": "https://sovisgames.com/posts/rog-ally-x20-vs-competition/"
+    },
+    {
+     "name": "Everyeye, quanto costa Steam Deck OLED (settembre 2026)",
+     "url": "https://www.everyeye.it/notizie/costa-steam-deck-oled-settembre-2026-897755.html"
+    }
+   ]
+  },
+  {
+   "id": "xbox-ally",
+   "name": "ROG Xbox Ally",
+   "brand": "ASUS ROG",
+   "color": "#107C10",
+   "tier": "Economico",
+   "perf": 100,
+   "apu": "AMD Ryzen Z2 A",
+   "cpu": "4 core / 8 thread Zen 2",
+   "gpu": "8 CU RDNA 2",
+   "ram": "16 GB LPDDR5-6400",
+   "storage": "512 GB",
+   "display": "7\" 1080p IPS 120 Hz VRR",
+   "battery": "60 Wh",
+   "weight": "670 g",
+   "os": "Windows 11 con schermata Xbox",
+   "tdp": "fino a 20 W",
+   "price": 599,
+   "priceText": "599 €",
+   "priceNote": "Prezzo rimasto invariato in Italia",
+   "os_tags": [
+    "Windows"
+   ],
+   "pros": [
+    "Il modo più economico per giocare al catalogo PC e Game Pass in portatile",
+    "Impugnature comode"
+   ],
+   "cons": [
+    "Potenza simile alla Steam Deck",
+    "Schermo 1080p pesante per questo chip"
+   ],
+   "tests": [],
+   "testNote": "Chip della stessa classe della Steam Deck: prestazioni simili.",
+   "keywords": [
+    "rog xbox ally",
+    "rog ally"
+   ],
+   "buy": [
+    {
+     "name": "ASUS ROG",
+     "url": "https://rog.asus.com/it/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=ROG+Xbox+Ally"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=ROG+Xbox+Ally&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=ROG+Xbox+Ally"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Multiplayer.it, rincari Legion Go 2 e ROG Xbox Ally in Italia",
+     "url": "https://multiplayer.it/notizie/lenovo-legion-go-2-prezzi-stelle-rincari-superano-listino-iniziale.html"
+    },
+    {
+     "name": "Windows Central, migliori PC portatili da gioco",
+     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+    }
+   ]
+  },
+  {
+   "id": "switch-2",
+   "name": "Nintendo Switch 2",
+   "brand": "Nintendo",
+   "color": "#E60012",
+   "tier": "Console",
+   "perf": null,
+   "apu": "NVIDIA T239 personalizzato",
+   "cpu": "8 core ARM",
+   "gpu": "NVIDIA Ampere con DLSS",
+   "ram": "12 GB",
+   "storage": "256 GB",
+   "display": "7,9\" 1080p LCD 120 Hz, HDR",
+   "battery": "5.220 mAh",
+   "weight": "534 g",
+   "os": "Sistema Nintendo",
+   "tdp": "n.d.",
+   "price": 499.99,
+   "priceText": "499,99 €",
+   "priceNote": "Da 469,99 € a 499,99 € dal 1° settembre 2026",
+   "os_tags": [
+    "Console"
+   ],
+   "pros": [
+    "Giochi Nintendo esclusivi, ottimizzati per la console",
+    "Leggera, si collega alla TV"
+   ],
+   "cons": [
+    "Non gioca il catalogo PC, Steam o Game Pass",
+    "Prestazioni non confrontabili con i PC portatili"
+   ],
+   "tests": [],
+   "testNote": "Console: i giochi sono fatti apposta, quindi non ha senso un confronto in fps con i PC portatili.",
+   "keywords": [
+    "switch 2"
+   ],
+   "buy": [
+    {
+     "name": "Nintendo",
+     "url": "https://www.nintendo.com/it-it/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Nintendo+Switch+2"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Nintendo+Switch+2&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Nintendo+Switch+2"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Everyeye, nuovo prezzo di Switch 2 in Italia",
+     "url": "https://www.everyeye.it/notizie/nintendo-switch-2-aumenta-prezzo-italia-costera-settembre-876754.html"
+    }
+   ]
+  }
+ ]
+}

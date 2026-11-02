@@ -100,5 +100,43 @@ gp = [{"id": 1, "title": "Radiant Exodus (Steam) Giveaway", "worth": "$9.99", "i
 put("https://www.gamerpower.com/api/giveaways?type=game&sort-by=date", "gp.json", json.dumps(gp))
 yt = '<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xmlns:yt="http://www.youtube.com/xml/schemas/2015">' + "".join(f'<entry><yt:videoId>vid{k}AAAA</yt:videoId><title>{t}</title><link rel="alternate" href="https://www.youtube.com/watch?v=vid{k}AAAA"/><published>{(NOW-datetime.timedelta(hours=k*5)).isoformat()}</published><media:group><media:thumbnail url="https://i.ytimg.com/vi/vid{k}AAAA/hqdefault.jpg" width="480" height="360"/></media:group></entry>' for k,t in enumerate(["Ghost of Yotei - Launch Trailer | PS5","Astro Bot DLC Gameplay","#shorts quick tip","Days of Play recap"])) + "</feed>"
 put("https://www.youtube.com/feeds/videos.xml?channel_id=UC-2Y8dQb0S6DtpxNgAKoJKA", "yt.xml", yt)
+
+# ---- v3: altri store e uscite console
+from urllib.parse import urlencode, quote
+def usp(d): return urlencode(d, safe="*-._")
+def nin(t, k, fin, reg, sys, rel=None):
+    d = {"title": t, "url": f"/it-it/Giochi/Nintendo-Switch/{t.replace(' ', '-')}-{k}.html", "image_url_h2x1_s": img(f"nin{k}"), "price_discounted_f": fin, "price_regular_f": reg,
+         "price_discount_percentage_f": round((1 - fin / reg) * 100) if reg else 0, "system_names_txt": [sys], "nsuid_txt": [str(70010000000000 + k)]}
+    if rel: d["dates_released_dts"] = [rel + "T00:00:00Z"]
+    return d
+put("https://searching.nintendo-europe.com/it/select?" + usp({"q": "*", "fq": "type:GAME AND price_has_discount_b:true", "rows": "200", "start": "0", "wt": "json", "sort": "popularity asc"}), "nin_deals.json",
+    json.dumps({"response": {"numFound": 3, "docs": [nin("Mario Kart World", 1, 59.99, 79.99, "Nintendo Switch 2"), nin("Hollow Knight", 2, 7.49, 14.99, "Nintendo Switch"), nin("Hades II", 3, 22.49, 29.99, "Nintendo Switch")]}}))
+put("https://searching.nintendo-europe.com/it/select?" + usp({"q": "*", "fq": "type:GAME AND dates_released_dts:[NOW TO NOW+400DAYS]", "rows": "150", "wt": "json", "sort": "popularity asc"}), "nin_up.json",
+    json.dumps({"response": {"docs": [nin("Pokémon Pokopia", 10, 0, 0, "Nintendo Switch 2", "2026-11-04"), nin("Metroid Prime 4 Expansion", 11, 0, 0, "Nintendo Switch 2", "2026-11-20"), nin("Kirby Air Riders Deluxe", 12, 0, 0, "Nintendo Switch 2", "2026-12-03")]}}))
+put("https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/Deal?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=200&skipitems=0", "xb_deal.json",
+    json.dumps({"Items": [{"Id": "9NXBOX000001", "ItemType": "Game"}, {"Id": "9NXBOX000002", "ItemType": "Game"}]}))
+def xprod(pid, t, lp, msrp, rel=None):
+    return {"ProductId": pid, "LocalizedProperties": [{"ProductTitle": t, "Images": [{"ImagePurpose": "SuperHeroArt", "Uri": "//" + img("xb" + pid).split("//", 1)[1]}]}],
+            "MarketProperties": [{"OriginalReleaseDate": (rel or "2024-01-01") + "T00:00:00.0000000Z"}],
+            "DisplaySkuAvailabilities": [{"Availabilities": [{"Actions": ["Details", "Purchase"], "OrderManagementData": {"Price": {"ListPrice": lp, "MSRP": msrp, "CurrencyCode": "EUR"}}, "Conditions": {"EndDate": "2026-11-10T07:59:59.9999999Z"}}]}]}
+put("https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=9NXBOX000001,9NXBOX000002&market=IT&languages=it-IT&MS-CV=DGU1mcuYo0WMMp%2BF.1", "xb_cat.json",
+    json.dumps({"Products": [xprod("9NXBOX000001", "Forza Horizon 6", 52.49, 69.99), xprod("9NXBOX000002", "Starfield", 34.99, 69.99)]}))
+put("https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/ComingSoon?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=120", "xb_soon.json", json.dumps({"Items": [{"Id": "9NXBOX000009"}]}))
+put("https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=9NXBOX000009&market=IT&languages=it-IT&MS-CV=DGU1mcuYo0WMMp%2BF.1", "xb_soon_cat.json", json.dumps({"Products": [xprod("9NXBOX000009", "Clockwork Revolution", 79.99, 79.99, "2026-11-26")]}))
+ps_vars = {"id": "3f772501-f6f8-49b7-abac-874a88ca4897", "pageArgs": {"size": 100, "offset": 0}, "sortBy": None, "filterBy": [], "facetOptions": []}
+ps_ext = {"persistedQuery": {"version": 1, "sha256Hash": "4ce7d410a4db2c8b635a48c1dcec375906ff63b19dadd87e073f8fd0c0481d35"}}
+js = lambda o: quote(json.dumps(o, separators=(",", ":")), safe="-_.!~*'()")
+put("https://web.np.playstation.com/api/graphql/v1/op?operationName=categoryGridRetrieve&variables=" + js(ps_vars) + "&extensions=" + js(ps_ext), "ps.json",
+    json.dumps({"data": {"categoryGridRetrieve": {"products": [
+      {"id": "EP9000-PPSA01234_00-GHOSTOFYOTEI0000", "name": "Ghost of Yōtei", "platforms": ["PS5"], "media": [{"role": "MASTER", "type": "IMAGE", "url": img("ps1")}], "price": {"basePrice": "79,99 €", "discountedPrice": "55,99 €", "discountText": "-30%", "isFree": False, "serviceBranding": ["NONE"]}},
+      {"id": "EP0001-PPSA05678_00-ASTROBOT00000000", "name": "Astro Bot", "platforms": ["PS5"], "media": [{"role": "MASTER", "type": "IMAGE", "url": img("ps2")}], "price": {"basePrice": "69,99 €", "discountedPrice": "41,99 €", "discountText": "-40%", "isFree": False, "serviceBranding": ["PS_PLUS"]}}]}}}))
+put("https://www.cheapshark.com/api/1.0/stores", "cs_stores.json", json.dumps([{"storeID": "1", "storeName": "Steam", "isActive": 1}, {"storeID": "13", "storeName": "Uplay", "isActive": 1}, {"storeID": "11", "storeName": "Humble Store", "isActive": 1}, {"storeID": "99", "storeName": "Nuovo Store", "isActive": 1}, {"storeID": "24", "storeName": "Voidu", "isActive": 0}]))
+def csd(t, sale, normal, did, app=None): return {"title": t, "salePrice": f"{sale:.2f}", "normalPrice": f"{normal:.2f}", "savings": f"{(1-sale/normal)*100:.6f}", "dealID": did, "steamAppID": app, "thumb": img("cs" + did), "steamRatingPercent": "88", "metacriticScore": "85"}
+put("https://www.cheapshark.com/api/1.0/deals?storeID=13&pageSize=60&sortBy=Deal%20Rating&onSale=1", "cs13.json", json.dumps([csd("Assassin's Creed Shadows", 34.99, 69.99, "ubi1"), csd("Far Cry 6", 8.99, 59.99, "ubi2"), csd("Anno 117: Pax Romana", 41.99, 59.99, "ubi3")]))
+put("https://www.cheapshark.com/api/1.0/deals?storeID=11&pageSize=60&sortBy=Deal%20Rating&onSale=1", "cs11.json", json.dumps([csd("Hades II", 22.49, 29.99, "hum1", "1145350"), csd("Cyberpunk 2077", 29.99, 59.99, "hum2", "1091420")]))
+put("https://store.steampowered.com/api/storesearch/?term=" + quote("Godzilla: Destroy All Monsters Melee Remastered", safe="-_.!~*'()") + "&cc=it&l=english", "ss1.json", json.dumps({"total": 1, "items": [{"id": 3999001, "name": "Godzilla: Destroy All Monsters Melee Remastered"}]}))
+put("https://store.steampowered.com/api/storesearch/?term=" + quote("Crymelight", safe="-_.!~*'()") + "&cc=it&l=english", "ss2.json", json.dumps({"total": 0, "items": []}))
+put("https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=" + quote("Crymelight video game", safe="-_.!~*'()"), "wiki1.json",
+    json.dumps({"query": {"pages": {"123": {"pageid": 123, "title": "Crymelight", "thumbnail": {"source": img("wiki-cry"), "width": 640, "height": 360}}}}}))
 json.dump(idx, open(os.path.join(D, "index.json"), "w"), indent=1)
 print(len(idx), "risposte di prova")

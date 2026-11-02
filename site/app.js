@@ -20,8 +20,8 @@ const LS = {
 let D = null;
 const st = {
   view: "home", q: "", page: 30, newsCat: "tutte", newsSrc: "tutte", newsPlat: "tutte",
-  dealStore: "tutti", dealSort: "best", dealMax: null, dealLowest: false, dealPage: 48,
-  relPlat: "tutte", cal: null, calSel: null, techSub: "tutte", vidCh: "tutti",
+  dealStore: "tutti", dealPlat: "tutte", dealSort: "best", dealMax: null, dealLowest: false, dealPage: 48,
+  relPlat: "tutte", hhSort: "perf", hhOs: "tutti", hhMax: null, hhCmp: LS.get("hhCmp", []), hhOpen: null, cal: null, calSel: null, techSub: "tutte", vidCh: "tutti",
   seen: new Set(LS.get("seen", [])), kw: LS.get("kw", []), saved: LS.get("saved", []), prevVisit: LS.get("lastVisit", null),
   lang: LS.get("lang", "tutte"), hidden: new Set(LS.get("hidden", [])), token: LS.get("ghToken", ""), forcing: null
 };
@@ -47,7 +47,8 @@ function ago(iso) {
 }
 function left(iso) { const t = Date.parse(iso); if (!isFinite(t)) return ""; let s = Math.max(0, (t - Date.now()) / 1000); const dd = Math.floor(s / 86400); s -= dd * 86400; const hh = Math.floor(s / 3600); s -= hh * 3600; const mm = Math.floor(s / 60);
   return dd > 0 ? `${dd} g ${hh} h` : hh > 0 ? `${hh} h ${mm} min` : `${mm} min`; }
-const eur = n => typeof n === "number" && isFinite(n) ? (n === 0 ? "Gratis" : n.toLocaleString("it-IT", { style: "currency", currency: "EUR" })) : "";
+const eur = (n, cur) => typeof n === "number" && isFinite(n) ? (n === 0 ? "Gratis" : n.toLocaleString("it-IT", { style: "currency", currency: cur || "EUR", currencyDisplay: "narrowSymbol" })) : "";
+const dealPlat = d => (d.plats || []).some(p => /^PS/.test(p)) ? "PlayStation" : (d.plats || []).includes("Xbox") ? "Xbox" : (d.plats || []).some(p => /Switch/.test(p)) ? "Nintendo" : "PC";
 const norm = s => String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 function qOk(...f) { if (!st.q) return true; const s = norm(f.map(x => Array.isArray(x) ? x.join(" ") : x).join(" ")); return norm(st.q).split(/\s+/).every(w => s.includes(w)); }
 const srcOf = id => D && D.sources.find(x => x.id === id) || {};
@@ -101,11 +102,13 @@ function newsCard(n, ss) {
   <div class="body"><h3><a ${ext(n.url)} data-read="${h(n.url)}">${h(n.title)}</a></h3>${n.summary ? `<p>${h(n.summary)}</p>` : ""}<div class="bot"><span class="meta">${srcLabel(n)}<span class="when">${ago(n.date)}</span></span><span class="meta">${fontiBtn(n)}${saveBtn(n, ss)}</span></div>${alsoList(n)}</div></article>`;
 }
 function dealCard(d) {
-  const alt = (d.alt || []).slice(0, 3).map(a => `<a ${ext(a.url)}>${h(a.store)} ${eur(a.price)}</a>`).join("");
+  const c = d.cur; const pc = dealPlat(d) === "PC";
+  const alt = (d.alt || []).slice(0, 3).map(a => `<a ${ext(a.url)}>${h(a.store)} ${eur(a.price, c)}</a>`).join("");
   return `<article class="card deal"><a class="cover-link" ${ext(d.url)}>${ph(d.img, d.title)}</a><div class="over"><span class="storeb s-${h(String(d.store).toLowerCase().replace(/\W+/g, ""))}">${h(d.store)}</span>${d.bestseller ? '<span class="storeb hotb">Più venduto</span>' : ""}</div>${d.cut ? `<span class="cutb">-${Math.round(d.cut)}%</span>` : ""}
   <div class="body"><h3><a ${ext(d.url)}>${h(d.title)}</a></h3><div class="meta">${platTags(d.plats, 3)}${d.lowest ? '<span class="pill good">Minimo storico</span>' : ""}${d.best ? '<span class="pill good">Prezzo migliore</span>' : ""}${d.until && Date.parse(d.until) > Date.now() ? `<span class="pill warn">Scade tra ${left(d.until)}</span>` : ""}</div>
-  <div class="bot"><div><span class="price">${eur(d.price)}</span>${typeof d.regular === "number" && d.regular > d.price ? `<span class="was">${eur(d.regular)}</span>` : ""}</div>${typeof d.regular === "number" && d.regular > d.price ? `<span class="save-eur">Risparmi ${eur(d.regular - d.price)}</span>` : ""}</div>
-  <div class="cmp">${alt}<a ${ext(igUrl(d.title))}>Cerca su Instant Gaming</a><a ${ext(itadUrl(d.title))}>Storico prezzi</a></div></div></article>`;
+  <div class="bot"><div><span class="price">${eur(d.price, c)}</span>${typeof d.regular === "number" && d.regular > d.price ? `<span class="was">${eur(d.regular, c)}</span>` : ""}</div>${typeof d.regular === "number" && d.regular > d.price ? `<span class="save-eur">Risparmi ${eur(d.regular - d.price, c)}</span>` : ""}</div>
+  ${c === "USD" ? '<p class="curnote">Prezzo del negozio USA: in Italia può variare</p>' : ""}${d.plus ? '<p class="curnote">Sconto extra con PS Plus</p>' : ""}
+  <div class="cmp">${alt}${pc ? `<a ${ext(igUrl(d.title))}>Cerca su Instant Gaming</a><a ${ext(itadUrl(d.title))}>Storico prezzi</a>` : `<a ${ext("https://www.instant-gaming.com/it/ricerca/?q=" + encodeURIComponent(d.title))}>Chiave su Instant Gaming</a>`}</div></div></article>`;
 }
 function freeCard(f) {
   const soon = f.from && Date.parse(f.from) > Date.now();
@@ -141,6 +144,7 @@ const news = () => allNews().filter(n => qOk(n.title, n.summary, n.source, n.tag
 const byCat = (...c) => news().filter(n => c.some(k => (n.cats || []).includes(k)));
 function deals() {
   let L = (D.deals || []).filter(d => qOk(d.title, d.store));
+  if (st.dealPlat !== "tutte") L = L.filter(d => dealPlat(d) === st.dealPlat);
   if (st.dealStore !== "tutti") L = L.filter(d => d.store === st.dealStore);
   if (typeof st.dealMax === "number") L = L.filter(d => d.price <= st.dealMax);
   if (st.dealLowest) L = L.filter(d => d.lowest || d.best);
@@ -186,7 +190,9 @@ function vHome() {
       ${wk.length ? `<div class="box"><h4>Escono a breve <a href="#uscite">Calendario</a></h4>${wk.slice(0, 6).map(r => mini(r.url, r.img, r.title, `${fmtD(r.date)} · ${h((r.plats || []).join(", "))}`)).join("")}</div>` : ""}
       ${srcs.length ? `<div class="box"><h4>Testate <a href="#fonti">Stato</a></h4><div class="srcchips">${srcs.map(s => `<button type="button" class="chip" style="--c:${h(s.color)}" data-gosrc="${h(s.id)}">${fav(s.id) || "<i></i>"}${h(s.name)} <span class="n">${s.n}</span></button>`).join("")}</div></div>` : ""}
     </aside></div>`;
-  const dl = (D.deals || []).filter(d => d.img).slice().sort((a, b) => ((b.cut || 0) + (b.bestseller ? 25 : 0)) - ((a.cut || 0) + (a.bestseller ? 25 : 0))).slice(0, 18);
+  const dsc = d => (d.cut || 0) + (d.bestseller ? 25 : 0) + (d.lowest ? 15 : 0) - Math.min(40, (d.rank || 0) * 0.25);
+  const dByP = ["PC", "PlayStation", "Xbox", "Nintendo"].map(p => (D.deals || []).filter(d => d.img && dealPlat(d) === p).sort((a, b) => dsc(b) - dsc(a)));
+  const dl = []; for (let i = 0; dl.length < 20 && i < 20; i++) for (const L of dByP) if (L[i] && dl.length < 20) dl.push(L[i]);
   out += rail("deals", "Offerte del <em>giorno</em>", "#offerte", dl.map(dealCard));
   out += rail("vid", "Video e <em>trailer</em>", "#video", videos().slice(0, 14).map(videoCard));
   out += rail("free", "Giochi <em>gratis</em>", "#gratis", free().slice(0, 14).map(freeCard));
@@ -210,12 +216,14 @@ function vNotizie() {
     ${L.length > st.page ? `<button class="btn ghost loadmore" type="button" data-more="news">Carica altre (${L.length - st.page})</button>` : ""}`;
 }
 function vOfferte() {
-  const all = D.deals || []; const stores = [...new Set(all.map(d => d.store))].sort((a, b) => all.filter(d => d.store === b).length - all.filter(d => d.store === a).length);
+  const every = D.deals || []; const all = st.dealPlat === "tutte" ? every : every.filter(d => dealPlat(d) === st.dealPlat); const stores = [...new Set(all.map(d => d.store))].sort((a, b) => all.filter(d => d.store === b).length - all.filter(d => d.store === a).length);
   const maxP = Math.ceil(Math.max(10, ...all.map(d => d.price || 0))); const cur = st.dealMax == null ? maxP : Math.min(st.dealMax, maxP);
   const L = deals(); const nd = byCat("offerte").slice(0, 12); const ss = savedSet();
   const quick = [5, 10, 20, 30].map(v => `<button type="button" class="chip" data-qmax="${v}" aria-pressed="${st.dealMax === v}">Sotto ${v} €</button>`).join("");
-  return sh("Offerte <em>giochi PC</em>", `<span class="sub" id="dealCount">${L.length} offerte</span>`) +
-    `<div class="filters"><button type="button" class="chip" data-store="tutti" aria-pressed="${st.dealStore === "tutti"}">Tutti gli store <span class="n">${all.length}</span></button>${stores.map(s => `<button type="button" class="chip" data-store="${h(s)}" aria-pressed="${st.dealStore === s}">${h(s)} <span class="n">${all.filter(d => d.store === s).length}</span></button>`).join("")}</div>
+  const pls = ["PC", "PlayStation", "Xbox", "Nintendo"].map(p => [p, every.filter(d => dealPlat(d) === p).length]).filter(x => x[1]);
+  return sh("Offerte <em>giochi</em>", `<span class="sub" id="dealCount">${L.length} offerte</span>`) +
+    `<div class="filters plats"><button type="button" class="chip big" data-dplat="tutte" aria-pressed="${st.dealPlat === "tutte"}">Tutte <span class="n">${every.length}</span></button>${pls.map(([p, n]) => `<button type="button" class="chip big" data-dplat="${p}" aria-pressed="${st.dealPlat === p}">${p} <span class="n">${n}</span></button>`).join("")}</div>
+    <div class="filters scrollx"><button type="button" class="chip" data-store="tutti" aria-pressed="${st.dealStore === "tutti"}">Tutti gli store <span class="n">${all.length}</span></button>${stores.map(s => `<button type="button" class="chip" data-store="${h(s)}" aria-pressed="${st.dealStore === s}">${h(s)} <span class="n">${all.filter(d => d.store === s).length}</span></button>`).join("")}</div>
     <div class="filters"><select id="dealSort" aria-label="Ordina"><option value="best">Consigliate</option><option value="cut">Sconto più alto</option><option value="price">Prezzo più basso</option><option value="name">Nome A-Z</option></select>
     ${quick}<button type="button" class="chip" data-qmax="0" aria-pressed="${st.dealMax == null}">Qualsiasi prezzo</button>
     <label class="range" for="dealMax">Fino a <span id="dealMaxV">${eur(cur)}</span><input type="range" id="dealMax" min="1" max="${maxP}" step="1" value="${cur}"></label>
@@ -246,21 +254,26 @@ function vUscite() {
     const L = R.filter(r => r.date === k).sort((a, b) => (b.big ? 1 : 0) - (a.big ? 1 : 0) || (b.img ? 1 : 0) - (a.img ? 1 : 0)); const ev = E.filter(e => e.start === k);
     cells += `<button type="button" class="cell ${d.getMonth() !== m ? "out" : ""} ${k === tk ? "today" : ""}" data-day="${k}" aria-pressed="${st.calSel === k}" aria-label="${d.getDate()} ${MESI_L[d.getMonth()]}: ${L.length} uscite">
       <span class="num">${d.getDate()}</span>${ev.map(e => `<span class="ev">${h(e.name)}</span>`).join("")}
-      ${L.length ? `<span class="thumbs">${L.slice(0, 2).map(r => ph(r.img, r.title)).join("")}</span>${L.slice(0, 2).map(r => `<span class="t ${r.big ? "big" : ""}">${h(r.title)}</span>`).join("")}${L.length > 2 ? `<span class="sub" style="font-size:11px">+${L.length - 2} altri</span>` : ""}` : ""}</button>`;
+      ${L.length ? `<span class="cv">${ph((L.find(r => r.img) || L[0]).img, (L.find(r => r.img) || L[0]).title)}${L.length > 1 ? `<span class="cn">+${L.length - 1}</span>` : ""}</span>${L.slice(0, 2).map(r => `<span class="t ${r.big ? "big" : ""}">${h(r.title)}</span>`).join("")}` : ""}</button>`;
   }
   const mo = R.filter(r => r.date === y + "-" + pad(m + 1));
   let sel = ""; if (st.calSel) { const L = R.filter(r => r.date === st.calSel); sel = sh(fmtD(st.calSel)) + (L.length ? `<div class="grid">${L.map(relCard).join("")}</div>` : empty("Nessuna uscita in questo giorno.")); }
-  const next = R.filter(r => !monthOnly(r.date) && daysTo(r.date) >= 0 && daysTo(r.date) <= 14);
+  const mk = y + "-" + pad(m + 1); const inMonth = R.filter(r => !monthOnly(r.date) && r.date.slice(0, 7) === mk && (daysTo(r.date) >= -7));
+  const days = [...new Set(inMonth.map(r => r.date))].sort();
+  const monthList = days.map(dk => { const L = inMonth.filter(r => r.date === dk).sort((a, b) => (b.big ? 1 : 0) - (a.big ? 1 : 0) || (b.img ? 1 : 0) - (a.img ? 1 : 0)); const dd = parseD(dk); const n = daysTo(dk);
+    return `<div class="dayg" id="day-${dk}"><h3 class="dayh"><b>${dd.getDate()}</b><span>${GIORNI_L[dd.getDay()]} ${MESI_L[dd.getMonth()].toLowerCase()}</span><em>${n === 0 ? "oggi" : n === 1 ? "domani" : n > 0 ? "tra " + n + " giorni" : "uscito"}</em><small>${L.length} ${L.length === 1 ? "uscita" : "uscite"}</small></h3><div class="grid g5">${L.map(relCard).join("")}</div></div>`; }).join("");
   const big = R.filter(r => r.big && (monthOnly(r.date) || daysTo(r.date) >= 0)).slice(0, 16);
   const ev = E.filter(e => !e.end || daysTo(e.end) >= 0).sort((a, b) => a.start.localeCompare(b.start));
-  return sh("Calendario <em>uscite</em>", `<span class="sub">Tocca un giorno per vedere i giochi</span>`) +
+  return sh("Calendario <em>uscite</em>", `<span class="sub">${R.filter(r => monthOnly(r.date) || daysTo(r.date) >= 0).length} giochi in arrivo · tocca un giorno per vederli</span>`) +
     `<div class="filters"><button type="button" class="chip" data-rplat="tutte" aria-pressed="${st.relPlat === "tutte"}">Tutte</button>${PLATS.map(p => `<button type="button" class="chip" data-rplat="${p}" aria-pressed="${st.relPlat === p}">${p}</button>`).join("")}</div>
     <div class="cal-head"><button class="arrow" type="button" data-cal="-1" aria-label="Mese precedente">‹</button><h3>${MESI_L[m]} ${y}</h3><button class="arrow" type="button" data-cal="1" aria-label="Mese successivo">›</button><button class="btn ghost" type="button" data-cal="0">Oggi</button></div>
     <div class="calwrap"><div class="cal">${["Lun", "Mar", "Mer", "Gio", "Ven", "Sab", "Dom"].map(g => `<div class="wd">${g}</div>`).join("")}${cells}</div></div>
-    ${mo.length ? `<p class="sub">Nel mese, giorno ancora da annunciare: ${mo.map(r => `<b>${h(r.title)}</b>`).join(", ")}</p>` : ""}${sel}
+${sel}
     ${ev.length ? sh("Saldi ed <em>eventi</em>") + `<div class="events">${ev.map(e => { const on = daysTo(e.start) <= 0 && (!e.end || daysTo(e.end) >= 0); return `<a class="ev-c ${on ? "on" : ""}" ${ext(e.url)}>${on ? '<span class="pill good" style="align-self:flex-start">In corso</span>' : `<span class="pill acc" style="align-self:flex-start">Tra ${daysTo(e.start)} giorni</span>`}<b>${h(e.name)}</b><span>${fmtD(e.start)}${e.end ? " → " + fmtD(e.end) : ""}</span>${e.note ? `<span>${h(e.note)}</span>` : ""}</a>`; }).join("")}</div>` : ""}
-    ${next.length ? sh("Prossimi <em>14 giorni</em>") + `<div class="grid">${next.map(relCard).join("")}</div>` : ""}
-    ${big.length ? sh("I più <em>attesi</em>") + `<div class="grid">${big.map(relCard).join("")}</div>` : ""}`;
+    ${big.length ? sh("I più <em>attesi</em>") + `<div class="rail" id="rail-big">${big.map(relCard).join("")}</div>` : ""}
+    ${sh(`Tutte le uscite di <em>${MESI_L[m].toLowerCase()}</em>`, `<span class="sub">${inMonth.length} giochi · si aggiorna da solo da Steam, Nintendo eShop, Xbox Store${(D.health || []).some(x => x.id === "rawg" && x.ok) ? ", RAWG" : ""} e redazione</span>`)}
+    ${monthList || empty("Nessuna uscita con data precisa in questo mese.")}
+    ${mo.length ? sh("Nel mese, giorno <em>da annunciare</em>") + `<div class="grid g5">${mo.map(relCard).join("")}</div>` : ""}`;
 }
 function vCat(title, cats, sub) {
   const ss = savedSet(); let L = byCat(...cats); if (sub) L = L.filter(sub);
@@ -307,12 +320,91 @@ function vCerca() {
     (!N.length && !Dl.length && !F.length && !R.length && !V.length ? empty("Nessun risultato. Prova con un'altra parola.") : "");
 }
 
+/* ---------------------------------------------------------- handheld */
+const HH_SORT = { perf: "Più potenti", price: "Prezzo più basso", screen: "Schermo più grande" };
+function hhList() {
+  const H = (D.handhelds && D.handhelds.devices) || [];
+  let L = H.filter(x => st.hhOs === "tutti" || (x.os_tags || []).includes(st.hhOs));
+  if (st.hhMax) L = L.filter(x => typeof x.price === "number" && x.price <= st.hhMax);
+  const scr = x => parseFloat(String(x.display).replace(",", ".")) || 0;
+  if (st.hhSort === "perf") L = L.slice().sort((a, b) => (b.perf ?? -1) - (a.perf ?? -1) || (b.price || 0) - (a.price || 0));
+  if (st.hhSort === "price") L = L.slice().sort((a, b) => (a.price ?? 1e9) - (b.price ?? 1e9));
+  if (st.hhSort === "screen") L = L.slice().sort((a, b) => scr(b) - scr(a));
+  return L;
+}
+function hhArt(x) {
+  const c = x.color || "#334"; const sc = /OLED/.test(x.display) ? "#05070c" : "#0d1524";
+  return `<svg class="hh-art" viewBox="0 0 320 150" role="img" aria-label="${h(x.name)}"><defs><linearGradient id="g-${h(x.id)}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${h(c)}" stop-opacity=".95"/><stop offset="1" stop-color="${h(c)}" stop-opacity=".55"/></linearGradient></defs>
+  <rect x="8" y="22" width="304" height="108" rx="46" fill="url(#g-${h(x.id)})"/><rect x="84" y="32" width="152" height="88" rx="8" fill="${sc}"/><rect x="92" y="40" width="136" height="72" rx="4" fill="${h(c)}" opacity=".18"/>
+  <text x="160" y="83" text-anchor="middle" font-family="Saira Condensed, sans-serif" font-weight="800" font-size="19" fill="#fff" opacity=".92">${h(x.brand.toUpperCase())}</text>
+  <circle cx="44" cy="62" r="14" fill="#0006"/><circle cx="270" cy="96" r="14" fill="#0006"/><g fill="#0007"><circle cx="270" cy="50" r="6"/><circle cx="258" cy="62" r="6"/><circle cx="282" cy="62" r="6"/><circle cx="270" cy="74" r="6"/></g><path d="M38 96h12M44 90v12" stroke="#0008" stroke-width="5" stroke-linecap="round"/></svg>`;
+}
+function hhNews(x) { const kw = (x.keywords || []).map(norm); return allNews().filter(n => { const t = norm(n.title); return kw.some(k => t.includes(k)); }); }
+function hhRow(x, i, maxPerf) {
+  const on = st.hhCmp.includes(x.id); const open = st.hhOpen === x.id; const N = hhNews(x);
+  const bar = x.perf ? `<div class="perf"><span style="width:${Math.max(6, Math.round(x.perf / maxPerf * 100))}%;--c:${h(x.color)}"></span><b>${x.perf}</b></div>` : `<div class="perf na"><b>n.c.</b><small>console</small></div>`;
+  return `<article class="hh ${open ? "open" : ""}" id="hh-${h(x.id)}">
+    <div class="hh-rank ${x.perf && st.hhSort === "perf" && i < 3 ? "r" + (i + 1) : ""}">${x.perf ? i + 1 : "–"}</div>
+    <div class="hh-pic">${hhArt(x)}</div>
+    <div class="hh-main"><div class="hh-top"><span class="tier t-${h(norm(x.tier).replace(/\W+/g, ""))}">${h(x.tier)}</span>${(x.os_tags || []).map(o => `<span class="pill">${h(o)}</span>`).join("")}${N.length ? `<span class="pill acc">${N.length} notizie</span>` : ""}</div>
+      <h3>${h(x.name)}</h3><p class="hh-chip">${h(x.apu)} · ${h(x.ram)} · ${h(x.display)}</p>${bar}</div>
+    <div class="hh-side"><div class="hh-price">${h(x.priceText)}</div><div class="hh-btns"><button type="button" class="btn ghost small" data-hhopen="${h(x.id)}" aria-expanded="${open}">${open ? "Chiudi" : "Scheda completa"}</button><label class="toggle"><input type="checkbox" data-hhcmp="${h(x.id)}" ${on ? "checked" : ""}> Confronta</label></div></div>
+    ${open ? hhDetail(x, N) : ""}</article>`;
+}
+function hhDetail(x, N) {
+  const specs = [["Processore", x.apu], ["CPU", x.cpu], ["Grafica", x.gpu], ["Memoria", x.ram], ["Archiviazione", x.storage], ["Schermo", x.display], ["Batteria", x.battery], ["Peso", x.weight], ["Consumo massimo", x.tdp], ["Sistema", x.os]];
+  return `<div class="hh-det">
+    <div><h4>Scheda tecnica</h4><table class="spec">${specs.map(([k, v]) => `<tr><th>${k}</th><td>${h(v || "n.d.")}</td></tr>`).join("")}</table>
+      <p class="sub">${h(x.priceNote || "")}</p></div>
+    <div><h4>Pro e contro</h4><ul class="pc">${(x.pros || []).map(p => `<li class="pro">${h(p)}</li>`).join("")}${(x.cons || []).map(p => `<li class="con">${h(p)}</li>`).join("")}</ul>
+      <h4>Come girano i giochi</h4>${(x.tests || []).length ? `<table class="spec fps">${x.tests.map(t => `<tr><th>${h(t.game)}<small>${h(t.settings)}</small></th><td><b>${t.fps}</b> fps</td></tr>`).join("")}</table>` : ""}${x.testNote ? `<p class="sub">${h(x.testNote)}</p>` : ""}${!(x.tests || []).length && !x.testNote ? `<p class="sub">Nessun test affidabile ancora pubblicato.</p>` : ""}</div>
+    <div><h4>Dove comprarlo</h4><div class="buy">${(x.buy || []).map(b => `<a class="btn ${b === x.buy[0] ? "" : "ghost"} small" ${ext(b.url)}>${h(b.name)}</a>`).join("")}</div>
+      <p class="sub">I link aprono la ricerca nel negozio: confronta prezzo e venditore prima di comprare.</p>
+      <h4>Fonti</h4><ul class="srcl">${(x.sources || []).map(s => `<li><a ${ext(s.url)}>${h(s.name)}</a></li>`).join("")}</ul>
+      ${N.length ? `<h4>Ultime notizie</h4><ul class="tl">${N.slice(0, 6).map(n => `<li><a ${ext(n.url)} data-read="${h(n.url)}"><time>${ago(n.date)}</time><span>${h(n.title)}<span class="s">${h(n.source)}</span></span></a></li>`).join("")}</ul>` : ""}</div></div>`;
+}
+function hhCompare() {
+  const H = (D.handhelds && D.handhelds.devices) || []; const L = st.hhCmp.map(id => H.find(x => x.id === id)).filter(Boolean);
+  if (L.length < 2) return "";
+  const G = D.handhelds.games || []; const maxP = Math.max(...L.map(x => x.perf || 0));
+  const row = (k, f, best) => `<tr><th>${k}</th>${L.map(x => { const v = f(x); return `<td class="${best && best(x) ? "best" : ""}">${v == null || v === "" ? "—" : v}</td>`; }).join("")}</tr>`;
+  const num = s => parseFloat(String(s || "").replace(",", ".")) || 0;
+  const maxBy = f => x => f(x) && f(x) === Math.max(...L.map(f));
+  return `<section class="cmpbox" id="cmpbox">${sh("Confronto <em>diretto</em>", `<button type="button" class="btn ghost small" id="hhClear">Svuota confronto</button>`)}
+    <div class="tblwrap"><table class="cmpt"><thead><tr><th></th>${L.map(x => `<th><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</th>`).join("")}</tr></thead><tbody>
+    ${row("Potenza (indice)", x => x.perf ? `<div class="perf sm"><span style="width:${Math.round(x.perf / maxP * 100)}%;--c:${h(x.color)}"></span><b>${x.perf}</b></div>` : "n.c.", maxBy(x => x.perf || 0))}
+    ${row("Prezzo", x => h(x.priceText))}
+    ${row("Processore", x => h(x.apu))}${row("Grafica", x => h(x.gpu))}${row("Memoria", x => h(x.ram), maxBy(x => num(String(x.ram).match(/(\d+)\s*GB/g)?.pop())))}${row("Archiviazione", x => h(x.storage))}
+    ${row("Schermo", x => h(x.display), maxBy(x => num(x.display)))}${row("Batteria", x => h(x.battery), maxBy(x => num(x.battery)))}${row("Peso", x => h(x.weight))}${row("Sistema", x => h(x.os))}
+    ${G.map((g, i) => row(`${h(g)}<small>${h((D.handhelds.gameSettings || [])[i] || "")}</small>`, x => { const t = (x.tests || []).find(t => t.game === g); return t ? `<b>${t.fps}</b> fps` : ""; }, x => { const t = (x.tests || []).find(t => t.game === g); const all = L.map(y => ((y.tests || []).find(t => t.game === g) || {}).fps || 0); return t && t.fps === Math.max(...all) && all.filter(Boolean).length > 1; })).join("")}
+    </tbody></table></div><p class="sub">In verde il valore migliore. "—" = test non disponibile con le stesse impostazioni.</p></section>`;
+}
+function vHandheld() {
+  const HH = D.handhelds; const ss = savedSet();
+  if (!HH || !(HH.devices || []).length) return vCat("Handheld e <em>PC portatili da gioco</em>", ["handheld"]);
+  const L = hhList(); const ranked = L.filter(x => x.perf); const maxPerf = Math.max(...HH.devices.map(x => x.perf || 0));
+  const G = HH.games || []; const withT = HH.devices.filter(x => (x.tests || []).some(t => G.includes(t.game)));
+  const N = byCat("handheld"); const deal = N.filter(n => (n.cats || []).includes("offerte")).slice(0, 8);
+  const oses = ["tutti", "Windows", "SteamOS", "Console"];
+  return sh("Classifica <em>handheld</em>", `<span class="sub">Dal più potente al più economico · aggiornata il ${fmtD(HH.updated)}</span>`) +
+    `<p class="lead">${h(HH.perfNote || "")}</p>
+    <div class="filters"><select id="hhSort" aria-label="Ordina">${Object.entries(HH_SORT).map(([k, v]) => `<option value="${k}" ${st.hhSort === k ? "selected" : ""}>${v}</option>`).join("")}</select>
+      ${oses.map(o => `<button type="button" class="chip" data-hhos="${o}" aria-pressed="${st.hhOs === o}">${o === "tutti" ? "Tutti i sistemi" : o}</button>`).join("")}
+      ${[700, 1000, 1600].map(v => `<button type="button" class="chip" data-hhmax="${v}" aria-pressed="${st.hhMax === v}">Fino a ${v} €</button>`).join("")}<button type="button" class="chip" data-hhmax="0" aria-pressed="${!st.hhMax}">Qualsiasi prezzo</button></div>
+    <div class="hhlist">${L.map(x => hhRow(x, ranked.indexOf(x), maxPerf)).join("") || empty("Nessun modello con questi filtri.")}</div>
+    ${hhCompare()}
+    ${withT.length ? sh("Come girano i <em>giochi</em>", `<span class="sub">fps medi negli stessi test</span>`) + `<div class="tblwrap"><table class="cmpt fpsall"><thead><tr><th>Gioco</th>${withT.map(x => `<th><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</th>`).join("")}</tr></thead><tbody>${G.map((g, i) => `<tr><th>${h(g)}<small>${h((HH.gameSettings || [])[i] || "")}</small></th>${withT.map(x => { const t = (x.tests || []).find(t => t.game === g); return `<td>${t ? `<b>${t.fps}</b>` : "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div><p class="sub">Fonte: <a ${ext("https://sovisgames.com/posts/rog-ally-x20-vs-competition/")}>SovisGames</a>. Gli altri test sono nelle schede dei singoli modelli.</p>` : ""}
+    ${deal.length ? sh("Offerte handheld <em>dalle testate</em>") + `<div class="grid">${deal.map(n => newsCard(n, ss)).join("")}</div>` : ""}
+    ${N.length ? sh("Notizie <em>handheld</em>", `<span class="sub">${N.length} notizie</span>`) + `<div class="grid g3">${N.slice(0, st.page).map(n => newsCard(n, ss)).join("")}</div>${N.length > st.page ? `<button class="btn ghost loadmore" type="button" data-more="news">Carica altre (${N.length - st.page})</button>` : ""}` : ""}
+    ${st.hhCmp.length ? `<div class="cmpbar"><span>${st.hhCmp.length === 1 ? "Scegline almeno un altro" : st.hhCmp.length + " a confronto"}</span>${st.hhCmp.length > 1 ? `<a class="btn small" href="#cmpbox" data-goto="cmpbox">Vedi confronto</a>` : ""}</div>` : ""}`;
+}
 /* ------------------------------------------------------ impostazioni */
 function renderSettings() {
   const S = (D && D.sources || []);
   $("#setBody").innerHTML = `
-    <section><h3>Aggiornamento immediato</h3>
-      <p class="sub">Il sito si aggiorna da solo ogni 5 minuti. Per far partire un aggiornamento completo quando vuoi con il tasto <b>Aggiorna ora</b>, collega GitHub una volta sola su questo dispositivo.</p>
+    <section class="${st.setHint ? "hint" : ""}"><h3>Aggiornamento immediato</h3>
+      ${st.setHint ? `<p class="notice small">Il tasto <b>Aggiorna ora</b> senza collegamento ricarica soltanto i dati dell'ultimo giro (delle ${D ? hm(D.generatedAt) : "--:--"}). Collegalo qui sotto e farà partire subito un giro completo.</p>` : ""}
+      <p class="sub">Il sito si aggiorna da solo circa ogni 5 minuti. Per far partire un aggiornamento completo quando vuoi con il tasto <b>Aggiorna ora</b>, collega GitHub una volta sola su questo dispositivo.</p>
       ${st.token ? `<p><span class="pill good">Collegato</span> <button class="btn ghost small" type="button" id="tokDel">Scollega</button></p>` : `
       <ol class="steps"><li>Apri <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer">questa pagina di GitHub</a>.</li>
       <li>Nome: <b>Plancia</b>. Scadenza: quella che preferisci.</li>
@@ -328,13 +420,19 @@ function renderSettings() {
     <section><h3>Il tuo dispositivo</h3><button class="btn ghost small" type="button" id="resetRead">Segna tutto come non letto</button></section>`;
 }
 function openSettings() { renderSettings(); $("#settings").hidden = false; document.body.classList.add("lock"); setTimeout(() => { const b = $("#setClose"); b && b.focus(); }, 30); }
-function closeSettings() { $("#settings").hidden = true; document.body.classList.remove("lock"); }
+function closeSettings() { st.setHint = false; $("#settings").hidden = true; document.body.classList.remove("lock"); }
 
 /* ------------------------------------------------- aggiornamento ora */
 async function forceUpdate() {
   if (st.forcing) return;
   const repo = (D && D.repo) || guessRepo();
-  if (!st.token || !repo) { await load(false, true); toast(st.token ? "Dati ricaricati" : "Dati ricaricati. Per un aggiornamento completo immediato, collega GitHub nelle impostazioni ⚙"); return; }
+  if (!st.token || !repo) {
+    const before = D && D.generatedAt; const btn0 = $("#forceBtn"); btn0.classList.add("spin");
+    await load(false, true); btn0.classList.remove("spin");
+    if (D && D.generatedAt !== before) { toast("Caricate le novità dell'ultimo giro"); return; }
+    toast(`Nessuna novità dall'ultimo giro delle ${D ? hm(D.generatedAt) : "--:--"}. Per farne partire uno subito collega GitHub (1 minuto)`);
+    st.setHint = true; openSettings(); return;
+  }
   const btn = $("#forceBtn"); const t0 = new Date(Date.now() - 5000).toISOString(); st.forcing = { t0 };
   btn.classList.add("spin"); setBanner("Avvio l'aggiornamento…");
   try {
@@ -344,7 +442,7 @@ async function forceUpdate() {
     const start = Date.now();
     const tick = async () => {
       const s = Math.round((Date.now() - start) / 1000);
-      let run = null; try { const q = await fetch(`https://api.github.com/repos/${repo}/actions/runs?event=workflow_dispatch&per_page=3`, { headers: gh() }); const j = await q.json(); run = (j.workflow_runs || []).find(x => x.created_at >= t0); } catch (e) {}
+      let run = null; try { const q = await fetch(`https://api.github.com/repos/${repo}/actions/runs?event=workflow_dispatch&per_page=10`, { headers: gh() }); const j = await q.json(); run = (j.workflow_runs || []).filter(x => x.created_at >= t0 && !(x.triggering_actor && /\[bot\]$/.test(x.triggering_actor.login))).pop() || null; } catch (e) {}
       if (run && run.status === "completed") {
         if (run.conclusion === "success") { setBanner("Fatto! Carico le novità…"); setTimeout(async () => { await load(false, true); endForce("Sito aggiornato"); }, 15000); }
         else endForce("L'aggiornamento non è riuscito: riprova tra poco");
@@ -368,12 +466,12 @@ function endForce(msg) { if (st.forcing && st.forcing.timer) clearTimeout(st.for
 /* ----------------------------------------------------------- render */
 function renderNav() {
   const M = st.kw.length ? matches() : null; const nNew = allNews().filter(isNew).length;
-  const c = { notizie: nNew ? nNew : allNews().length, offerte: (D.deals || []).length, gratis: free().filter(f => !f.from || Date.parse(f.from) <= Date.now()).length, video: (D.videos || []).length, perte: M ? M.deals.length + M.free.length + M.news.filter(isNew).length : 0 };
+  const c = { notizie: nNew ? nNew : allNews().length, offerte: (D.deals || []).length, gratis: free().filter(f => !f.from || Date.parse(f.from) <= Date.now()).length, video: (D.videos || []).length, handheld: ((D.handhelds || {}).devices || []).length, perte: M ? M.deals.length + M.free.length + M.news.filter(isNew).length : 0 };
   $("#nav").innerHTML = VIEWS.map(([id, l]) => `<a href="#${id}" class="${(id === "notizie" && nNew) || (id === "perte" && c.perte) ? "hot" : ""}" ${st.view === id && !st.q ? 'aria-current="page"' : ""}>${l}${c[id] ? `<span class="n">${c[id]}</span>` : ""}</a>`).join("");
 }
 function renderLive() {
   const el = $("#live"), t = $("#liveTxt"); if (!D) return; const m = Math.round((Date.now() - Date.parse(D.generatedAt)) / 60000);
-  el.className = "live " + (m < 30 ? "on" : "old"); t.textContent = "Aggiornato " + (m < 1 ? "ora" : m < 60 ? m + " min fa" : Math.round(m / 60) + " h fa");
+  el.className = "live " + (m < 30 ? "on" : "old"); t.textContent = "Aggiornato " + (m < 1 ? "ora" : m < 60 ? m + " min fa" : Math.round(m / 60) + " h fa") + (m < 5 ? " · prossimo tra ~" + (5 - m) + " min" : m < 15 ? " · prossimo a momenti" : "");
 }
 function renderTicker() {
   const L = allNews().slice(0, 16); if (!L.length) { $("#ticker").hidden = true; return; }
@@ -384,7 +482,7 @@ function renderTicker() {
 }
 function render(keepScroll) {
   if (!D) return; renderNav(); renderLive(); renderTicker();
-  const f = st.q ? vCerca : { home: vHome, notizie: vNotizie, offerte: vOfferte, gratis: vGratis, uscite: vUscite, video: vVideo, hardware: () => vCat("PC, hardware e <em>componenti</em>", ["hardware", "handheld"]), handheld: () => vCat("Handheld e <em>PC portatili da gioco</em>", ["handheld"]), tech: vTech, recensioni: () => vCat("<em>Recensioni</em> e prove", ["recensioni"]), perte: vPerte, fonti: vFonti }[st.view] || vHome;
+  const f = st.q ? vCerca : { home: vHome, notizie: vNotizie, offerte: vOfferte, gratis: vGratis, uscite: vUscite, video: vVideo, hardware: () => vCat("PC, hardware e <em>componenti</em>", ["hardware", "handheld"]), handheld: vHandheld, tech: vTech, recensioni: () => vCat("<em>Recensioni</em> e prove", ["recensioni"]), perte: vPerte, fonti: vFonti }[st.view] || vHome;
   let html; try { html = f(); } catch (e) { console.error(e); html = `<div class="notice">Questa sezione non si è caricata. Le altre funzionano: riprova tra qualche minuto.</div>`; }
   const ok = (D.sources || []).filter(s => s.ok).length;
   if (ok === 0) html = `<div class="notice">Nessuna testata raggiungibile all'ultimo aggiornamento: riprovo da solo tra 5 minuti.</div>` + html;
@@ -421,6 +519,12 @@ document.addEventListener("click", e => {
   if ((x = t.closest("[data-vch]"))) return set("vidCh", x.dataset.vch);
   if ((x = t.closest("[data-gosrc]"))) { st.newsSrc = x.dataset.gosrc; st.newsCat = "tutte"; location.hash = "#notizie"; return; }
   if ((x = t.closest("[data-gocat]"))) { st.newsCat = x.dataset.gocat; return; }
+  if ((x = t.closest("[data-hhopen]"))) { const id = x.dataset.hhopen; st.hhOpen = st.hhOpen === id ? null : id; render(true); const el = document.getElementById("hh-" + id); if (el && st.hhOpen) el.scrollIntoView({ block: "nearest", behavior: "smooth" }); return; }
+  if ((x = t.closest("[data-hhos]"))) { st.hhOs = x.dataset.hhos; render(true); return; }
+  if ((x = t.closest("[data-hhmax]"))) { st.hhMax = +x.dataset.hhmax || null; render(true); return; }
+  if (t.closest("#hhClear")) { st.hhCmp = []; LS.set("hhCmp", []); render(true); return; }
+  if ((x = t.closest("[data-goto]"))) { e.preventDefault(); const el = document.getElementById(x.dataset.goto); if (el) el.scrollIntoView({ behavior: "smooth" }); return; }
+  if ((x = t.closest("[data-dplat]"))) { st.dealPlat = x.dataset.dplat; st.dealStore = "tutti"; st.dealPage = 48; render(true); return; }
   if ((x = t.closest("[data-store]"))) { st.dealStore = x.dataset.store; st.dealPage = 48; document.querySelectorAll("[data-store]").forEach(b => b.setAttribute("aria-pressed", b === x ? "true" : "false")); updDeals(); return; }
   if ((x = t.closest("[data-qmax]"))) { const v = +x.dataset.qmax; st.dealMax = v || null; st.dealPage = 48; render(true); return; }
   if ((x = t.closest("[data-cal]"))) { const d = +x.dataset.cal; if (!d) { const n = new Date(); st.cal = { y: n.getFullYear(), m: n.getMonth() }; st.calSel = ymd(today0()); } else { let { y, m } = st.cal; m += d; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; } st.cal = { y, m }; } render(true); return; }
@@ -438,6 +542,8 @@ function updDeals() { const L = deals(); const g = $("#dealGrid"); if (g) g.inne
 document.addEventListener("change", e => {
   if (e.target.id === "dealSort") { st.dealSort = e.target.value; updDeals(); }
   if (e.target.id === "dealLowest") { st.dealLowest = e.target.checked; updDeals(); }
+  if (e.target.id === "hhSort") { st.hhSort = e.target.value; render(true); }
+  if (e.target.dataset && e.target.dataset.hhcmp) { const id = e.target.dataset.hhcmp; st.hhCmp = e.target.checked ? [...st.hhCmp.filter(x => x !== id), id].slice(-4) : st.hhCmp.filter(x => x !== id); LS.set("hhCmp", st.hhCmp); render(true); if (e.target.checked && st.hhCmp.length === 4) toast("Puoi confrontare fino a 4 modelli"); }
   if (e.target.dataset && e.target.dataset.hide) { const id = e.target.dataset.hide; if (e.target.checked) st.hidden.delete(id); else st.hidden.add(id); LS.set("hidden", [...st.hidden]); render(true); }
 });
 document.addEventListener("input", e => { if (e.target.id === "dealMax") { st.dealMax = +e.target.value; $("#dealMaxV").textContent = eur(st.dealMax); updDeals(); } });

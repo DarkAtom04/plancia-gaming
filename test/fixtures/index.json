@@ -16,5 +16,18 @@
  "https://catalog.gog.com/v1/catalog?limit=48&order=desc:trending&discounted=eq:true&productType=in:game,pack&page=1&countryCode=IT&locale=en-US&currencyCode=EUR": "gog.json",
  "https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=it&country=IT&allowCountries=IT": "epic.json",
  "https://www.gamerpower.com/api/giveaways?type=game&sort-by=date": "gp.json",
- "https://www.youtube.com/feeds/videos.xml?channel_id=UC-2Y8dQb0S6DtpxNgAKoJKA": "yt.xml"
+ "https://www.youtube.com/feeds/videos.xml?channel_id=UC-2Y8dQb0S6DtpxNgAKoJKA": "yt.xml",
+ "https://searching.nintendo-europe.com/it/select?q=*&fq=type%3AGAME+AND+price_has_discount_b%3Atrue&rows=200&start=0&wt=json&sort=popularity+asc": "nin_deals.json",
+ "https://searching.nintendo-europe.com/it/select?q=*&fq=type%3AGAME+AND+dates_released_dts%3A%5BNOW+TO+NOW%2B400DAYS%5D&rows=150&wt=json&sort=popularity+asc": "nin_up.json",
+ "https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/Deal?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=200&skipitems=0": "xb_deal.json",
+ "https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=9NXBOX000001,9NXBOX000002&market=IT&languages=it-IT&MS-CV=DGU1mcuYo0WMMp%2BF.1": "xb_cat.json",
+ "https://reco-public.rec.mp.microsoft.com/channels/Reco/V8.0/Lists/Computed/ComingSoon?Market=IT&Language=IT&ItemTypes=Game&deviceFamily=Windows.Xbox&count=120": "xb_soon.json",
+ "https://displaycatalog.mp.microsoft.com/v7.0/products?bigIds=9NXBOX000009&market=IT&languages=it-IT&MS-CV=DGU1mcuYo0WMMp%2BF.1": "xb_soon_cat.json",
+ "https://web.np.playstation.com/api/graphql/v1/op?operationName=categoryGridRetrieve&variables=%7B%22id%22%3A%223f772501-f6f8-49b7-abac-874a88ca4897%22%2C%22pageArgs%22%3A%7B%22size%22%3A100%2C%22offset%22%3A0%7D%2C%22sortBy%22%3Anull%2C%22filterBy%22%3A%5B%5D%2C%22facetOptions%22%3A%5B%5D%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%224ce7d410a4db2c8b635a48c1dcec375906ff63b19dadd87e073f8fd0c0481d35%22%7D%7D": "ps.json",
+ "https://www.cheapshark.com/api/1.0/stores": "cs_stores.json",
+ "https://www.cheapshark.com/api/1.0/deals?storeID=13&pageSize=60&sortBy=Deal%20Rating&onSale=1": "cs13.json",
+ "https://www.cheapshark.com/api/1.0/deals?storeID=11&pageSize=60&sortBy=Deal%20Rating&onSale=1": "cs11.json",
+ "https://store.steampowered.com/api/storesearch/?term=Godzilla%3A%20Destroy%20All%20Monsters%20Melee%20Remastered&cc=it&l=english": "ss1.json",
+ "https://store.steampowered.com/api/storesearch/?term=Crymelight&cc=it&l=english": "ss2.json",
+ "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=Crymelight%20video%20game": "wiki1.json"
 }
