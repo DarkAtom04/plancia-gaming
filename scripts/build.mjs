@@ -13,8 +13,8 @@ const OUT = process.env.OUT_DIR || path.join(ROOT, "dist");
 const STATE_FILE = process.env.STATE_FILE || path.join(ROOT, "state/state.json");
 const FIXTURES = process.env.FIXTURES_DIR || "";
 const NOW = process.env.FAKE_NOW ? new Date(process.env.FAKE_NOW) : new Date();
-const ITAD_KEY = process.env.ITAD_KEY || "";
-const RAWG_KEY = process.env.RAWG_KEY || "";
+const ITAD_KEY = (process.env.ITAD_KEY || "").trim();
+const RAWG_KEY = (process.env.RAWG_KEY || "").trim();
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36 PlanciaGaming/1.0";
 const log = (...a) => console.log("[plancia]", ...a);
 
