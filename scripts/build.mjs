@@ -44,7 +44,8 @@ async function fetchText(url, { timeout = 15000, max = 4_000_000, accept = "*/*"
     }
     return { ok: r.ok, status: r.status, text, url: r.url || url };
   } catch (e) {
-    return { ok: false, status: 0, text: "", url, error: String(e && e.name === "AbortError" ? "timeout" : e && e.message || e) };
+    const cause = e && e.cause ? " (" + (e.cause.code || e.cause.message || e.cause) + ")" : "";
+    return { ok: false, status: 0, text: "", url, error: String(e && e.name === "AbortError" ? "timeout" : e && e.message || e) + cause };
   } finally { clearTimeout(t); }
 }
 async function fetchJSON(url, opt) {
@@ -387,9 +388,9 @@ const CS_NAMES = { 2: "GamersGate", 3: "Green Man Gaming", 8: "EA app", 11: "Hum
 async function cheapShark() {
   let names = { ...CS_NAMES };
   try { const L = await fetchJSON("https://www.cheapshark.com/api/1.0/stores"); for (const x of L || []) if (+x.isActive === 1 && CS_NAMES[x.storeID] === undefined && !["1", "7"].includes(String(x.storeID))) names[x.storeID] = x.storeName; else if (+x.isActive === 0) delete names[x.storeID]; } catch {}
-  const ids = Object.keys(names); const out = [];
+  const ids = Object.keys(names); const out = []; const errs = [];
   await pool(ids, 2, async id => {
-    const L = await fetchJSON(`https://www.cheapshark.com/api/1.0/deals?storeID=${id}&pageSize=60&sortBy=Deal%20Rating&onSale=1`);
+    let L; try { L = await fetchJSON(`https://www.cheapshark.com/api/1.0/deals?storeID=${id}&pageSize=60&sortBy=Deal%20Rating&onSale=1`); } catch (e) { errs.push(e.message); return; }
     (Array.isArray(L) ? L : []).forEach((x, k) => {
       const price = +x.salePrice, regular = +x.normalPrice; if (!(regular > price)) return;
       out.push({ title: decode(x.title), store: names[id], price, regular, cut: Math.round(+x.savings || (1 - price / regular) * 100), cur: "USD",
@@ -397,6 +398,7 @@ async function cheapShark() {
         url: `https://www.cheapshark.com/redirect?dealID=${encodeURIComponent(x.dealID)}`, plats: ["PC"], rank: k + 20, rating: +x.steamRatingPercent || null, meta: +x.metacriticScore || null });
     });
   });
+  if (!out.length && errs.length) throw new Error(errs[0]);
   return out;
 }
 // Nintendo eShop italiano: giochi Switch e Switch 2 in sconto
@@ -485,7 +487,7 @@ async function collectDeals(featured, health, st) {
   for (const L of byT.values()) if (L.length > 1) { L.sort((a, b) => a.price - b.price); L.forEach(d => { d.alt = L.filter(x => x !== d).map(x => ({ store: x.store, price: x.price, url: x.url })); d.best = d === L[0]; }); }
   // tieni un numero ragionevole per store, privilegiando i più popolari
   const per = new Map(); const res = [];
-  for (const d of out.sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999))) { const k = storeKey(d.store); const n = per.get(k) || 0; const cap = /steam|gog/.test(k) ? 220 : 150; if (n >= cap) continue; per.set(k, n + 1); res.push(d); }
+  for (const d of out.sort((a, b) => (a.rank ?? 999) - (b.rank ?? 999))) { const k = storeKey(d.store); const n = per.get(k) || 0; const cap = 320; if (n >= cap) continue; per.set(k, n + 1); res.push(d); }
   return res.slice(0, 1600);
 }
 
