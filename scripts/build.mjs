@@ -757,7 +757,8 @@ async function collectVideos(health, st) {
       for (const x of parseFeed(r.text, "https://www.youtube.com/").filter(x => !/#shorts?\b/i.test(x.title)).slice(0, 12)) {
         const id = (x.url.match(/[?&]v=([\w-]{6,})/) || x.url.match(/\/(?:shorts|embed)\/([\w-]{6,})/) || [])[1];
         const t = Date.parse(x.dateStr); if (!id || !isFinite(t)) continue;
-        items.push({ title: x.title, url: `https://www.youtube.com/watch?v=${id}`, img: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`, channel: v.name, date: new Date(t).toISOString(), trailer: /trailer|gameplay|reveal|announce|teaser/i.test(x.title) });
+        items.push({ title: x.title, url: `https://www.youtube.com/watch?v=${id}`, img: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`, channel: v.name, lang: v.lang || "en", date: new Date(t).toISOString(), trailer: /trailer|gameplay|reveal|announce|teaser/i.test(x.title),
+          handheld: v.topic === "handheld" || /handheld|steam deck|rog ally|xbox ally|legion go|msi claw|onexfly|onexplayer|gpd win|ayaneo|switch 2|portatil/i.test(x.title) });
       }
       if (items.length) st.videos[v.id] = { at: NOW.toISOString(), items };
       health.push({ id: v.id, name: "YouTube " + v.name, ok: true, count: items.length });
@@ -767,7 +768,7 @@ async function collectVideos(health, st) {
     }
     for (const x of items) if (NOW.getTime() - Date.parse(x.date) <= 7 * 864e5) out.push(x);
   });
-  return out.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).slice(0, 80);
+  return out.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).slice(0, 120);
 }
 
 /* --------------------------------------------------------- tendenze */

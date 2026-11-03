@@ -428,6 +428,25 @@
    "id": "yt-gamespot",
    "name": "GameSpot",
    "channel": "UCbu2SsF-Or3Rsn3NxqODImw"
+  },
+  {
+   "id": "yt-everyeye",
+   "name": "Everyeye.it",
+   "channel": "UCC9qCcyZQ2ul_A9hX-6Yxlw",
+   "lang": "it"
+  },
+  {
+   "id": "yt-multiplayer",
+   "name": "Multiplayer.it",
+   "channel": "UCpguAA4VKBftSU7kcgQl5Iw",
+   "lang": "it"
+  },
+  {
+   "id": "yt-etaprime",
+   "name": "ETA PRIME",
+   "channel": "UC_0CVCfC_3iuHqmyClu59Uw",
+   "lang": "en",
+   "topic": "handheld"
   }
  ]
 }

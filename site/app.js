@@ -166,7 +166,7 @@ function rels(all) {
     .filter(r => all || monthOnly(r.date) || daysTo(r.date) >= 0)
     .sort((a, b) => (a.date + (monthOnly(a.date) ? "-28" : "")).localeCompare(b.date + (monthOnly(b.date) ? "-28" : "")));
 }
-const videos = () => (D.videos || []).filter(v => qOk(v.title, v.channel) && (st.vidCh === "tutti" || v.channel === st.vidCh));
+const videos = () => (D.videos || []).filter(v => qOk(v.title, v.channel) && (st.vidCh === "tutti" || (st.vidCh === "_hh" ? v.handheld : st.vidCh === "_it" ? v.lang === "it" : v.channel === st.vidCh)));
 function topStories() {
   const now = Date.now(); const age = n => (now - Date.parse(n.date)) / 3600e3;
   let L = allNews().filter(n => n.img && n.lang !== "en" && age(n) < 14);
@@ -250,7 +250,7 @@ function vGratis() {
 function vVideo() {
   const L = videos(); const ch = [...new Set((D.videos || []).map(v => v.channel))];
   return sh("Video e <em>trailer</em>", `<span class="sub">${L.length} video degli ultimi 7 giorni</span>`) +
-    `<div class="filters"><button type="button" class="chip" data-vch="tutti" aria-pressed="${st.vidCh === "tutti"}">Tutti i canali</button>${ch.map(c => `<button type="button" class="chip" data-vch="${h(c)}" aria-pressed="${st.vidCh === c}">${h(c)}</button>`).join("")}</div>` +
+    `<div class="filters"><button type="button" class="chip" data-vch="tutti" aria-pressed="${st.vidCh === "tutti"}">Tutti i canali</button><button type="button" class="chip" data-vch="_it" aria-pressed="${st.vidCh === "_it"}">Solo italiani</button><button type="button" class="chip" data-vch="_hh" aria-pressed="${st.vidCh === "_hh"}">Handheld</button>${ch.map(c => `<button type="button" class="chip" data-vch="${h(c)}" aria-pressed="${st.vidCh === c}">${h(c)}</button>`).join("")}</div>` +
     (L.length ? `<div class="grid">${L.map(videoCard).join("")}</div>` : empty("Nessun video al momento."));
 }
 const relEvid = r => r.big || r.src === "Redazione" || (r.pop != null && r.pop < 25);
@@ -459,6 +459,7 @@ function vHandheld() {
     ${suites().map(su => { const devs = hhAll().filter(x => (x.tests || []).some(t => t.suite === su.id)).sort((a, b) => (b.perf || 0) - (a.perf || 0)); if (!devs.length) return "";
       return sh(su.id === "sovis" ? "Come girano i <em>giochi</em>" : "Test a <em>parità di consumo</em>", `<span class="sub">${h(su.name)}</span>`) + `<div class="tblwrap"><table class="cmpt fpsall"><thead><tr><th>Test</th>${devs.map(x => `<th><button type="button" class="thbtn" data-hhopen="${h(x.id)}"><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</button></th>`).join("")}</tr></thead><tbody>${su.tests.map(([g, st2, u]) => { const vals = devs.map(x => { const t = (x.tests || []).find(t => t.suite === su.id && t.game === g && t.settings === st2); return t ? t.fps : null; }); const mx = Math.max(...vals.filter(v => v != null));
         return `<tr><th>${h(g)}<small>${h(st2)} · ${u}</small></th>${vals.map(v => `<td class="${v != null && v === mx && vals.filter(z => z != null).length > 1 ? "best" : ""}">${v == null ? "—" : `<b>${fmtN(v)}</b>`}</td>`).join("")}</tr>`; }).join("")}</tbody></table></div><p class="sub">Fonte: <a ${ext(su.src.url)}>${h(su.src.name)}</a>. In verde il migliore. Gli altri test sono nelle schede dei singoli modelli.</p>`; }).join("")}
+    ${(() => { const V = (D.videos || []).filter(v => v.handheld).slice(0, 16); return V.length ? rail("hhvid", "Video <em>handheld</em>", "#video", V.map(videoCard)) : ""; })()}
     ${deal.length ? sh("Offerte handheld <em>dalle testate</em>") + `<div class="grid">${deal.map(n => newsCard(n, ss)).join("")}</div>` : ""}
     ${N.length ? sh("Notizie <em>handheld</em>", `<span class="sub">${N.length} notizie</span>`) + `<div class="grid g3">${N.slice(0, st.page).map(n => newsCard(n, ss)).join("")}</div>${N.length > st.page ? `<button class="btn ghost loadmore" type="button" data-more="news">Carica altre (${N.length - st.page})</button>` : ""}` : ""}
     ${sel.length ? `<div class="cmpbar">${sel.map(x => `<span class="cmpbar-it">${hhPhoto(x)}<button type="button" data-hhrm="${h(x.id)}" aria-label="Togli ${h(x.name)}">✕</button></span>`).join("")}<span class="cmpbar-t">${sel.length === 1 ? "Scegline almeno un altro" : sel.length + " modelli"}</span>${sel.length > 1 ? `<button type="button" class="btn small" id="cmpOpen">Confronta ora</button>` : ""}</div>` : ""}
