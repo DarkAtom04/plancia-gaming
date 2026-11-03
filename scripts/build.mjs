@@ -730,18 +730,26 @@ async function collectReleases(featured, st, health) {
 }
 
 /* ------------------------------------------------------------ video */
-async function collectVideos(health) {
-  const out = [];
+async function collectVideos(health, st) {
+  const out = []; st.videos ||= {};
   await pool(CFG.videos || [], 5, async v => {
-    const r = await fetchText(`https://www.youtube.com/feeds/videos.xml?channel_id=${v.channel}`);
-    if (!r.ok) { health.push({ id: v.id, name: "YouTube " + v.name, ok: false, error: `HTTP ${r.status || r.error}` }); return; }
-    const it = parseFeed(r.text, "https://www.youtube.com/").filter(x => !/#shorts?\b/i.test(x.title)).slice(0, 12);
-    health.push({ id: v.id, name: "YouTube " + v.name, ok: true, count: it.length });
-    for (const x of it) {
-      const id = (x.url.match(/[?&]v=([\w-]{6,})/) || x.url.match(/\/(?:shorts|embed)\/([\w-]{6,})/) || [])[1];
-      const t = Date.parse(x.dateStr); if (!id || !isFinite(t) || NOW.getTime() - t > 7 * 864e5) continue;
-      out.push({ title: x.title, url: `https://www.youtube.com/watch?v=${id}`, img: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`, channel: v.name, date: new Date(t).toISOString(), trailer: /trailer|gameplay|reveal|announce|teaser/i.test(x.title) });
+    // YouTube a volte risponde 404 al feed del canale: si prova anche il feed della playlist "caricamenti"
+    let r = await fetchText(`https://www.youtube.com/feeds/videos.xml?channel_id=${v.channel}`);
+    if (!r.ok && /^UC/.test(v.channel)) r = await fetchText(`https://www.youtube.com/feeds/videos.xml?playlist_id=UU${v.channel.slice(2)}`);
+    let items = [];
+    if (r.ok) {
+      for (const x of parseFeed(r.text, "https://www.youtube.com/").filter(x => !/#shorts?\b/i.test(x.title)).slice(0, 12)) {
+        const id = (x.url.match(/[?&]v=([\w-]{6,})/) || x.url.match(/\/(?:shorts|embed)\/([\w-]{6,})/) || [])[1];
+        const t = Date.parse(x.dateStr); if (!id || !isFinite(t)) continue;
+        items.push({ title: x.title, url: `https://www.youtube.com/watch?v=${id}`, img: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`, channel: v.name, date: new Date(t).toISOString(), trailer: /trailer|gameplay|reveal|announce|teaser/i.test(x.title) });
+      }
+      if (items.length) st.videos[v.id] = { at: NOW.toISOString(), items };
+      health.push({ id: v.id, name: "YouTube " + v.name, ok: true, count: items.length });
+    } else {
+      const c = st.videos[v.id]; if (c) items = c.items;
+      health.push({ id: v.id, name: "YouTube " + v.name, ok: !!(c && c.items.length), count: items.length, error: `HTTP ${r.status || r.error}` + (c ? " (uso gli ultimi video ricevuti)" : "") });
     }
+    for (const x of items) if (NOW.getTime() - Date.parse(x.date) <= 7 * 864e5) out.push(x);
   });
   return out.sort((a, b) => Date.parse(b.date) - Date.parse(a.date)).slice(0, 80);
 }
@@ -781,7 +789,7 @@ async function copySite() {
 async function main() {
   const t0 = Date.now(); const st = await loadState(); st.steamRel ||= {}; const health = [];
   const featured = await steamFeatured(health);
-  const [news, deals, free, releases, videos] = await Promise.all([collectNews(st, health), collectDeals(featured, health, st), collectFree(health), collectReleases(featured, st, health), collectVideos(health)]);
+  const [news, deals, free, releases, videos] = await Promise.all([collectNews(st, health), collectDeals(featured, health, st), collectFree(health), collectReleases(featured, st, health), collectVideos(health, st)]);
   let handhelds = null; try { handhelds = JSON.parse(await fs.readFile(path.join(ROOT, "data/handhelds.json"), "utf8")); } catch (e) { log("handhelds.json non leggibile", e.message); }
   if (handhelds) await handheldPhotos(handhelds, st);
   let events = []; try { events = JSON.parse(await fs.readFile(path.join(ROOT, "data/events-manual.json"), "utf8")); } catch {}
@@ -792,6 +800,7 @@ async function main() {
   await fs.writeFile(path.join(OUT, "data.json"), JSON.stringify(data));
   await saveState(st);
   const okFeeds = sources.filter(s => s.ok).length;
+  if (news.length) log(`notizia più recente: ${news[0].date} (${news[0].source}) · dati generati ${NOW.toISOString()}`);
   log(`notizie ${news.length} (testate ok ${okFeeds}/${sources.length}), offerte ${deals.length}, gratis ${free.length}, uscite ${releases.length}, video ${videos.length}, tendenze ${data.trends.map(t => t.label).join(", ")}, in ${Date.now() - t0} ms`);
   const perStore = {}; for (const d of deals) perStore[d.store] = (perStore[d.store] || 0) + 1;
   log("offerte per store: " + Object.entries(perStore).sort((a, b) => b[1] - a[1]).map(([k, v]) => k + " " + v).join(", "));

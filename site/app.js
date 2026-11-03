@@ -11,7 +11,7 @@ const MESI = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ot
 const MESI_L = ["Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre"];
 const GIORNI_L = ["domenica", "lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato"];
 const PLATS = ["PC", "PS5", "Xbox", "Switch 2", "Switch"];
-const POLL_MS = 60000;
+const POLL_MS = 75000;
 const $ = s => document.querySelector(s);
 const LS = {
   get(k, d) { try { const v = localStorage.getItem("pg." + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
@@ -168,9 +168,11 @@ function rels(all) {
 }
 const videos = () => (D.videos || []).filter(v => qOk(v.title, v.channel) && (st.vidCh === "tutti" || v.channel === st.vidCh));
 function topStories() {
-  const day = Date.now() - 30 * 3600e3;
-  const L = allNews().filter(n => n.img && Date.parse(n.date) > day && n.lang !== "en");
-  const score = n => (n.size || 1) * 3 + Math.max(0, 6 - (Date.now() - Date.parse(n.date)) / 3600e3) * 0.6 + ((n.cats || []).includes("gaming") ? 1 : 0);
+  const now = Date.now(); const age = n => (now - Date.parse(n.date)) / 3600e3;
+  let L = allNews().filter(n => n.img && n.lang !== "en" && age(n) < 14);
+  if (L.length < 5) L = allNews().filter(n => n.img && n.lang !== "en" && age(n) < 30);
+  // più testate = più importante, ma una notizia perde metà del peso ogni 4 ore
+  const score = n => (1 + Math.log2(n.size || 1) * 1.6 + ((n.cats || []).includes("gaming") ? 0.3 : 0)) * Math.pow(0.5, age(n) / 4);
   return L.sort((a, b) => score(b) - score(a)).slice(0, 5);
 }
 
@@ -180,7 +182,7 @@ function vHome() {
   const stream = news().filter(n => !ids.has(n.id));
   const mosaic = top.length ? `<section class="mosaic" aria-label="In primo piano">${top.map((n, i) => `<a class="tile" ${ext(n.url)} data-read="${h(n.url)}">${ph(n.img, n.title, "", isVideoNews(n) ? playIco : "")}<div class="cap"><div class="meta"><span class="tag ${primaryCat(n)}">${CATS[primaryCat(n)]}</span>${n.size > 1 ? `<span class="fonti">Ne parlano ${n.size} testate</span>` : ""}</div><h3>${h(n.title)}</h3>${i === 0 && n.summary ? `<p>${h(n.summary)}</p>` : ""}<div class="meta">${srcLabel(n)}<span class="when">${ago(n.date)}</span></div></div></a>`).join("")}</section>` : "";
   const latest = allNews().slice(0, 30);
-  const hot = allNews().filter(n => n.size >= 3 && Date.parse(n.date) > Date.now() - 36 * 3600e3).sort((a, b) => b.size - a.size).slice(0, 6);
+  const hot = allNews().filter(n => n.size >= 3 && Date.parse(n.date) > Date.now() - 24 * 3600e3).sort((a, b) => b.size - a.size || Date.parse(b.date) - Date.parse(a.date)).slice(0, 6);
   const fr = free().filter(f => !f.from || Date.parse(f.from) <= Date.now());
   const wk = rels(false).filter(r => !monthOnly(r.date) && daysTo(r.date) <= 7);
   const srcs = (D.sources || []).filter(s => s.ok && (st.lang === "tutte" || s.lang !== "en")).map(s => ({ ...s, n: (D.news || []).filter(n => n.sourceId === s.id || (n.also || []).some(a => a.sourceId === s.id)).length })).sort((a, b) => b.n - a.n);
@@ -490,6 +492,7 @@ async function forceUpdate() {
     if (!D) return;
     const mins = Math.max(0, Math.round((Date.now() - Date.parse(D.generatedAt)) / 60000));
     if (D.generatedAt !== before) { statusPop(`<b>Fatto: caricate le novità</b><span>Dati aggiornati alle ${hm(D.generatedAt)}.</span>`); return; }
+    if (mins > 10) { statusPop(`<b>Aggiornamento in ritardo</b><span>Gli ultimi dati sono delle <b>${hm(D.generatedAt)}</b> (${mins < 60 ? mins + " min" : Math.round(mins / 60) + " h"} fa). Di solito arrivano ogni 3 minuti: il sito ricontrolla da solo ogni minuto e li mostra appena ci sono.</span><button type="button" class="linkbtn" id="spConnect">Vuoi farlo partire subito? Collega GitHub (facoltativo)</button>`); return; }
     statusPop(`<b>Sei già aggiornato</b><span>Ultimo aggiornamento alle <b>${hm(D.generatedAt)}</b>${mins ? " (" + (mins < 60 ? mins + " min fa" : Math.round(mins / 60) + " h fa") + ")" : ""}. Il sito si aggiorna da solo circa ogni 3 minuti: il prossimo arriva ${mins < 3 ? "tra circa " + (3 - mins) + " min" : "a momenti"}, senza fare niente.</span><button type="button" class="linkbtn" id="spConnect">Vuoi farlo partire subito? Collega GitHub (facoltativo)</button>`);
     return;
   }
@@ -637,17 +640,39 @@ function notifyMatches() {
   for (const x of fresh) { if (done.has(x.k)) continue; done.add(x.k); if (n++ < 3) { try { const no = new Notification("Plancia Gaming", { body: x.t, tag: x.k }); no.onclick = () => window.open(x.u, "_blank"); } catch (e) {} } }
   LS.set("notified", [...done].slice(-1000));
 }
+// I dati arrivano dal ramo "dati" del repository, letti per codice di versione (sempre freschi):
+// GitHub Pages da solo a volte serviva per molti minuti una copia vecchia.
+const DREPO = () => (D && D.repo) || guessRepo() || "DarkAtom04/plancia-gaming";
+const dsrc = { etag: "", sha: "", fails: 0 };
+async function freshDataUrl() {
+  if (dsrc.fails >= 3 && Date.now() - dsrc.failAt < 10 * 60000) return null;
+  try {
+    const hd = { "Accept": "application/vnd.github+json" }; if (dsrc.etag) hd["If-None-Match"] = dsrc.etag; if (st.token) hd["Authorization"] = "Bearer " + st.token;
+    const r = await fetch(`https://api.github.com/repos/${DREPO()}/commits/dati`, { headers: hd, cache: "no-store" });
+    if (r.status === 304 && dsrc.sha) { dsrc.fails = 0; return { sha: dsrc.sha, url: `https://raw.githubusercontent.com/${DREPO()}/${dsrc.sha}/data.json` }; }
+    if (!r.ok) throw new Error(r.status);
+    const j = await r.json(); dsrc.etag = r.headers.get("ETag") || ""; dsrc.sha = j.sha; dsrc.fails = 0;
+    return { sha: j.sha, url: `https://raw.githubusercontent.com/${DREPO()}/${j.sha}/data.json` };
+  } catch (e) { dsrc.fails++; dsrc.failAt = Date.now(); return null; }
+}
+let loadedSha = "";
 async function load(first, forceApply) {
   try {
-    const r = await fetch("data.json?t=" + Date.now(), { cache: "no-store" }); if (!r.ok) throw new Error(r.status);
-    const nd = await r.json();
+    const f = await freshDataUrl();
+    if (!first && f && f.sha === loadedSha && D) { renderLive(); return; }
+    let r = f ? await fetch(f.url, { cache: "force-cache" }).catch(() => null) : null;
+    if (!r || !r.ok) r = await fetch("data.json?t=" + Date.now(), { cache: "no-store" });
+    if (!r.ok) throw new Error(r.status);
+    const nd = await r.json(); if (f && r.url && r.url.includes(f.sha)) loadedSha = f.sha;
+    if (D && Date.parse(nd.generatedAt) < Date.parse(D.generatedAt)) { renderLive(); return; }
     if (first) { D = nd; render(); if (st.kw.length) { const M = matches(); LS.set("notified", [...new Set([...LS.get("notified", []), ...M.deals.map(d => "d" + d.url), ...M.free.map(f => "f" + f.url), ...M.news.map(n => "n" + n.url)])].slice(-1000)); } return; }
     if (D && nd.generatedAt === D.generatedAt) { renderLive(); return; }
     const old = new Set((D.news || []).map(n => n.url)); const nNew = (nd.news || []).filter(n => !old.has(n.url) && visible(n)).length;
     const apply = () => { D = nd; render(true); $("#newPill").hidden = true; notifyMatches(); };
     const typing = document.activeElement && /INPUT|SELECT/.test(document.activeElement.tagName);
-    if (forceApply || (window.scrollY < 300 && !typing)) { apply(); if (nNew) toast(nNew + (nNew === 1 ? " nuova notizia" : " nuove notizie")); }
-    else if (nNew) { const p = $("#newPill"); p.textContent = "↑ " + nNew + (nNew === 1 ? " nuova notizia" : " nuove notizie"); p.hidden = false; p.onclick = () => { apply(); window.scrollTo({ top: 0, behavior: "smooth" }); }; }
+    const modal = st.hhOpen || st.hhCmpOpen || !$("#settings").hidden;
+    if (forceApply || (window.scrollY < 300 && !typing && !modal)) { apply(); if (nNew) toast(nNew + (nNew === 1 ? " nuova notizia" : " nuove notizie")); }
+    else if (nNew) { D = nd; renderLive(); renderNav(); notifyMatches(); const p = $("#newPill"); p.textContent = "↑ " + nNew + (nNew === 1 ? " nuova notizia" : " nuove notizie"); p.hidden = false; p.onclick = () => { render(true); p.hidden = true; window.scrollTo({ top: 0, behavior: "smooth" }); }; }
     else { D = nd; renderLive(); renderNav(); }
   } catch (e) {
     if (first) $("#main").innerHTML = `<div class="notice">Non riesco a caricare i dati in questo momento. Riprovo da solo tra un minuto.</div>`;

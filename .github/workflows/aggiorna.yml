@@ -1,6 +1,6 @@
 name: Aggiorna Plancia Gaming
 
-# Come resta aggiornato ogni 5 minuti:
+# Come resta aggiornato ogni ~3 minuti:
 # il cron di GitHub sui repository nuovi spesso non parte o parte con ore di ritardo,
 # quindi ogni giro, finito il lavoro, prenota da solo il giro successivo (catena).
 # Il giro prenotato aspetta ~1,5 minuti e poi raccoglie di nuovo: un giro ogni ~3 minuti.
@@ -69,6 +69,34 @@ jobs:
           RAWG_KEY: ${{ secrets.RAWG_KEY }}
         run: node scripts/build.mjs
 
+      # I dati freschi vanno su un ramo a parte ("dati"): il sito li legge da lì, senza passare
+      # dalla cache di GitHub Pages che a volte mostrava dati vecchi anche di 20-30 minuti.
+      - name: Pubblica i dati freschi
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rm -rf /tmp/dati && mkdir -p /tmp/dati && cp dist/data.json /tmp/dati/ && cd /tmp/dati
+          git init -q -b dati
+          git add data.json
+          git -c user.name="plancia-bot" -c user.email="plancia-bot@users.noreply.github.com" commit -qm "Dati $(date -u +%FT%TZ)"
+          git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" dati
+          echo "Dati pubblicati"
+
+      # Il sito vero (grafica e codice) si ripubblica solo se è cambiato, o ogni 30 minuti
+      - name: Decidi se ripubblicare il sito
+        id: sito
+        run: |
+          mkdir -p state
+          h=$(cd dist && find . -type f ! -name data.json -exec sha1sum {} + | sort | sha1sum | cut -c1-12)
+          old=$(cat state/site-hash 2>/dev/null || true)
+          last=$(cat state/site-at 2>/dev/null || echo 0); now=$(date +%s)
+          if [ "$h" != "$old" ] || [ $((now - last)) -gt 1800 ] || [ "${{ github.event_name }}" = "push" ]; then
+            echo "deploy=1" >> "$GITHUB_OUTPUT"; echo "$h" > state/site-hash; echo "$now" > state/site-at; echo "Ripubblico il sito"
+          else
+            echo "deploy=0" >> "$GITHUB_OUTPUT"; echo "Sito invariato: pubblico solo i dati"
+          fi
+
       - name: Salva la memoria per il prossimo giro
         if: always()
         uses: actions/cache/save@v4
@@ -77,12 +105,15 @@ jobs:
           key: stato-${{ github.run_id }}
 
       - uses: actions/configure-pages@v5
+        if: steps.sito.outputs.deploy == '1'
 
       - uses: actions/upload-pages-artifact@v3
+        if: steps.sito.outputs.deploy == '1'
         with:
           path: dist
 
       - id: deploy
+        if: steps.sito.outputs.deploy == '1'
         uses: actions/deploy-pages@v4
 
       # Prenota il prossimo giro, a meno che un altro giro sia già in corso o in coda
