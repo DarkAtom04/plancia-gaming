@@ -171,8 +171,9 @@ function topStories() {
   const now = Date.now(); const age = n => (now - Date.parse(n.date)) / 3600e3;
   let L = allNews().filter(n => n.img && n.lang !== "en" && age(n) < 14);
   if (L.length < 5) L = allNews().filter(n => n.img && n.lang !== "en" && age(n) < 30);
-  // più testate = più importante, ma una notizia perde metà del peso ogni 4 ore
-  const score = n => (1 + Math.log2(n.size || 1) * 1.6 + ((n.cats || []).includes("gaming") ? 0.3 : 0)) * Math.pow(0.5, age(n) / 4);
+  // la freschezza conta più di tutto: una notizia perde metà del peso ogni 90 minuti;
+  // più testate e i temi di gioco danno una spinta, ma non bloccano la copertina per ore
+  const score = n => (1 + Math.log2(n.size || 1) * 0.8 + ((n.cats || []).includes("gaming") ? 0.4 : 0)) * Math.pow(0.5, age(n) / 1.5);
   return L.sort((a, b) => score(b) - score(a)).slice(0, 5);
 }
 
@@ -497,9 +498,9 @@ async function forceUpdate() {
     await load(false, true); setTimeout(() => btn0.classList.remove("spin"), 400);
     if (!D) return;
     const mins = Math.max(0, Math.round((Date.now() - Date.parse(D.generatedAt)) / 60000));
-    if (D.generatedAt !== before) { statusPop(`<b>Fatto: caricate le novità</b><span>Dati aggiornati alle ${hm(D.generatedAt)}.</span>`); return; }
-    if (mins > 10) { statusPop(`<b>Aggiornamento in ritardo</b><span>Gli ultimi dati sono delle <b>${hm(D.generatedAt)}</b> (${mins < 60 ? mins + " min" : Math.round(mins / 60) + " h"} fa). Di solito arrivano ogni 3 minuti: il sito ricontrolla da solo ogni minuto e li mostra appena ci sono.</span><button type="button" class="linkbtn" id="spConnect">Vuoi farlo partire subito? Collega GitHub (facoltativo)</button>`); return; }
-    statusPop(`<b>Sei già aggiornato</b><span>Ultimo aggiornamento alle <b>${hm(D.generatedAt)}</b>${mins ? " (" + (mins < 60 ? mins + " min fa" : Math.round(mins / 60) + " h fa") + ")" : ""}. Il sito si aggiorna da solo circa ogni 3 minuti: il prossimo arriva ${mins < 3 ? "tra circa " + (3 - mins) + " min" : "a momenti"}, senza fare niente.</span><button type="button" class="linkbtn" id="spConnect">Vuoi farlo partire subito? Collega GitHub (facoltativo)</button>`);
+    if (D.generatedAt !== before) { statusPop(`<b>Fatto: caricate le novità</b><span>Notizie e offerte raccolte alle ${hm(D.generatedAt)}.</span>`); return; }
+    if (mins > 10) { statusPop(`<b>Aggiornamento in ritardo</b><span>Gli ultimi dati sono delle <b>${hm(D.generatedAt)}</b> (${mins < 60 ? mins + " min" : Math.round(mins / 60) + " h"} fa). Di solito arrivano ogni 3 minuti: il sito ricontrolla da solo e li mostra appena ci sono.</span><button type="button" class="btn small" id="spConnect">Attiva la raccolta immediata</button>`); return; }
+    statusPop(`<b>Hai già le ultime notizie</b><span>Ho appena ricontrollato: i dati sono stati raccolti alle <b>${hm(D.generatedAt)}</b>${mins ? " (" + mins + " min fa)" : ", proprio adesso"}. Il prossimo giro automatico arriva ${mins < 3 ? "tra circa " + (3 - mins) + " min" : "a momenti"}.</span><span class="sp-note">Per far partire una raccolta nuova all'istante, invece di aspettare il giro automatico, serve collegare GitHub una volta sola su questo dispositivo (1 minuto).</span><button type="button" class="btn small" id="spConnect">Attiva la raccolta immediata</button>`);
     return;
   }
   const btn = $("#forceBtn"); const t0 = new Date(Date.now() - 5000).toISOString(); st.forcing = { t0 };
@@ -530,7 +531,7 @@ async function forceUpdate() {
 function gh() { return { "Authorization": "Bearer " + st.token, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }; }
 function guessRepo() { const m = location.hostname.match(/^([\w-]+)\.github\.io$/); const p = location.pathname.split("/").filter(Boolean)[0]; return m && p ? m[1] + "/" + p : ""; }
 function statusPop(html) { let p = $("#statusPop"); if (!p) { p = document.createElement("div"); p.id = "statusPop"; p.className = "statuspop"; p.setAttribute("role", "status"); document.body.appendChild(p); }
-  p.innerHTML = html + '<button type="button" class="sp-x" data-spclose="1" aria-label="Chiudi">✕</button>'; p.hidden = false; clearTimeout(statusPop.t); statusPop.t = setTimeout(() => { p.hidden = true; }, 12000); }
+  p.innerHTML = html + '<button type="button" class="sp-x" data-spclose="1" aria-label="Chiudi">✕</button>'; p.hidden = false; clearTimeout(statusPop.t); statusPop.t = setTimeout(() => { p.hidden = true; }, 20000); }
 function setBanner(t) { const b = $("#banner"); b.textContent = t; b.hidden = false; }
 function endForce(msg) { if (st.forcing && st.forcing.timer) clearTimeout(st.forcing.timer); st.forcing = null; $("#forceBtn").classList.remove("spin"); $("#banner").hidden = true; toast(msg); }
 
