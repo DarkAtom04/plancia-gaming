@@ -646,7 +646,7 @@ async function steamImages(items, st, max) {
   for (const x of items) { const c = x.appid && st.steamImg[x.appid]; if (c && c.img) { if (x.img && x.img !== c.img) x.img2 = x.img2 || x.img; x.img = c.img; } }
 }
 // foto dei portatili: negozi (WooCommerce / Shopify), pagine ufficiali, poi Wikimedia (memorizzate per 7 giorni)
-const PHOTO_V = 3;
+const PHOTO_V = 4;
 async function shopPhoto(sh, acc) {
   const must = new RegExp(sh.must || ".", "i");
   if (sh.type === "woo") {
@@ -675,7 +675,7 @@ async function handheldPhotos(HH, st) {
       try {
         const j = await fetchJSON(`https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=${encodeURIComponent(q)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=900`, { headers: WIKI_H });
         const pages = Object.values((j.query && j.query.pages) || {}).sort((a, b) => (a.index || 0) - (b.index || 0));
-        const hit = pages.find(p => (!re || re.test(p.title)) && p.imageinfo && /jpe?g|png|webp/.test(p.imageinfo[0].mime || "") && !/logo|icon|screenshot|box art|fps|kbit|\bAAC\b|\bAV1\b|\(\d{3,4}p|youtube|video|\.webm|\.ogv/i.test(p.title));
+        const hit = pages.find(p => (!re || re.test(p.title)) && p.imageinfo && /jpe?g|png|webp/.test(p.imageinfo[0].mime || "") && !/logo|icon|screenshot|box art|fps|kbit|\bAAC\b|\bAV1\b|\(\d{3,4}p|youtube|video|\.webm|\.ogv|case open|packag|unbox/i.test(p.title));
         if (hit) res = { img: hit.imageinfo[0].thumburl || hit.imageinfo[0].url, page: hit.imageinfo[0].descriptionurl || "", title: hit.title.replace(/^File:/, "").replace(/\.\w+$/, "") + " (Wikimedia)" };
       } catch {}
     }

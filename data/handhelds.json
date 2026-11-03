@@ -89,7 +89,7 @@
   "1080p, Alto",
   "1080p, Medio + FSR Qualità"
  ],
- "accessories": "battery|dock|case|stand|protector|cover|grip|bag|cable|charger|skin|film|glass|strap|sleeve|holder|adapter|fan|cooler|replacement|spare|controller module|joystick|keycap|frost bay",
+ "accessories": "battery|dock|case|stand|protector|cover|grip|bag|cable|charger|skin|film|glass|strap|sleeve|holder|adapter|fan|cooler|replacement|spare|controller module|joystick|keycap|frost bay|add-on|addon|lte|accessor|pack(?! pro)|kit|screen protector",
  "devices": [
   {
    "id": "onexfly-apex",
@@ -498,8 +498,9 @@
       "must": "next ?2"
      }
     ],
-    "commons": [
-     "AYANEO NEXT 2"
+    "pages": [
+     "https://hothardware.com/news/ayaneo-next-2-preorders-open",
+     "https://www.androidauthority.com/ayaneo-next-2-announcement-3620851"
     ],
     "match": "ayaneo.?next",
     "exact": "next.?2"
@@ -1256,10 +1257,9 @@
      }
     ],
     "pages": [
-     "https://www.msi.com/news/detail/MSI-Debuts-Claw-8-EX-AI--Handheld-with-Intel--Arc-G3-Extreme-and-Titan-18-HX-Dragon-Edition-Draco-Epic-at-COMPUTEX-2026-148880"
-    ],
-    "commons": [
-     "MSI Claw 8 EX"
+     "https://tech.everyeye.it/notizie/msi-claw-8-ex-ai-handheld-rivoluziona-gaming-portatile-fascia-alta-881565.html",
+     "https://www.tuttotech.net/news/2026/06/01/msi-novita-computex-msi-claw-8-ex-ai-plus-notebook.html",
+     "https://www.webnews.it/msi-claw-8-ex-ai-al-computex-2026-il-nuovo-handheld-punta-su-intel-arc-g3-extreme/"
     ],
     "match": "claw",
     "exact": "8.?ex"
@@ -1917,13 +1917,11 @@
    ],
    "photo": {
     "pages": [
-     "https://uk-offers.acer.com/atlas/",
-     "https://www.digitalcitizen.life/acer-predator-atlas-8-arrives-in-october-with-intel-arc-g3-graphics-and-prices-from-999-99/"
+     "https://www.kitguru.net/gaming/matthew-wilson/acer-predator-atlas-8-gaming-handheld-pricing-revealed/",
+     "https://www.gamingonlinux.com/2026/07/acer-predator-atlas-8-handheld-with-intel-arc-g3-gets-uk-pricing-and-launch-month/",
+     "https://uk-offers.acer.com/atlas/"
     ],
-    "commons": [
-     "Predator Atlas 8"
-    ],
-    "match": "atlas",
+    "match": "predator",
     "exact": "atlas"
    },
    "tests": []
@@ -2922,19 +2920,12 @@
     }
    ],
    "photo": {
-    "shops": [
-     {
-      "type": "woo",
-      "host": "droix.net",
-      "q": "MSI Claw A8",
-      "must": "claw a8"
-     }
-    ],
     "wiki": [
      "MSI Claw A8"
     ],
-    "commons": [
-     "MSI Claw A8"
+    "pages": [
+     "https://www.tomsguide.com/gaming/handheld-gaming/msi-claw-a8-review",
+     "https://multiplayer.it/notizie/msi-claw-a8-amd-ryzen-z2-europa-meno-1000-euro.html"
     ],
     "match": "claw",
     "exact": "a8"
@@ -3927,13 +3918,9 @@
    ],
    "sources": [],
    "photo": {
-    "shops": [
-     {
-      "type": "woo",
-      "host": "droix.net",
-      "q": "ZOTAC ZONE",
-      "must": "zotac.*zone"
-     }
+    "pages": [
+     "https://techpowerup.com/review/zotac-zone",
+     "https://pcgamer.com/hardware/handheld-gaming-pcs/zotac-zone-review"
     ],
     "commons": [
      "Zotac Zone"
@@ -4097,11 +4084,12 @@
     "wiki": [
      "Legion Go S"
     ],
-    "commons": [
-     "Legion Go S"
+    "pages": [
+     "https://www.tomsguide.com/gaming/handheld-gaming/lenovo-legion-go-s-with-steamos-gets-usd50-price-hike-when-it-arrives-on-may-25",
+     "https://multiplayer.it/notizie/lenovo-legion-go-s-con-steamos-costera-54999-dollari-al-lancio.html"
     ],
-    "match": "legion.?go",
-    "exact": "go.?s\\b"
+    "match": "legion",
+    "exact": "go.?s"
    }
   },
   {
@@ -5690,7 +5678,7 @@
      "PlayStation Portal"
     ],
     "commons": [
-     "PlayStation Portal"
+     "PlayStation Portal remote player"
     ],
     "match": "portal",
     "exact": "portal"
