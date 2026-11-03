@@ -1,6 +1,78 @@
 {
- "updated": "2026-11-02",
- "perfNote": "L'indice di potenza è una stima ricavata dai test pubblicati, con Steam Deck OLED = 100: serve a confrontare a colpo d'occhio. Nei singoli giochi le differenze possono cambiare. Dove manca un dato ufficiale c'è scritto \"n.d.\".",
+ "updated": "2026-11-03",
+ "perfNote": "L'indice di potenza è una stima ricavata dai test pubblicati, con Steam Deck OLED = 100: serve a confrontare a colpo d'occhio i PC portatili. Console e Android funzionano in modo diverso e non hanno indice. Dove manca un dato ufficiale c'è scritto \"n.d.\".",
+ "suites": [
+  {
+   "id": "sovis",
+   "name": "Giochi a 1080p, stesse impostazioni",
+   "src": {
+    "name": "SovisGames: ROG Xbox Ally X20 contro la concorrenza (test e autonomia)",
+    "url": "https://sovisgames.com/posts/rog-ally-x20-vs-competition/"
+   },
+   "tests": [
+    [
+     "Cyberpunk 2077",
+     "1080p, Medio",
+     "fps"
+    ],
+    [
+     "Forza Horizon 6",
+     "1080p, Alto",
+     "fps"
+    ],
+    [
+     "Elden Ring",
+     "1080p, Max (limite 60)",
+     "fps"
+    ],
+    [
+     "Hades II",
+     "1080p, Max (limite 120)",
+     "fps"
+    ],
+    [
+     "Helldivers 2",
+     "1080p, Alto",
+     "fps"
+    ],
+    [
+     "Black Myth: Wukong",
+     "1080p, Medio + FSR Qualità",
+     "fps"
+    ]
+   ]
+  },
+  {
+   "id": "droix",
+   "name": "Test DroiX a 28 W (stesso consumo per tutti)",
+   "src": {
+    "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+    "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
+   },
+   "tests": [
+    [
+     "Forza Horizon 5",
+     "28 W",
+     "fps"
+    ],
+    [
+     "Cyberpunk 2077",
+     "28 W",
+     "fps"
+    ],
+    [
+     "3DMark Time Spy",
+     "punteggio grafico",
+     "punti"
+    ],
+    [
+     "Geekbench 6",
+     "multi-core",
+     "punti"
+    ]
+   ]
+  }
+ ],
  "games": [
   "Cyberpunk 2077",
   "Forza Horizon 6",
@@ -17,6 +89,7 @@
   "1080p, Alto",
   "1080p, Medio + FSR Qualità"
  ],
+ "accessories": "battery|dock|case|stand|protector|cover|grip|bag|cable|charger|skin|film|glass|strap|sleeve|holder|adapter|fan|cooler|replacement|spare|controller module|joystick|keycap|frost bay",
  "devices": [
   {
    "id": "onexfly-apex",
@@ -31,17 +104,17 @@
    "tier": "Estremo",
    "gen": "attuale",
    "released": "2026",
-   "perf": 310,
+   "perf": 320,
    "price": null,
-   "priceText": "da circa 1.500 $ (stima)",
-   "priceNote": "Prezzi ufficiali per l'Italia non ancora comunicati. Si compra dallo store OneXPlayer o da importatori come DroiX",
+   "priceText": "da 2.399 $ (store ufficiale)",
+   "priceNote": "48 GB + 1 TB 2.399 $, 64 GB + 1 TB 2.799 $. Versione con raffreddamento a liquido Frost Bay da 2.479 $. Si spedisce in Italia dallo store OneXPlayer",
    "os_tags": [
     "Windows"
    ],
    "key": {
-    "cpu": "Ryzen AI Max+ 395 · 16 core",
+    "cpu": "Ryzen AI Max+ 388 · 8 core",
     "gpu": "Radeon 8060S · 40 CU",
-    "ram": "32 / 64 / 128 GB",
+    "ram": "48 / 64 GB",
     "screen": "8\" 120 Hz VRR",
     "battery": "85 Wh rimovibile",
     "weight": "n.d."
@@ -50,23 +123,19 @@
     "Processore": [
      [
       "Modello",
-      "AMD Ryzen AI Max+ 395 (Strix Halo)"
+      "AMD Ryzen AI Max+ 388 (Strix Halo)"
      ],
      [
       "Core / thread",
-      "16 / 32 (Zen 5)"
+      "8 / 16 (Zen 5)"
      ],
      [
       "Frequenza massima",
-      "fino a 5,1 GHz"
+      "fino a 5,0 GHz"
      ],
      [
-      "NPU",
-      "sì, 50 TOPS"
-     ],
-     [
-      "Alternativa",
-      "Ryzen AI Max Pro 385"
+      "Al lancio",
+      "anche Ryzen AI Max+ 395 (16 core) e Max Pro 385"
      ]
     ],
     "Grafica": [
@@ -90,11 +159,15 @@
     "Memoria e archiviazione": [
      [
       "RAM",
-      "32, 64 o 128 GB LPDDR5X"
+      "48 o 64 GB LPDDR5X (fino a 128 GB al lancio)"
      ],
      [
       "SSD",
-      "slot M.2 + slot Mini SSD"
+      "M.2 2280 PCIe 4.0 da 1 o 2 TB"
+     ],
+     [
+      "Espansione",
+      "vano esterno per Mini SSD"
      ]
     ],
     "Schermo": [
@@ -109,30 +182,36 @@
      [
       "Orientamento",
       "nativo orizzontale"
-     ],
-     [
-      "Risoluzione",
-      "n.d."
      ]
     ],
     "Batteria e consumi": [
      [
       "Batteria",
-      "85 Wh, rimovibile"
+      "85 Wh, esterna e sostituibile (base di ricarica a parte)"
      ],
      [
-      "Consumo massimo",
-      "fino a 120 W"
+      "Consumo",
+      "80 W collegata, fino a 120 W col liquido"
      ],
      [
       "Raffreddamento",
-      "ventole + raffreddamento a liquido opzionale"
+      "2 ventole, 4 heatpipe in rame; Frost Bay a liquido opzionale"
      ]
     ],
     "Controlli": [
      [
       "Grilletti",
-      "regolabili"
+      "Hall a doppia corsa (corta/lunga)"
+     ],
+     [
+      "Extra",
+      "doppio motore di vibrazione, lettore di impronte"
+     ]
+    ],
+    "Audio": [
+     [
+      "Altoparlanti",
+      "doppi, certificati Harman"
      ]
     ],
     "Software": [
@@ -143,30 +222,37 @@
     ]
    },
    "pros": [
-    "Il più potente in assoluto: fino a 120 W con il raffreddamento a liquido",
-    "Fino a 128 GB di memoria e batteria sostituibile"
+    "Potenza da PC fisso: grafica pari a una RTX 4060 secondo il produttore",
+    "Batteria sostituibile e raffreddamento a liquido opzionale"
    ],
    "cons": [
-    "Prezzo altissimo e poca assistenza in Italia",
-    "A piena potenza l'autonomia crolla"
+    "Prezzo altissimo",
+    "Peso e autonomia a piena potenza non comunicati"
    ],
    "tests": [
     {
      "game": "Forza Horizon 5",
      "fps": 241,
      "settings": "1080p a 75 W",
-     "src": "Windows Central"
+     "src": "DroiX",
+     "unit": "fps"
+    },
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 37,
+     "settings": "a 15 W",
+     "src": "DroiX",
+     "unit": "fps"
     }
    ],
    "keywords": [
     "onexfly apex",
-    "onexfly",
-    "onexplayer"
+    "onexplayer apex"
    ],
    "buy": [
     {
      "name": "Store OneXPlayer",
-     "url": "https://onexplayerstore.com/"
+     "url": "https://onexplayerstore.com/products/onexfly-apex-worlds-most-powerful-8-gaming-handheld"
     },
     {
      "name": "Amazon.it",
@@ -187,6 +273,10 @@
    ],
    "sources": [
     {
+     "name": "Store ufficiale OneXPlayer",
+     "url": "https://onexplayerstore.com/"
+    },
+    {
      "name": "Notebookcheck: OneXFly Apex",
      "url": "https://www.notebookcheck.net/OneXFly-Apex-gaming-handheld-revealed-with-8-inch-VRR-display-AMD-Ryzen-AI-Max-395-and-up-to-128-GB-RAM.1125083.0.html"
     },
@@ -195,19 +285,23 @@
      "url": "https://www.3dtested.com/video-games/handheld-gaming/onexplayer-unveils-onexfly-apex-with-ryzen-ai-max-395-and-up-to-128-gb-ram-flagship-pc-gaming-handheld-pushes-120w-tdp-with-silent-liquid-cooling-and-85wh-removable-battery"
     },
     {
-     "name": "Windows Central: migliori PC portatili da gioco",
-     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
     }
    ],
    "photo": {
+    "shops": [
+     {
+      "type": "shopify",
+      "host": "onexplayerstore.com",
+      "q": "apex",
+      "must": "apex(?!.*air)"
+     }
+    ],
     "commons": [
-     "OneXFly Apex",
-     "OneXPlayer OneXFly"
+     "OneXFly Apex"
     ],
     "match": "onexfly|onexplayer",
-    "wiki": [
-     "OneXPlayer"
-    ],
     "exact": "apex"
    }
   },
@@ -224,10 +318,10 @@
    "tier": "Estremo",
    "gen": "attuale",
    "released": "2026",
-   "perf": 300,
+   "perf": 315,
    "price": null,
    "priceText": "da 1.799 $ (USA)",
-   "priceNote": "Prezzo della versione base da 32 GB. Le configurazioni più ricche costano molto di più, fino a diverse migliaia di dollari",
+   "priceNote": "Versione base da 32 GB. Le configurazioni più ricche arrivano a diverse migliaia di dollari",
    "os_tags": [
     "Windows"
    ],
@@ -359,11 +453,9 @@
     "Pesa circa 1,4 kg: più un PC compatto che una portatile",
     "Prezzi altissimi"
    ],
-   "tests": [],
-   "testNote": "Stesso chip di GPD WIN 5 e OneXFly Apex: prestazioni della stessa classe.",
+   "testNote": "Stesso chip di GPD WIN 5: prestazioni della stessa classe.",
    "keywords": [
-    "ayaneo next 2",
-    "ayaneo"
+    "ayaneo next 2"
    ],
    "buy": [
     {
@@ -398,16 +490,21 @@
     }
    ],
    "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "AYANEO NEXT 2",
+      "must": "next ?2"
+     }
+    ],
     "commons": [
-     "AYANEO NEXT 2",
-     "AYANEO"
+     "AYANEO NEXT 2"
     ],
-    "match": "ayaneo",
-    "wiki": [
-     "Ayaneo"
-    ],
+    "match": "ayaneo.?next",
     "exact": "next.?2"
-   }
+   },
+   "tests": []
   },
   {
    "id": "gpd-win-5",
@@ -422,10 +519,10 @@
    "tier": "Estremo",
    "gen": "attuale",
    "released": "2025",
-   "perf": 290,
+   "perf": 310,
    "price": 2017,
-   "priceText": "da circa 2.017 € (DroiX)",
-   "priceNote": "Prezzo del rivenditore DroiX Europa. Esiste anche con Ryzen AI Max 385 (8 core, Radeon 8050S) a meno",
+   "priceText": "da circa 2.017 € (DroiX Europa)",
+   "priceNote": "Esiste con Ryzen AI Max+ 395, Max+ 388 o Max 385. Si compra da importatori come DroiX",
    "os_tags": [
     "Windows"
    ],
@@ -456,8 +553,8 @@
       "sì, 50 TOPS"
      ],
      [
-      "Alternativa",
-      "Ryzen AI Max 385: 8 core / 16 thread, Radeon 8050S 32 CU"
+      "Alternative",
+      "Ryzen AI Max+ 388 (8 core) o Max 385 (8 core, Radeon 8050S 32 CU)"
      ]
     ],
     "Grafica": [
@@ -556,6 +653,10 @@
      [
       "Dimensioni",
       "26,7 x 11,1 x 2,4 cm"
+     ],
+     [
+      "Rumore massimo",
+      "67 dB"
      ]
     ],
     "Software": [
@@ -567,35 +668,69 @@
    },
    "pros": [
     "Potenza da PC fisso in 565 g",
-    "Batteria esterna sostituibile: ne porti due e raddoppi l'autonomia"
+    "Batteria esterna sostituibile: con due batterie raddoppi l'autonomia"
    ],
    "cons": [
-    "Con la batteria attaccata diventa scomoda e pesante",
+    "Con la batteria attaccata diventa scomoda",
     "Assistenza in Italia solo tramite importatori"
    ],
    "tests": [
     {
+     "suite": "droix",
+     "game": "Forza Horizon 5",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 155,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Cyberpunk 2077",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 72,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "3DMark Time Spy",
+     "settings": "punteggio grafico",
+     "unit": "punti",
+     "fps": 10541,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Geekbench 6",
+     "settings": "multi-core",
+     "unit": "punti",
+     "fps": 17996,
+     "src": "DroiX"
+    },
+    {
      "game": "Forza Horizon 5",
      "fps": 234,
      "settings": "1080p a 75 W",
-     "src": "Windows Central"
+     "src": "DroiX",
+     "unit": "fps"
+    },
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 128,
+     "settings": "a 75 W",
+     "src": "DroiX",
+     "unit": "fps"
     },
     {
      "game": "DOOM: The Dark Ages",
      "fps": 120,
      "settings": "1080p, Nightmare, 80 W",
-     "src": "DroiX"
-    },
-    {
-     "game": "Gears of War Reloaded",
-     "fps": 60,
-     "settings": "1080p, Ultra",
-     "src": "DroiX"
+     "src": "DroiX",
+     "unit": "fps"
     }
    ],
    "keywords": [
-    "gpd win 5",
-    "gpd win"
+    "gpd win 5"
    ],
    "buy": [
     {
@@ -621,6 +756,10 @@
    ],
    "sources": [
     {
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
+    },
+    {
      "name": "DroiX: recensione GPD WIN 5",
      "url": "https://droix.net/blogs/it/recensione-gpd-win-5-un-pc-portatile-da-gioco-dalle-prestazioni-pazzesche-che-cambia-tutto/"
     },
@@ -630,15 +769,262 @@
     }
    ],
    "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "GPD WIN 5",
+      "must": "^gpd win 5\\b"
+     }
+    ],
     "commons": [
-     "GPD WIN 5",
-     "GPD Win"
+     "GPD WIN 5"
     ],
-    "match": "gpd.?win",
-    "wiki": [
-     "GPD Win"
-    ],
+    "match": "win.?5",
     "exact": "win.?5"
+   }
+  },
+  {
+   "id": "gpd-win-max-3",
+   "name": "GPD WIN Max 3",
+   "brand": "GPD",
+   "maker": {
+    "name": "Shenzhen GPD Technology",
+    "hq": "Shenzhen, Cina",
+    "site": "https://gpd.hk/"
+   },
+   "color": "#3A4458",
+   "tier": "Estremo",
+   "gen": "attuale",
+   "released": "dicembre 2026",
+   "perf": 305,
+   "price": null,
+   "priceText": "da 2.091 $ (preordine DroiX)",
+   "priceNote": "In preordine: le prime consegne sono previste per metà dicembre 2026",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen AI Max+ 388 o 395",
+    "gpu": "Radeon 8060S · 40 CU",
+    "ram": "32 / 64 / 128 GB",
+    "screen": "9,06\" AMOLED 165 Hz",
+    "battery": "97 Wh rimovibile",
+    "weight": "circa 815 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI Max+ 388 (Strix Halo)"
+     ],
+     [
+      "Core / thread",
+      "8 / 16 (Zen 5)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,0 GHz"
+     ],
+     [
+      "Alternativa",
+      "Ryzen AI Max+ 395 (16 core / 32 thread)"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 8060S"
+     ],
+     [
+      "Unità di calcolo",
+      "40 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Bus memoria",
+      "256 bit"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "32, 64 o 128 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "PCIe 4.0 NVMe da 1, 2 o 4 TB + secondo slot M.2 2230"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "9,06 pollici"
+     ],
+     [
+      "Risoluzione",
+      "2400 x 1504"
+     ],
+     [
+      "Pannello",
+      "AMOLED HDR10"
+     ],
+     [
+      "Frequenza",
+      "165 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "modulo rimovibile da 97 Wh"
+     ],
+     [
+      "Consumo",
+      "fino a 80 W"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "mini portatile con tastiera e controlli da gioco integrati"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 815 g senza modulo"
+     ],
+     [
+      "Dimensioni",
+      "20,7 x 14,7 x 3,4 cm"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Mini portatile con tastiera e potenza da PC fisso",
+    "Schermo AMOLED 9\" a 165 Hz"
+   ],
+   "cons": [
+    "Non ancora in consegna",
+    "Prezzo altissimo"
+   ],
+   "tests": [
+    {
+     "suite": "droix",
+     "game": "Forza Horizon 5",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 141,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Cyberpunk 2077",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 72,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "3DMark Time Spy",
+     "settings": "punteggio grafico",
+     "unit": "punti",
+     "fps": 10960,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Geekbench 6",
+     "settings": "multi-core",
+     "unit": "punti",
+     "fps": 14620,
+     "src": "DroiX"
+    },
+    {
+     "game": "Forza Horizon 5",
+     "fps": 230,
+     "settings": "a 75 W (pre-serie, Max+ 388)",
+     "src": "DroiX",
+     "unit": "fps"
+    },
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 129,
+     "settings": "1080p a 75 W",
+     "src": "DroiX",
+     "unit": "fps"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 146,
+     "settings": "a 80 W",
+     "src": "DroiX",
+     "unit": "fps"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 90,
+     "settings": "a 28 W",
+     "src": "DroiX",
+     "unit": "fps"
+    }
+   ],
+   "keywords": [
+    "win max 3"
+   ],
+   "buy": [
+    {
+     "name": "GPD",
+     "url": "https://gpd.hk/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=GPD+WIN+Max+3"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=GPD+WIN+Max+3&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=GPD+WIN+Max+3"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=GPD+WIN+Max+3"
+    }
+   ],
+   "sources": [
+    {
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "GPD WIN Max 3",
+      "must": "win max 3"
+     }
+    ],
+    "commons": [
+     "GPD Win Max"
+    ],
+    "match": "win.?max",
+    "exact": "max.?3"
    }
   },
   {
@@ -650,98 +1036,175 @@
     "hq": "Nuova Taipei, Taiwan",
     "site": "https://it.msi.com/"
    },
-   "color": "#D3001E",
+   "color": "#6B2FBF",
    "tier": "Top di gamma",
    "gen": "attuale",
    "released": "2026",
    "perf": 215,
    "price": 1599,
-   "priceText": "circa 1.599 €",
-   "priceNote": "Negli USA 1.699-1.799 $. È in arrivo una variante di colore più economica",
+   "priceText": "1.599 €",
+   "priceNote": "Prezzo italiano, preordini aperti. Negli USA 1.699-1.799 $. Colore Void Purple",
    "os_tags": [
     "Windows"
    ],
    "key": {
-    "cpu": "Intel Core Ultra 7 (Panther Lake)",
-    "gpu": "Intel Arc G3 Extreme",
-    "ram": "32 GB",
-    "screen": "8\" 120 Hz",
+    "cpu": "Intel Arc G3 Extreme · 14 core",
+    "gpu": "Arc B390 · 12 core Xe3",
+    "ram": "32 GB LPDDR5X-8533",
+    "screen": "8\" IPS 120 Hz VRR",
     "battery": "80 Wh",
-    "weight": "n.d."
+    "weight": "785 g"
    },
    "specs": {
     "Processore": [
      [
       "Modello",
-      "Intel Core Ultra 7, piattaforma Arc G3 Extreme (Panther Lake)"
+      "Intel Arc G3 Extreme (Panther Lake, processo Intel 18A)"
      ],
      [
-      "Consumo",
-      "fino a 35 W"
+      "Core / thread",
+      "14 / 14 (2 P-core, 8 E-core, 4 LP E-core)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 4,7 GHz"
+     ],
+     [
+      "NPU",
+      "sì, fino a 46 TOPS"
      ]
     ],
     "Grafica": [
      [
       "GPU",
-      "Intel Arc G3 Extreme (architettura Xe3)"
+      "Intel Arc B390"
+     ],
+     [
+      "Unità di calcolo",
+      "12 core Xe3, fino a 2.300 MHz"
      ],
      [
       "Upscaling",
-      "XeSS"
+      "XeSS 3 con Multi-Frame Generation"
      ]
     ],
     "Memoria e archiviazione": [
      [
       "RAM",
-      "32 GB LPDDR5X"
+      "fino a 32 GB LPDDR5X-8533 dual channel, saldata"
      ],
      [
       "SSD",
-      "1 TB PCIe 4.0"
+      "M.2 2280 PCIe 4.0 x4, 1 o 2 TB"
+     ],
+     [
+      "Espansione",
+      "microSD"
      ]
     ],
     "Schermo": [
      [
       "Diagonale",
-      "8 pollici"
+      "8 pollici, touch"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1200"
+     ],
+     [
+      "Pannello",
+      "IPS"
      ],
      [
       "Frequenza",
-      "120 Hz"
+      "48-120 Hz con VRR"
+     ],
+     [
+      "Luminosità",
+      "circa 500 nit, ~100% sRGB"
      ]
     ],
     "Batteria e consumi": [
      [
       "Batteria",
-      "80 Wh"
+      "80 Wh, 4 celle"
+     ],
+     [
+      "Consumo",
+      "fino a 35 W"
+     ],
+     [
+      "Autonomia",
+      "circa 1,5-3 ore a piena potenza"
      ]
     ],
     "Connettività": [
      [
       "Porte",
-      "2 x Thunderbolt 4"
+      "2 x Thunderbolt 4 (DisplayPort, ricarica PD 3.0), microSD, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 7, Bluetooth 6"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "Hall"
+     ],
+     [
+      "Grilletti",
+      "Hall"
+     ],
+     [
+      "Extra",
+      "giroscopio a 6 assi, motore lineare per la vibrazione, lettore di impronte"
+     ]
+    ],
+    "Audio": [
+     [
+      "Altoparlanti",
+      "2 x 2 W, DTS"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "785 g"
+     ],
+     [
+      "Dimensioni",
+      "29,6-32,1 x 13 x 2,5-4,8 cm"
      ]
     ],
     "Software": [
      [
       "Sistema",
-      "Windows 11"
+      "Windows 11 Home con modalità Xbox"
      ]
     ]
    },
    "pros": [
     "Il portatile più veloce provato da IGN ad agosto 2026",
-    "Circa il 42-44% più veloce dei portatili con Ryzen Z2 Extreme"
+    "Circa il 42-44% più veloce dei portatili con Ryzen Z2 Extreme, Wi-Fi 7 e due Thunderbolt 4"
    ],
    "cons": [
     "Costa quasi il doppio della Claw 8 AI+",
-    "Driver Intel: qualche gioco può dare problemi"
+    "Schermo IPS, non OLED"
    ],
-   "tests": [],
-   "testNote": "Nei test circa il 42-44% più veloce dei portatili con Ryzen Z2 Extreme e Core Ultra 258V.",
+   "tests": [
+    {
+     "game": "3DMark Time Spy",
+     "fps": 6944,
+     "settings": "stesso chip della OneXPlayer 3",
+     "src": "DroiX",
+     "unit": "punti"
+    }
+   ],
+   "testNote": "Intel dichiara il 44% in più della Core Ultra 258V e il 42% in più di Ryzen Z2 Extreme a 1080p con upscaling, a 35 W. Stesso processore della OneXPlayer 3: guarda i suoi test.",
    "keywords": [
-    "claw 8 ex",
-    "msi claw"
+    "claw 8 ex"
    ],
    "buy": [
     {
@@ -767,29 +1230,703 @@
    ],
    "sources": [
     {
+     "name": "MSI: scheda ufficiale Claw 8 EX AI+",
+     "url": "https://www.msi.com/news/detail/MSI-Debuts-Claw-8-EX-AI--Handheld-with-Intel--Arc-G3-Extreme-and-Titan-18-HX-Dragon-Edition-Draco-Epic-at-COMPUTEX-2026-148880"
+    },
+    {
      "name": "Multiplayer.it: prezzo MSI Claw 8 EX AI+",
      "url": "https://multiplayer.it/notizie/il-nuovo-msi-claw-8-ex-ai-con-intel-arc-g3-extreme-costa-quasi-il-doppio-del-precedente-rivelato-il-prezzo.html"
     },
     {
-     "name": "ShopSavvy: migliori PC portatili da gioco 2026",
-     "url": "https://shopsavvy.com/best-picks/best-handheld-gaming-pcs.md"
+     "name": "TechRadar: i portatili da gioco del Computex 2026",
+     "url": "https://www.techradar.com/computing/gaming-pcs/handheld-gaming-in-2026-just-got-better-but-at-a-big-cost-here-are-the-best-handheld-gaming-pcs-unveiled-at-computex-2026"
     },
     {
-     "name": "Windows Central: migliori PC portatili da gioco",
-     "url": "https://www.windowscentral.com/gaming/best-gaming-handhelds"
+     "name": "Tech Insider: elenco console portatili 2026",
+     "url": "https://tech-insider.org/handheld-gaming-console-list-2026/"
     }
    ],
    "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "MSI Claw 8 EX",
+      "must": "claw 8 ex"
+     }
+    ],
+    "pages": [
+     "https://www.msi.com/news/detail/MSI-Debuts-Claw-8-EX-AI--Handheld-with-Intel--Arc-G3-Extreme-and-Titan-18-HX-Dragon-Edition-Draco-Epic-at-COMPUTEX-2026-148880"
+    ],
     "commons": [
-     "MSI Claw 8",
-     "MSI Claw"
+     "MSI Claw 8 EX"
     ],
-    "match": "msi.?claw",
-    "wiki": [
-     "MSI Claw"
-    ],
+    "match": "claw",
     "exact": "8.?ex"
    }
+  },
+  {
+   "id": "onexplayer-3",
+   "name": "OneXPlayer 3",
+   "brand": "OneXPlayer",
+   "maker": {
+    "name": "One-Netbook Technology (marchio OneXPlayer)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://onexplayerstore.com/"
+   },
+   "color": "#E4002B",
+   "tier": "Top di gamma",
+   "gen": "attuale",
+   "released": "agosto 2026",
+   "perf": 215,
+   "price": 1262,
+   "priceText": "da 1.262 €",
+   "priceNote": "24 GB + 512 GB 1.262 €, 24 GB + 1 TB 1.353 €, 32 GB + 1 TB 1.533 € (prezzi di lancio). Negli USA da 1.399-1.499 $",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Intel Arc G3 Extreme · 14 core",
+    "gpu": "Arc B390 · 12 core Xe3",
+    "ram": "24 / 32 GB",
+    "screen": "8,8\" AMOLED 144 Hz",
+    "battery": "85 Wh",
+    "weight": "779 g (939 g con controller)"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Intel Arc G3 Extreme (Panther Lake, processo Intel 18A)"
+     ],
+     [
+      "Core / thread",
+      "14 / 14 (2 P-core, 8 E-core, 4 LP E-core)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 4,7 GHz"
+     ],
+     [
+      "NPU",
+      "sì, fino a 46 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Intel Arc B390"
+     ],
+     [
+      "Unità di calcolo",
+      "12 core Xe3, fino a 2.300 MHz"
+     ],
+     [
+      "Upscaling",
+      "XeSS 3 con Multi-Frame Generation"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "24 GB LPDDR5X-7467 o 32 GB LPDDR5X-8533"
+     ],
+     [
+      "SSD",
+      "M.2 2280 PCIe 4.0 x4 da 512 GB a 4 TB"
+     ],
+     [
+      "Espansione",
+      "slot Mini SSD + microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8,8 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1200"
+     ],
+     [
+      "Pannello",
+      "AMOLED HDR"
+     ],
+     [
+      "Frequenza",
+      "30-144 Hz con VRR"
+     ],
+     [
+      "Luminosità",
+      "475 nit tipici"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "85 Wh"
+     ],
+     [
+      "Consumo",
+      "35 W"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x USB4, 1 x USB-A 3.2, jack 3,5 mm, microSD"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 6E, Bluetooth 5.2"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "controller staccabili, lettore di impronte; si usa anche come tablet o mini PC (3 in 1)"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "779 g senza controller, 939 g con"
+     ],
+     [
+      "Dimensioni",
+      "31,3 x 13,8 x 2,2 cm"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Stesso chip della MSI Claw 8 EX ma con OLED 144 Hz e batteria più grande",
+    "Costa meno della Claw 8 EX"
+   ],
+   "cons": [
+    "Pesante con i controller",
+    "Wi-Fi 6E invece di Wi-Fi 7"
+   ],
+   "tests": [
+    {
+     "suite": "droix",
+     "game": "Cyberpunk 2077",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 66,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "3DMark Time Spy",
+     "settings": "punteggio grafico",
+     "unit": "punti",
+     "fps": 6944,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Geekbench 6",
+     "settings": "multi-core",
+     "unit": "punti",
+     "fps": 13801,
+     "src": "DroiX"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 95,
+     "settings": "a 28 W",
+     "src": "DroiX",
+     "unit": "fps"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 64,
+     "settings": "a 15 W",
+     "src": "DroiX",
+     "unit": "fps"
+    },
+    {
+     "game": "Cyberpunk 2077",
+     "fps": 79,
+     "settings": "1080p Alto, XeSS Qualità",
+     "src": "ETA Prime",
+     "unit": "fps"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 68,
+     "settings": "1080p Alto, XeSS Qualità",
+     "src": "ETA Prime",
+     "unit": "fps"
+    },
+    {
+     "game": "Forza Horizon 6",
+     "fps": 51,
+     "settings": "1440p senza upscaling",
+     "src": "ETA Prime",
+     "unit": "fps"
+    }
+   ],
+   "keywords": [
+    "onexplayer 3",
+    "onexplayer x3"
+   ],
+   "buy": [
+    {
+     "name": "Store OneXPlayer",
+     "url": "https://onexplayerstore.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=OneXPlayer+3"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=OneXPlayer+3&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=OneXPlayer+3"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=OneXPlayer+3"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Geeknetic: OneXPlayer 3, prezzi in euro",
+     "url": "https://www.geeknetic.es/Noticia/39175/La-OneXPlayer-3-llega-con-el-Intel-Arc-G3-Extreme-desde-1262-euros-casi-350-euros-menos-que-la-MSI-Claw.html"
+    },
+    {
+     "name": "Notebookcheck: OneXPlayer 3 contro Steam Machine (test ETA Prime)",
+     "url": "https://www.notebookcheck.net/OneXPlayer-3-handheld-console-vs-Valve-Steam-Machine-yields-surprising-results.1376744.0.html"
+    },
+    {
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
+    },
+    {
+     "name": "TechRadar: i portatili da gioco del Computex 2026",
+     "url": "https://www.techradar.com/computing/gaming-pcs/handheld-gaming-in-2026-just-got-better-but-at-a-big-cost-here-are-the-best-handheld-gaming-pcs-unveiled-at-computex-2026"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "shopify",
+      "host": "onexplayerstore.com",
+      "q": "onexplayer 3",
+      "must": "onexplayer ?3|onexplayer x3"
+     },
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "ONEXPLAYER 3",
+      "must": "onexplayer 3"
+     }
+    ],
+    "commons": [
+     "OneXPlayer 3"
+    ],
+    "match": "onexplayer",
+    "exact": "onexplayer.?3"
+   }
+  },
+  {
+   "id": "onexfly-apex-air",
+   "name": "OneXPlayer Apex Air",
+   "brand": "OneXPlayer",
+   "maker": {
+    "name": "One-Netbook Technology (marchio OneXPlayer)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://onexplayerstore.com/"
+   },
+   "color": "#E4002B",
+   "tier": "Top di gamma",
+   "gen": "attuale",
+   "released": "2026",
+   "perf": 215,
+   "price": null,
+   "priceText": "1.839 $ (store ufficiale)",
+   "priceNote": "Unica versione: Arc G3 Extreme, 32 GB, 1 TB (listino 2.039 $)",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Intel Arc G3 Extreme · 14 core",
+    "gpu": "Arc B390 · 12 core Xe3",
+    "ram": "32 GB",
+    "screen": "8\" Adaptive-Sync",
+    "battery": "85 Wh rimovibile",
+    "weight": "n.d."
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Intel Arc G3 Extreme (Panther Lake, processo Intel 18A)"
+     ],
+     [
+      "Core / thread",
+      "14 / 14 (2 P-core, 8 E-core, 4 LP E-core)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 4,7 GHz"
+     ],
+     [
+      "NPU",
+      "sì, fino a 46 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Intel Arc B390"
+     ],
+     [
+      "Unità di calcolo",
+      "12 core Xe3, fino a 2.300 MHz"
+     ],
+     [
+      "Upscaling",
+      "XeSS 3 con Multi-Frame Generation"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "32 GB"
+     ],
+     [
+      "SSD",
+      "1 TB M.2 2280 PCIe 4.0"
+     ],
+     [
+      "Espansione",
+      "vano esterno per Mini SSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici"
+     ],
+     [
+      "Frequenza",
+      "Adaptive-Sync"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "85 Wh esterna a sgancio rapido"
+     ],
+     [
+      "Consumo",
+      "45 W sostenuti"
+     ],
+     [
+      "Raffreddamento",
+      "2 ventole"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Grilletti",
+      "Hall a doppia corsa"
+     ],
+     [
+      "Extra",
+      "doppio motore di vibrazione, lettore di impronte"
+     ]
+    ],
+    "Audio": [
+     [
+      "Altoparlanti",
+      "doppi, certificati Harman"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Stessa scocca della Apex con chip Intel più parco nei consumi",
+    "Batteria sostituibile"
+   ],
+   "cons": [
+    "Costa più della OneXPlayer 3 con lo stesso chip",
+    "Diversi dati non ancora pubblicati"
+   ],
+   "testNote": "Stesso processore di MSI Claw 8 EX e OneXPlayer 3, ma con 45 W sostenuti invece di 35 W.",
+   "keywords": [
+    "apex air"
+   ],
+   "buy": [
+    {
+     "name": "Store OneXPlayer",
+     "url": "https://onexplayerstore.com/products/onexfly-apex-air-8-gaming-handheld-with-intel-arc-g3-extreme"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=OneXPlayer+Apex+Air"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=OneXPlayer+Apex+Air&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=OneXPlayer+Apex+Air"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=OneXPlayer+Apex+Air"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Store ufficiale OneXPlayer",
+     "url": "https://onexplayerstore.com/"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "shopify",
+      "host": "onexplayerstore.com",
+      "q": "apex air",
+      "must": "apex air"
+     }
+    ],
+    "match": "apex",
+    "exact": "air"
+   },
+   "tests": []
+  },
+  {
+   "id": "predator-atlas-8",
+   "name": "Acer Predator Atlas 8",
+   "brand": "Acer",
+   "maker": {
+    "name": "Acer (linea Predator)",
+    "hq": "Nuova Taipei, Taiwan",
+    "site": "https://www.acer.com/it-it/predator"
+   },
+   "color": "#00B8D9",
+   "tier": "Top di gamma",
+   "gen": "attuale",
+   "released": "ottobre 2026",
+   "perf": 210,
+   "price": null,
+   "priceText": "da 999,99 £ (Regno Unito)",
+   "priceNote": "Arc G3 16 GB/512 GB 999,99 £; Arc G3 Extreme 24 GB/1 TB 1.299,99 £; 32 GB/1 TB 1.499,99 £. Prezzo italiano non ancora comunicato",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Intel Arc G3 o G3 Extreme",
+    "gpu": "Arc B370 / B390",
+    "ram": "16-32 GB",
+    "screen": "8\" IPS 120 Hz VRR",
+    "battery": "60 o 80 Wh",
+    "weight": "meno di 810 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Intel Arc G3 oppure Arc G3 Extreme"
+     ],
+     [
+      "Core / thread",
+      "14 / 14 (2 P-core, 8 E-core, 4 LP E-core)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 4,7 GHz"
+     ],
+     [
+      "NPU",
+      "sì, fino a 46 TOPS"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Intel Arc B370 (G3) o B390 (G3 Extreme)"
+     ],
+     [
+      "Upscaling",
+      "XeSS 3"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "16, 24 o 32 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "fino a 1 TB PCIe 4.0"
+     ],
+     [
+      "Espansione",
+      "microSD UHS-II"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici, touch 10 punti"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1200"
+     ],
+     [
+      "Pannello",
+      "IPS antiriflesso, Gorilla Glass Victus"
+     ],
+     [
+      "Frequenza",
+      "120 Hz con VRR"
+     ],
+     [
+      "Luminosità",
+      "fino a 500 nit, 100% sRGB"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "80 Wh (60 Wh nel modello più leggero)"
+     ],
+     [
+      "Alimentatore",
+      "USB-C 65 W"
+     ],
+     [
+      "Raffreddamento",
+      "2 ventole (AeroBlade in metallo)"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "2 x Thunderbolt 4, microSD UHS-II, jack 3,5 mm"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 7, Bluetooth 5.4"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "a grandezza piena"
+     ],
+     [
+      "Grilletti",
+      "Hall regolabili"
+     ],
+     [
+      "Extra",
+      "tasti macro posteriori, lettore di impronte"
+     ]
+    ],
+    "Audio": [
+     [
+      "Altoparlanti",
+      "2 x 2 W, DTS:X Ultra"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "meno di 810 g (80 Wh), meno di 770 g (60 Wh)"
+     ],
+     [
+      "Larghezza",
+      "29,9 cm"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11 Home"
+     ]
+    ]
+   },
+   "pros": [
+    "Intel Arc G3 Extreme con Wi-Fi 7 e due Thunderbolt 4",
+    "Versione Arc G3 più economica"
+   ],
+   "cons": [
+    "Schermo IPS, non OLED",
+    "Prezzi italiani e test ancora da vedere"
+   ],
+   "testNote": "Nella versione G3 Extreme ha lo stesso processore di MSI Claw 8 EX e OneXPlayer 3.",
+   "keywords": [
+    "predator atlas",
+    "atlas 8"
+   ],
+   "buy": [
+    {
+     "name": "Acer",
+     "url": "https://www.acer.com/it-it/predator"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Acer+Predator+Atlas+8"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Acer+Predator+Atlas+8&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Acer+Predator+Atlas+8"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Acer+Predator+Atlas+8"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Digital Citizen: Acer Predator Atlas 8, prezzi e specifiche",
+     "url": "https://www.digitalcitizen.life/acer-predator-atlas-8-arrives-in-october-with-intel-arc-g3-graphics-and-prices-from-999-99/"
+    },
+    {
+     "name": "TechRadar: i portatili da gioco del Computex 2026",
+     "url": "https://www.techradar.com/computing/gaming-pcs/handheld-gaming-in-2026-just-got-better-but-at-a-big-cost-here-are-the-best-handheld-gaming-pcs-unveiled-at-computex-2026"
+    }
+   ],
+   "photo": {
+    "pages": [
+     "https://uk-offers.acer.com/atlas/",
+     "https://www.digitalcitizen.life/acer-predator-atlas-8-arrives-in-october-with-intel-arc-g3-graphics-and-prices-from-999-99/"
+    ],
+    "commons": [
+     "Predator Atlas 8"
+    ],
+    "match": "atlas",
+    "exact": "atlas"
+   },
+   "tests": []
   },
   {
    "id": "xbox-ally-x20",
@@ -945,37 +2082,49 @@
      "game": "Cyberpunk 2077",
      "fps": 38,
      "settings": "1080p, Medio",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 60,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
      "settings": "1080p, Max (limite 60)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Hades II",
      "fps": 120,
      "settings": "1080p, Max (limite 120)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Helldivers 2",
      "fps": 58,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 41,
      "settings": "1080p, Medio + FSR Qualità",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     }
    ],
    "battery": [
@@ -1030,16 +2179,17 @@
     }
    ],
    "photo": {
+    "pages": [
+     "https://www.kitguru.net/gaming/joao-silva/asus-launches-rog-xbox-ally-x20-with-oled-display-and-ryzen-ai-z2-extreme/"
+    ],
     "commons": [
-     "ROG Xbox Ally X",
-     "ROG Xbox Ally"
+     "ROG Xbox Ally X"
     ],
     "match": "xbox.?ally",
     "wiki": [
-     "ROG Xbox Ally",
-     "ROG Ally"
+     "ROG Xbox Ally"
     ],
-    "exact": "x20"
+    "exact": "x20|ally"
    }
   },
   {
@@ -1058,7 +2208,7 @@
    "perf": 150,
    "price": 1750,
    "priceText": "1.750-2.300 €",
-   "priceNote": "Listino Lenovo Italia dopo i rincari: 1.750 € con Z2, circa 2.300 € con Z2 Extreme. Alcuni negozi la vendono ancora al prezzo di lancio, da circa 1.000-1.300 €",
+   "priceNote": "Listino Lenovo Italia dopo i rincari: 1.750 € con Z2, circa 2.300 € con Z2 Extreme. Alcuni negozi la vendono ancora al prezzo di lancio, da circa 1.000-1.300 €. Esiste anche la versione con SteamOS (1.199 $ negli USA)",
    "os_tags": [
     "Windows",
     "SteamOS"
@@ -1192,37 +2342,56 @@
      "game": "Cyberpunk 2077",
      "fps": 38,
      "settings": "1080p, Medio",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 60,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
      "settings": "1080p, Max (limite 60)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Hades II",
      "fps": 120,
      "settings": "1080p, Max (limite 120)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Helldivers 2",
      "fps": 60,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 41,
      "settings": "1080p, Medio + FSR Qualità",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
+    },
+    {
+     "game": "3DMark Time Spy",
+     "fps": 3850,
+     "settings": "Z2 Extreme, variabile col profilo di consumo",
+     "src": "Tech Insider",
+     "unit": "punti"
     }
    ],
    "battery": [
@@ -1276,14 +2445,20 @@
     {
      "name": "Tom's Guide: Ally X contro Legion Go 2 contro Claw A8",
      "url": "https://www.tomsguide.com/gaming/handheld-gaming/rog-xbox-ally-x-vs-lenovo-legion-go-2-vs-msi-claw-a8"
+    },
+    {
+     "name": "EFTM: Legion Go SteamOS al CES 2026",
+     "url": "https://eftm.com/2026/01/new-gaming-devices-from-lenovo-are-on-their-way-including-the-most-powerful-legion-go-s-running-steamos-ever-270828"
     }
    ],
    "photo": {
-    "commons": [
-     "Legion Go 2",
-     "Lenovo Legion Go 2"
+    "pages": [
+     "https://evezone.evetech.co.za/launch-radar/legion-go-2-handheld-preview"
     ],
-    "match": "legion.?go.?2|legion.?go(?!.?s)",
+    "commons": [
+     "Legion Go 2"
+    ],
+    "match": "legion.?go",
     "wiki": [
      "Legion Go 2",
      "Legion Go"
@@ -1445,37 +2620,56 @@
      "game": "Cyberpunk 2077",
      "fps": 38,
      "settings": "1080p, Medio",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 60,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
      "settings": "1080p, Max (limite 60)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Hades II",
      "fps": 120,
      "settings": "1080p, Max (limite 120)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Helldivers 2",
      "fps": 58,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 41,
      "settings": "1080p, Medio + FSR Qualità",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
+    },
+    {
+     "game": "3DMark Time Spy",
+     "fps": 4098,
+     "settings": "profilo Turbo",
+     "src": "Tech Insider",
+     "unit": "punti"
     }
    ],
    "testNote": "Stesso chip e stessa memoria della X20: prestazioni praticamente uguali.",
@@ -1521,15 +2715,13 @@
    ],
    "photo": {
     "commons": [
-     "ROG Xbox Ally X",
-     "ROG Xbox Ally"
+     "ROG Xbox Ally X"
     ],
     "match": "xbox.?ally",
     "wiki": [
-     "ROG Xbox Ally",
-     "ROG Ally"
+     "ROG Xbox Ally"
     ],
-    "exact": "ally.?x\\b"
+    "exact": "ally"
    }
   },
   {
@@ -1675,19 +2867,22 @@
      "game": "Cyberpunk 2077",
      "fps": 16,
      "settings": "1080p Alto, 17 W, senza upscaling",
-     "src": "Tom's Guide"
+     "src": "Tom's Guide",
+     "unit": "fps"
     },
     {
      "game": "GTA V",
      "fps": 65,
      "settings": "720p Alto, 17 W",
-     "src": "Tom's Guide"
+     "src": "Tom's Guide",
+     "unit": "fps"
     },
     {
      "game": "Marvel's Spider-Man 2",
      "fps": 60,
      "settings": "1080p FSR, medio-alto",
-     "src": "Tom's Guide"
+     "src": "Tom's Guide",
+     "unit": "fps"
     }
    ],
    "keywords": [
@@ -1727,14 +2922,21 @@
     }
    ],
    "photo": {
-    "commons": [
-     "MSI Claw A8",
-     "MSI Claw"
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "MSI Claw A8",
+      "must": "claw a8"
+     }
     ],
-    "match": "msi.?claw",
     "wiki": [
-     "MSI Claw"
+     "MSI Claw A8"
     ],
+    "commons": [
+     "MSI Claw A8"
+    ],
+    "match": "claw",
     "exact": "a8"
    }
   },
@@ -1873,13 +3075,22 @@
      "game": "Cyberpunk 2077",
      "fps": 59,
      "settings": "preset Steam Deck",
-     "src": "Windows Central"
+     "src": "Windows Central",
+     "unit": "fps"
     },
     {
      "game": "Cyberpunk 2077",
      "fps": 15,
      "settings": "1080p Alto, 17 W, senza upscaling",
-     "src": "Tom's Guide"
+     "src": "Tom's Guide",
+     "unit": "fps"
+    },
+    {
+     "game": "3DMark Time Spy",
+     "fps": 4200,
+     "settings": "variabile col profilo di consumo (3.882-4.488)",
+     "src": "Tech Insider",
+     "unit": "punti"
     }
    ],
    "keywords": [
@@ -1919,14 +3130,21 @@
     }
    ],
    "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "MSI Claw 8 AI",
+      "must": "claw 8 ai"
+     }
+    ],
+    "pages": [
+     "https://www.techpowerup.com/review/claw-8-ai-a2vm"
+    ],
     "commons": [
-     "MSI Claw 8 AI",
-     "MSI Claw"
+     "MSI Claw 8"
     ],
-    "match": "msi.?claw",
-    "wiki": [
-     "MSI Claw"
-    ],
+    "match": "claw",
     "exact": "claw.?8"
    }
   },
@@ -1943,9 +3161,9 @@
    "tier": "Fascia alta",
    "gen": "attuale",
    "released": "2025",
-   "perf": 145,
+   "perf": 140,
    "price": null,
-   "priceText": "da circa 1.000 $ (USA)",
+   "priceText": "da circa 1.025 $ (DroiX)",
    "priceNote": "Su Amazon USA arriva a circa 1.440 $ nelle versioni più ricche",
    "os_tags": [
     "Windows"
@@ -1953,10 +3171,10 @@
    "key": {
     "cpu": "Ryzen AI 9 HX 370 · 12 core",
     "gpu": "Radeon 890M · 16 CU",
-    "ram": "fino a 64 GB",
+    "ram": "32 / 64 GB",
     "screen": "7\" OLED 144 Hz",
     "battery": "48,5 Wh",
-    "weight": "circa 600 g"
+    "weight": "599 g"
    },
    "specs": {
     "Processore": [
@@ -1975,6 +3193,10 @@
      [
       "NPU",
       "sì, 50 TOPS"
+     ],
+     [
+      "Alternative",
+      "Ryzen AI 9 HX 365 o Ryzen 7 8840U"
      ]
     ],
     "Grafica": [
@@ -1994,11 +3216,11 @@
     "Memoria e archiviazione": [
      [
       "RAM",
-      "fino a 64 GB LPDDR5X-7500"
+      "32 o 64 GB LPDDR5X-7500"
      ],
      [
       "SSD",
-      "fino a 4 TB M.2 2280"
+      "1, 2 o 4 TB"
      ]
     ],
     "Schermo": [
@@ -2028,7 +3250,7 @@
     "Fisico": [
      [
       "Peso",
-      "circa 600 g"
+      "599 g"
      ]
     ],
     "Software": [
@@ -2046,7 +3268,40 @@
     "Batteria piccola per il chip",
     "Prezzo alto per le prestazioni in gioco"
    ],
-   "tests": [],
+   "tests": [
+    {
+     "suite": "droix",
+     "game": "Forza Horizon 5",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 97,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Cyberpunk 2077",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 44,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "3DMark Time Spy",
+     "settings": "punteggio grafico",
+     "unit": "punti",
+     "fps": 3681,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Geekbench 6",
+     "settings": "multi-core",
+     "unit": "punti",
+     "fps": 13321,
+     "src": "DroiX"
+    }
+   ],
    "keywords": [
     "onexfly f1",
     "onexfly"
@@ -2075,19 +3330,26 @@
    ],
    "sources": [
     {
-     "name": "Notebookcheck: OneXFly Apex",
-     "url": "https://www.notebookcheck.net/OneXFly-Apex-gaming-handheld-revealed-with-8-inch-VRR-display-AMD-Ryzen-AI-Max-395-and-up-to-128-GB-RAM.1125083.0.html"
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
     }
    ],
    "photo": {
-    "commons": [
-     "OneXFly F1 Pro",
-     "OneXFly"
+    "shops": [
+     {
+      "type": "shopify",
+      "host": "onexplayerstore.com",
+      "q": "f1 pro",
+      "must": "f1 ?pro"
+     },
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "ONEXFLY F1 Pro",
+      "must": "f1 pro"
+     }
     ],
     "match": "onexfly",
-    "wiki": [
-     "OneXPlayer"
-    ],
     "exact": "f1"
    }
   },
@@ -2106,18 +3368,18 @@
    "released": "2025",
    "perf": 145,
    "price": null,
-   "priceText": "prezzo variabile",
-   "priceNote": "Si compra da AYANEO o da importatori: il prezzo dipende molto dalla configurazione",
+   "priceText": "da circa 1.183 $ (DroiX)",
+   "priceNote": "Con Ryzen 7 8840U si parte da meno, con HX 370 e OLED si sale. Nel Regno Unito da 953 a 1.857 £",
    "os_tags": [
     "Windows"
    ],
    "key": {
     "cpu": "Ryzen AI 9 HX 370 o 8840U",
     "gpu": "Radeon 890M / 780M",
-    "ram": "fino a 64 GB",
+    "ram": "32 / 64 GB",
     "screen": "7\" OLED 144 Hz o IPS",
-    "battery": "n.d.",
-    "weight": "n.d."
+    "battery": "49 Wh",
+    "weight": "690 g"
    },
    "specs": {
     "Processore": [
@@ -2177,13 +3439,13 @@
      ],
      [
       "Pannello",
-      "OLED 144 Hz oppure IPS"
+      "OLED 144 Hz oppure LCD 120 Hz con VRR"
      ]
     ],
     "Batteria e consumi": [
      [
       "Batteria",
-      "n.d."
+      "49 Wh"
      ]
     ],
     "Controlli": [
@@ -2195,7 +3457,11 @@
     "Fisico": [
      [
       "Peso",
-      "n.d."
+      "690 g"
+     ],
+     [
+      "Dimensioni",
+      "28,9 x 11,5 x 2,2 cm"
      ]
     ],
     "Software": [
@@ -2207,13 +3473,46 @@
    },
    "pros": [
     "Controlli modulari unici",
-    "Scelta tra schermo OLED e IPS"
+    "Scelta tra schermo OLED e LCD"
    ],
    "cons": [
-    "Configurazioni e prezzi confusi",
+    "Batteria da 49 Wh",
     "Assistenza solo tramite importatori"
    ],
-   "tests": [],
+   "tests": [
+    {
+     "suite": "droix",
+     "game": "Forza Horizon 5",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 114,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Cyberpunk 2077",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 46,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "3DMark Time Spy",
+     "settings": "punteggio grafico",
+     "unit": "punti",
+     "fps": 3715,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Geekbench 6",
+     "settings": "multi-core",
+     "unit": "punti",
+     "fps": 13013,
+     "src": "DroiX"
+    }
+   ],
    "keywords": [
     "ayaneo 3",
     "ayaneo"
@@ -2240,16 +3539,25 @@
      "url": "https://www.ebay.it/sch/i.html?_nkw=AYANEO+3"
     }
    ],
-   "sources": [],
+   "sources": [
+    {
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
+    }
+   ],
    "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "AYANEO 3",
+      "must": "^ayaneo 3\\b"
+     }
+    ],
     "commons": [
-     "AYANEO 3",
-     "AYANEO"
+     "AYANEO 3"
     ],
     "match": "ayaneo",
-    "wiki": [
-     "Ayaneo"
-    ],
     "exact": "ayaneo.?3"
    }
   },
@@ -2266,9 +3574,9 @@
    "tier": "Fascia alta",
    "gen": "attuale",
    "released": "2025",
-   "perf": 140,
+   "perf": 145,
    "price": null,
-   "priceText": "da circa 800 $ (USA)",
+   "priceText": "da circa 894 £ / 1.317 $ (DroiX)",
    "priceNote": "Versione 8840U più economica, HX 370 più cara",
    "os_tags": [
     "Windows"
@@ -2278,8 +3586,8 @@
     "gpu": "Radeon 890M / 780M",
     "ram": "fino a 32 GB",
     "screen": "7\" 1080p 120 Hz VRR",
-    "battery": "44 Wh",
-    "weight": "circa 520 g"
+    "battery": "44,24 Wh",
+    "weight": "555 g"
    },
    "specs": {
     "Processore": [
@@ -2321,11 +3629,11 @@
     "Memoria e archiviazione": [
      [
       "RAM",
-      "fino a 32 GB LPDDR5X"
+      "16 o 32 GB LPDDR5X"
      ],
      [
       "SSD",
-      "M.2 2230"
+      "1, 2 o 4 TB NVMe 2280"
      ]
     ],
     "Schermo": [
@@ -2349,7 +3657,7 @@
     "Batteria e consumi": [
      [
       "Batteria",
-      "circa 44 Wh"
+      "44,24 Wh"
      ]
     ],
     "Controlli": [
@@ -2361,7 +3669,11 @@
     "Fisico": [
      [
       "Peso",
-      "circa 520 g"
+      "555 g"
+     ],
+     [
+      "Dimensioni",
+      "17,2 x 10,9 x 2,7 cm"
      ]
     ],
     "Software": [
@@ -2379,7 +3691,40 @@
     "Batteria piccola",
     "Impugnatura meno comoda per sessioni lunghe"
    ],
-   "tests": [],
+   "tests": [
+    {
+     "suite": "droix",
+     "game": "Forza Horizon 5",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 115,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Cyberpunk 2077",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 48,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "3DMark Time Spy",
+     "settings": "punteggio grafico",
+     "unit": "punti",
+     "fps": 3879,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Geekbench 6",
+     "settings": "multi-core",
+     "unit": "punti",
+     "fps": 13256,
+     "src": "DroiX"
+    }
+   ],
    "keywords": [
     "win mini",
     "gpd win"
@@ -2406,16 +3751,25 @@
      "url": "https://www.ebay.it/sch/i.html?_nkw=GPD+WIN+Mini+2025"
     }
    ],
-   "sources": [],
+   "sources": [
+    {
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
+    }
+   ],
    "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "GPD WIN Mini 2025",
+      "must": "win mini"
+     }
+    ],
     "commons": [
-     "GPD Win Mini",
-     "GPD Win"
+     "GPD Win Mini"
     ],
-    "match": "gpd.?win",
-    "wiki": [
-     "GPD Win"
-    ],
+    "match": "win.?mini",
     "exact": "mini"
    }
   },
@@ -2573,13 +3927,18 @@
    ],
    "sources": [],
    "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "ZOTAC ZONE",
+      "must": "zotac.*zone"
+     }
+    ],
     "commons": [
      "Zotac Zone"
     ],
     "match": "zotac",
-    "wiki": [
-     "Zotac"
-    ],
     "exact": "zone"
    }
   },
@@ -2735,15 +4094,13 @@
     }
    ],
    "photo": {
-    "commons": [
-     "Legion Go S",
-     "Lenovo Legion Go S"
-    ],
-    "match": "legion.?go.?s",
     "wiki": [
-     "Legion Go S",
-     "Legion Go"
+     "Legion Go S"
     ],
+    "commons": [
+     "Legion Go S"
+    ],
+    "match": "legion.?go",
     "exact": "go.?s\\b"
    }
   },
@@ -2904,37 +4261,49 @@
      "game": "Cyberpunk 2077",
      "fps": 24,
      "settings": "1080p, Medio",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Forza Horizon 6",
      "fps": 45,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Elden Ring",
      "fps": 60,
      "settings": "1080p, Max (limite 60)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Hades II",
      "fps": 90,
      "settings": "1080p, Max (limite 120)",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Helldivers 2",
      "fps": 38,
      "settings": "1080p, Alto",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     },
     {
      "game": "Black Myth: Wukong",
      "fps": 26,
      "settings": "1080p, Medio + FSR Qualità",
-     "src": "SovisGames"
+     "src": "SovisGames",
+     "suite": "sovis",
+     "unit": "fps"
     }
    ],
    "battery": [
@@ -2989,8 +4358,7 @@
    ],
    "photo": {
     "commons": [
-     "Steam Deck OLED",
-     "Steam Deck"
+     "Steam Deck OLED"
     ],
     "match": "steam.?deck",
     "wiki": [
@@ -3165,8 +4533,7 @@
     ],
     "match": "xbox.?ally",
     "wiki": [
-     "ROG Xbox Ally",
-     "ROG Ally"
+     "ROG Xbox Ally"
     ],
     "exact": "xbox.?ally"
    }
@@ -3196,7 +4563,7 @@
     "gpu": "NVIDIA Ampere con DLSS",
     "ram": "12 GB LPDDR5X",
     "screen": "7,9\" 1080p 120 Hz HDR",
-    "battery": "5.220 mAh",
+    "battery": "5.220 mAh (19,74 Wh)",
     "weight": "534 g"
    },
    "specs": {
@@ -3213,7 +4580,7 @@
     "Grafica": [
      [
       "GPU",
-      "NVIDIA architettura Ampere"
+      "NVIDIA architettura Ampere, 1.536 core CUDA"
      ],
      [
       "Upscaling",
@@ -3255,7 +4622,11 @@
     "Batteria e consumi": [
      [
       "Batteria",
-      "5.220 mAh"
+      "5.220 mAh, 19,74 Wh"
+     ],
+     [
+      "Autonomia",
+      "circa 2-6,5 ore"
      ]
     ],
     "Connettività": [
@@ -3326,6 +4697,10 @@
     {
      "name": "Everyeye: nuovo prezzo di Switch 2 in Italia",
      "url": "https://www.everyeye.it/notizie/nintendo-switch-2-aumenta-prezzo-italia-costera-settembre-876754.html"
+    },
+    {
+     "name": "Tech Insider: elenco console portatili 2026",
+     "url": "https://tech-insider.org/handheld-gaming-console-list-2026/"
     }
    ],
    "photo": {
@@ -3478,7 +4853,8 @@
      "game": "Cyberpunk 2077",
      "fps": 9,
      "settings": "1080p Alto, 17 W, senza upscaling",
-     "src": "Tom's Guide"
+     "src": "Tom's Guide",
+     "unit": "fps"
     }
    ],
    "keywords": [
@@ -3976,6 +5352,998 @@
     ],
     "exact": "steam.?deck"
    }
+  },
+  {
+   "id": "gpd-win-max-2-2025",
+   "name": "GPD WIN MAX 2 2025",
+   "brand": "GPD",
+   "maker": {
+    "name": "Shenzhen GPD Technology",
+    "hq": "Shenzhen, Cina",
+    "site": "https://gpd.hk/"
+   },
+   "color": "#3A4458",
+   "tier": "Fascia alta",
+   "gen": "attuale",
+   "released": "2025",
+   "perf": 147,
+   "price": null,
+   "priceText": "da circa 1.255 $ (DroiX)",
+   "priceNote": "Mini portatile da 10 pollici con controlli da gioco. Nel Regno Unito circa 1.469 £ (HX 370, 32 GB, 2 TB)",
+   "os_tags": [
+    "Windows"
+   ],
+   "key": {
+    "cpu": "Ryzen AI 9 HX 370 o 8840U",
+    "gpu": "Radeon 890M / 780M",
+    "ram": "32 / 64 GB",
+    "screen": "10,1\" 1600p touch",
+    "battery": "67 Wh",
+    "weight": "circa 1 kg"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "AMD Ryzen AI 9 HX 370"
+     ],
+     [
+      "Core / thread",
+      "12 / 24 (Zen 5 + Zen 5c)"
+     ],
+     [
+      "Frequenza massima",
+      "fino a 5,1 GHz"
+     ],
+     [
+      "NPU",
+      "sì, 50 TOPS"
+     ],
+     [
+      "Alternativa",
+      "Ryzen 7 8840U"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Radeon 890M"
+     ],
+     [
+      "Unità di calcolo",
+      "16 CU, architettura RDNA 3.5"
+     ],
+     [
+      "Upscaling",
+      "FSR, AFMF"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "32 o 64 GB LPDDR5X"
+     ],
+     [
+      "SSD",
+      "1, 2 o 4 TB NVMe"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "10,1 pollici, touch con penna attiva"
+     ],
+     [
+      "Risoluzione",
+      "2560 x 1600"
+     ],
+     [
+      "Pannello",
+      "IPS"
+     ],
+     [
+      "Frequenza",
+      "60 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "67 Wh"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "tastiera completa, stick e tasti da gioco a scomparsa"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 1.005-1.098 g"
+     ],
+     [
+      "Dimensioni",
+      "22,7 x 16 x 2,3 cm"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Windows 11"
+     ]
+    ]
+   },
+   "pros": [
+    "Un vero mini portatile per lavorare, con controlli da gioco",
+    "Schermo grande ad alta risoluzione con penna"
+   ],
+   "cons": [
+    "Schermo a 60 Hz",
+    "Pesante per giocare in mano"
+   ],
+   "tests": [
+    {
+     "suite": "droix",
+     "game": "Forza Horizon 5",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 117,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Cyberpunk 2077",
+     "settings": "28 W",
+     "unit": "fps",
+     "fps": 48,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "3DMark Time Spy",
+     "settings": "punteggio grafico",
+     "unit": "punti",
+     "fps": 3871,
+     "src": "DroiX"
+    },
+    {
+     "suite": "droix",
+     "game": "Geekbench 6",
+     "settings": "multi-core",
+     "unit": "punti",
+     "fps": 12252,
+     "src": "DroiX"
+    }
+   ],
+   "keywords": [
+    "win max 2"
+   ],
+   "buy": [
+    {
+     "name": "GPD",
+     "url": "https://gpd.hk/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=GPD+WIN+MAX+2+2025"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=GPD+WIN+MAX+2+2025&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=GPD+WIN+MAX+2+2025"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=GPD+WIN+MAX+2+2025"
+    }
+   ],
+   "sources": [
+    {
+     "name": "DroiX: guida ai migliori PC portatili 2026 (test a 28 W)",
+     "url": "https://droix.net/blogs/the-best-handheld-gaming-pcs/"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "GPD WIN MAX 2",
+      "must": "win max 2"
+     }
+    ],
+    "commons": [
+     "GPD Win Max 2"
+    ],
+    "match": "win.?max",
+    "exact": "max.?2"
+   }
+  },
+  {
+   "id": "playstation-portal",
+   "name": "PlayStation Portal",
+   "brand": "Sony",
+   "maker": {
+    "name": "Sony Interactive Entertainment",
+    "hq": "San Mateo, California (Sony Group: Tokyo, Giappone)",
+    "site": "https://www.playstation.com/it-it/accessories/playstation-portal-remote-player/"
+   },
+   "color": "#0070D1",
+   "tier": "Console",
+   "gen": "attuale",
+   "released": "novembre 2023",
+   "perf": null,
+   "price": 219.99,
+   "priceText": "219,99 € al lancio",
+   "priceNote": "Non fa girare giochi da sola: trasmette in streaming i giochi della tua PS5 (e alcuni dal cloud con PS Plus Premium)",
+   "os_tags": [
+    "Console"
+   ],
+   "key": {
+    "cpu": "streaming dalla PS5",
+    "gpu": "—",
+    "ram": "—",
+    "screen": "8\" LCD 1080p 60 Hz",
+    "battery": "n.d.",
+    "weight": "circa 529 g"
+   },
+   "specs": {
+    "Funzionamento": [
+     [
+      "Tipo",
+      "lettore Remote Play: i giochi girano sulla PS5"
+     ],
+     [
+      "Requisiti",
+      "PS5 e connessione Wi-Fi stabile (consigliati almeno 5 Mbps, meglio 15)"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "8 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "LCD"
+     ],
+     [
+      "Frequenza",
+      "60 Hz"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Wireless",
+      "Wi-Fi"
+     ],
+     [
+      "Audio",
+      "PlayStation Link, jack 3,5 mm"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Extra",
+      "funzioni DualSense: grilletti adattivi e vibrazione aptica"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "circa 529 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "PlayStation"
+     ]
+    ]
+   },
+   "pros": [
+    "Il modo più comodo per giocare alla PS5 in un'altra stanza",
+    "Grilletti e vibrazione del DualSense"
+   ],
+   "cons": [
+    "Senza PS5 e buon Wi-Fi è inutile",
+    "Schermo LCD a 60 Hz"
+   ],
+   "testNote": "Le prestazioni sono quelle della PS5: conta soprattutto la qualità della rete di casa.",
+   "keywords": [
+    "playstation portal"
+   ],
+   "buy": [
+    {
+     "name": "PlayStation",
+     "url": "https://www.playstation.com/it-it/accessories/playstation-portal-remote-player/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=PlayStation+Portal"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=PlayStation+Portal&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=PlayStation+Portal"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=PlayStation+Portal"
+    }
+   ],
+   "sources": [],
+   "photo": {
+    "wiki": [
+     "PlayStation Portal"
+    ],
+    "commons": [
+     "PlayStation Portal"
+    ],
+    "match": "portal",
+    "exact": "portal"
+   },
+   "tests": []
+  },
+  {
+   "id": "ayn-odin-3",
+   "name": "AYN Odin 3",
+   "brand": "AYN",
+   "maker": {
+    "name": "AYN Technologies",
+    "hq": "Shenzhen, Cina",
+    "site": "https://www.ayntec.com/"
+   },
+   "color": "#FF6A00",
+   "released": "2025",
+   "price": null,
+   "priceText": "da 299 $ (USA)",
+   "priceNote": "Base 8/128 GB, Pro 12/256 GB, Max 16/512 GB. In Europa da DroiX circa 399-554 £",
+   "key": {
+    "cpu": "Snapdragon 8 Elite · 8 core",
+    "gpu": "Adreno 830",
+    "ram": "8-16 GB",
+    "screen": "6\" AMOLED 120 Hz",
+    "battery": "8.000 mAh",
+    "weight": "390 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Qualcomm Snapdragon 8 Elite, 3 nm"
+     ],
+     [
+      "Core",
+      "2 Oryon a 4,32 GHz + 6 Oryon a 3,53 GHz"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Adreno 830"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "8, 12, 16 o 24 GB LPDDR5X"
+     ],
+     [
+      "Archiviazione",
+      "128 GB UFS 3.1 fino a 1 TB UFS 4.0"
+     ],
+     [
+      "Espansione",
+      "microSD"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "6 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1080 x 1920"
+     ],
+     [
+      "Pannello",
+      "AMOLED"
+     ],
+     [
+      "Frequenza",
+      "120 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "8.000 mAh"
+     ],
+     [
+      "Ricarica",
+      "60 W"
+     ],
+     [
+      "Autonomia",
+      "2 h 25 min con AnTuTu in loop al massimo"
+     ]
+    ],
+    "Connettività": [
+     [
+      "Porte",
+      "USB-C 3.1 con uscita video 4K 60 Hz, jack 3,5 mm, microSD"
+     ],
+     [
+      "Wireless",
+      "Wi-Fi 7, Bluetooth 6"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "390 g"
+     ],
+     [
+      "Dimensioni",
+      "22,5 x 8,8 x 1,7 cm"
+     ],
+     [
+      "Raffreddamento",
+      "ventola attiva"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Android 15"
+     ]
+    ]
+   },
+   "pros": [
+    "Il primo portatile con Snapdragon 8 Elite: emula fino a Switch e PS3",
+    "Prezzo basso per la potenza"
+   ],
+   "cons": [
+    "Android: niente giochi PC nativi",
+    "Alcuni emulatori ancora instabili"
+   ],
+   "tests": [
+    {
+     "game": "AnTuTu",
+     "fps": 2842721,
+     "settings": "punteggio totale",
+     "src": "DroiX",
+     "unit": "punti"
+    },
+    {
+     "game": "Geekbench 6",
+     "fps": 9819,
+     "settings": "multi-core",
+     "src": "DroiX",
+     "unit": "punti"
+    },
+    {
+     "game": "3DMark Wild Life Extreme",
+     "fps": 6684,
+     "settings": "",
+     "src": "DroiX",
+     "unit": "punti"
+    }
+   ],
+   "testNote": "Android: non confrontabile con i PC portatili. In emulazione regge bene 3DS, PS2, PS Vita e molti giochi Switch.",
+   "keywords": [
+    "odin 3"
+   ],
+   "buy": [
+    {
+     "name": "AYN",
+     "url": "https://www.ayntec.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=AYN+Odin+3"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=AYN+Odin+3&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=AYN+Odin+3"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=AYN+Odin+3"
+    }
+   ],
+   "sources": [
+    {
+     "name": "DroiX: recensione AYN Odin 3",
+     "url": "https://droix.net/blogs/ayn-odin3-review/"
+    },
+    {
+     "name": "Android Authority: migliori portatili Android",
+     "url": "https://www.androidauthority.com/best-android-gaming-handheld-3596915"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "AYN Odin 3",
+      "must": "odin ?3"
+     }
+    ],
+    "commons": [
+     "AYN Odin 3"
+    ],
+    "match": "odin",
+    "exact": "odin.?3"
+   },
+   "tier": "Android",
+   "gen": "attuale",
+   "perf": null,
+   "os_tags": [
+    "Android"
+   ]
+  },
+  {
+   "id": "retroid-pocket-6",
+   "name": "Retroid Pocket 6",
+   "brand": "Retroid",
+   "maker": {
+    "name": "Retroid (Moorechip Technologies)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://www.goretroid.com/"
+   },
+   "color": "#7C4DFF",
+   "released": "2026",
+   "price": null,
+   "priceText": "244-279 $ (USA)",
+   "priceNote": "8/128 GB o 12/256 GB",
+   "key": {
+    "cpu": "Snapdragon 8 Gen 2",
+    "gpu": "Adreno 740",
+    "ram": "8 / 12 GB",
+    "screen": "5,5\" AMOLED 120 Hz",
+    "battery": "6.000 mAh",
+    "weight": "304-320 g"
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Qualcomm Snapdragon 8 Gen 2"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Adreno 740 a 680 MHz"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "8 o 12 GB LPDDR5X"
+     ],
+     [
+      "Archiviazione",
+      "128 o 256 GB UFS 3.1"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "5,5 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "AMOLED"
+     ],
+     [
+      "Frequenza",
+      "120 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "6.000 mAh"
+     ],
+     [
+      "Autonomia",
+      "circa 4-8 ore"
+     ]
+    ],
+    "Fisico": [
+     [
+      "Peso",
+      "304-320 g"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Android 13"
+     ]
+    ]
+   },
+   "pros": [
+    "Compatta e leggera con chip potente",
+    "Ottimo rapporto qualità-prezzo"
+   ],
+   "cons": [
+    "Schermo piccolo per i giochi moderni",
+    "Android 13"
+   ],
+   "tests": [
+    {
+     "game": "AnTuTu",
+     "fps": 1518895,
+     "settings": "v10",
+     "src": "Tech Insider",
+     "unit": "punti"
+    },
+    {
+     "game": "3DMark Wild Life Extreme",
+     "fps": 3711,
+     "settings": "",
+     "src": "Tech Insider",
+     "unit": "punti"
+    }
+   ],
+   "testNote": "Emulazione PS2 e GameCube stabile tra 30 e 60 fps.",
+   "keywords": [
+    "retroid pocket 6"
+   ],
+   "buy": [
+    {
+     "name": "Retroid",
+     "url": "https://www.goretroid.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Retroid+Pocket+6"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Retroid+Pocket+6&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Retroid+Pocket+6"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Retroid+Pocket+6"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Tech Insider: elenco console portatili 2026",
+     "url": "https://tech-insider.org/handheld-gaming-console-list-2026/"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "Retroid Pocket 6",
+      "must": "pocket 6"
+     }
+    ],
+    "commons": [
+     "Retroid Pocket 6"
+    ],
+    "match": "retroid",
+    "exact": "pocket.?6"
+   },
+   "tier": "Android",
+   "gen": "attuale",
+   "perf": null,
+   "os_tags": [
+    "Android"
+   ]
+  },
+  {
+   "id": "ayn-odin-2-portal",
+   "name": "AYN Odin 2 Portal",
+   "brand": "AYN",
+   "maker": {
+    "name": "AYN Technologies",
+    "hq": "Shenzhen, Cina",
+    "site": "https://www.ayntec.com/"
+   },
+   "color": "#FF6A00",
+   "released": "2024",
+   "price": null,
+   "priceText": "da 249-329 $ (USA)",
+   "priceNote": "L'Odin 2 normale è fuori produzione; la Portal è scesa a 249 $ in promozione",
+   "key": {
+    "cpu": "Snapdragon 8 Gen 2",
+    "gpu": "Adreno 740",
+    "ram": "8-16 GB",
+    "screen": "7\" AMOLED 120 Hz",
+    "battery": "8.000 mAh",
+    "weight": "n.d."
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Qualcomm Snapdragon 8 Gen 2"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Adreno 740"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "8, 12 o 16 GB LPDDR5X"
+     ],
+     [
+      "Archiviazione",
+      "128-512 GB UFS 4.0"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "7 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "AMOLED"
+     ],
+     [
+      "Frequenza",
+      "120 Hz"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "8.000 mAh"
+     ]
+    ],
+    "Controlli": [
+     [
+      "Stick",
+      "Hall"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Android 13"
+     ]
+    ]
+   },
+   "pros": [
+    "Grande schermo OLED",
+    "Ottimo supporto ai driver per l'emulazione"
+   ],
+   "cons": [
+    "Grande e poco ergonomica",
+    "Superata dalla Odin 3"
+   ],
+   "tests": [],
+   "testNote": "Regge bene retro, Switch, PS3 e alcuni giochi Windows in emulazione.",
+   "keywords": [
+    "odin 2 portal",
+    "odin 2"
+   ],
+   "buy": [
+    {
+     "name": "AYN",
+     "url": "https://www.ayntec.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=AYN+Odin+2+Portal"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=AYN+Odin+2+Portal&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=AYN+Odin+2+Portal"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=AYN+Odin+2+Portal"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Android Authority: migliori portatili Android",
+     "url": "https://www.androidauthority.com/best-android-gaming-handheld-3596915"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "Odin 2 Portal",
+      "must": "odin 2 portal"
+     }
+    ],
+    "commons": [
+     "AYN Odin 2"
+    ],
+    "match": "odin",
+    "exact": "portal"
+   },
+   "tier": "Android",
+   "gen": "attuale",
+   "perf": null,
+   "os_tags": [
+    "Android"
+   ]
+  },
+  {
+   "id": "retroid-pocket-5",
+   "name": "Retroid Pocket 5",
+   "brand": "Retroid",
+   "maker": {
+    "name": "Retroid (Moorechip Technologies)",
+    "hq": "Shenzhen, Cina",
+    "site": "https://www.goretroid.com/"
+   },
+   "color": "#7C4DFF",
+   "released": "2024",
+   "price": null,
+   "priceText": "circa 219-259 $ (USA)",
+   "priceNote": "Si può aggiungere un secondo schermo per DS e 3DS",
+   "key": {
+    "cpu": "Snapdragon 865",
+    "gpu": "Adreno 650",
+    "ram": "8 GB",
+    "screen": "5,5\" AMOLED 1080p",
+    "battery": "5.000 mAh",
+    "weight": "n.d."
+   },
+   "specs": {
+    "Processore": [
+     [
+      "Modello",
+      "Qualcomm Snapdragon 865"
+     ]
+    ],
+    "Grafica": [
+     [
+      "GPU",
+      "Adreno 650"
+     ]
+    ],
+    "Memoria e archiviazione": [
+     [
+      "RAM",
+      "8 GB LPDDR4X"
+     ],
+     [
+      "Archiviazione",
+      "128 GB UFS 3.1"
+     ]
+    ],
+    "Schermo": [
+     [
+      "Diagonale",
+      "5,5 pollici"
+     ],
+     [
+      "Risoluzione",
+      "1920 x 1080"
+     ],
+     [
+      "Pannello",
+      "AMOLED"
+     ]
+    ],
+    "Batteria e consumi": [
+     [
+      "Batteria",
+      "5.000 mAh"
+     ]
+    ],
+    "Software": [
+     [
+      "Sistema",
+      "Android 13"
+     ]
+    ]
+   },
+   "pros": [
+    "Prezzo basso e ottima batteria",
+    "Perfetta per il retro gaming"
+   ],
+   "cons": [
+    "Switch e PS3 vanno a intermittenza"
+   ],
+   "tests": [],
+   "keywords": [
+    "retroid pocket 5"
+   ],
+   "buy": [
+    {
+     "name": "Retroid",
+     "url": "https://www.goretroid.com/"
+    },
+    {
+     "name": "Amazon.it",
+     "url": "https://www.amazon.it/s?k=Retroid+Pocket+5"
+    },
+    {
+     "name": "Trovaprezzi",
+     "url": "https://www.trovaprezzi.it/categoria.aspx?libera=Retroid+Pocket+5&id=-1"
+    },
+    {
+     "name": "Idealo",
+     "url": "https://www.idealo.it/MainSearchProductCategory.html?q=Retroid+Pocket+5"
+    },
+    {
+     "name": "eBay (anche usato)",
+     "url": "https://www.ebay.it/sch/i.html?_nkw=Retroid+Pocket+5"
+    }
+   ],
+   "sources": [
+    {
+     "name": "Android Authority: migliori portatili Android",
+     "url": "https://www.androidauthority.com/best-android-gaming-handheld-3596915"
+    }
+   ],
+   "photo": {
+    "shops": [
+     {
+      "type": "woo",
+      "host": "droix.net",
+      "q": "Retroid Pocket 5",
+      "must": "pocket 5"
+     }
+    ],
+    "commons": [
+     "Retroid Pocket 5"
+    ],
+    "match": "retroid",
+    "exact": "pocket.?5"
+   },
+   "tier": "Android",
+   "gen": "attuale",
+   "perf": null,
+   "os_tags": [
+    "Android"
+   ]
   }
  ]
 }

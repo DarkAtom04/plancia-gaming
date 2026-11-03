@@ -364,8 +364,12 @@ function hhArt(x) {
   <circle cx="44" cy="70" r="14" fill="#0006"/><circle cx="276" cy="104" r="14" fill="#0006"/><g fill="#0007"><circle cx="276" cy="56" r="6"/><circle cx="264" cy="68" r="6"/><circle cx="288" cy="68" r="6"/><circle cx="276" cy="80" r="6"/></g><path d="M38 104h12M44 98v12" stroke="#0008" stroke-width="5" stroke-linecap="round"/></svg>`;
 }
 function hhPhoto(x, big) { const u = safeUrl(x.photoUrl); return u ? `<img class="hh-img" src="${h(u)}" alt="${h(x.name)}" loading="${big ? "eager" : "lazy"}" decoding="async" referrerpolicy="no-referrer" data-hh="${h(x.id)}">` : hhArt(x); }
+const fmtN = v => typeof v === "number" ? v.toLocaleString("it-IT") : v;
+const suites = () => (D.handhelds && D.handhelds.suites) || [];
+const testKey = t => (t.suite || t.src || "") + "|" + t.game + "|" + t.settings;
+function bestOf(t) { let best = null; for (const d of hhAll()) for (const u of d.tests || []) if (testKey(u) === testKey(t) && (!best || u.fps > best.v)) best = { v: u.fps, d }; return best; }
 function hhNews(x) { const kw = (x.keywords || []).map(norm); return allNews().filter(n => { const t = norm(n.title); return kw.some(k => t.includes(k)); }); }
-function perfBar(x, max, sm) { return x.perf ? `<div class="perf ${sm ? "sm" : ""}" title="Indice di potenza ${x.perf} (Steam Deck OLED = 100)"><span style="width:${Math.max(6, Math.round(x.perf / max * 100))}%;--c:${h(x.color)}"></span><b>${x.perf}</b></div>` : `<div class="perf na"><b>n.c.</b><small>console, non confrontabile</small></div>`; }
+function perfBar(x, max, sm) { return x.perf ? `<div class="perf ${sm ? "sm" : ""}" title="Indice di potenza ${x.perf} (Steam Deck OLED = 100)"><span style="width:${Math.max(6, Math.round(x.perf / max * 100))}%;--c:${h(x.color)}"></span><b>${x.perf}</b></div>` : `<div class="perf na"><b>n.c.</b><small>${(x.os_tags || []).includes("Android") ? "Android" : "console"}, non confrontabile con i PC</small></div>`; }
 const tierCls = t => "t-" + norm(t || "").replace(/\W+/g, "");
 function hhCard(x, rank, max) {
   const k = x.key || {}; const on = st.hhCmp.includes(x.id); const nN = hhNews(x).length;
@@ -382,9 +386,9 @@ function hhCard(x, rank, max) {
 }
 function hhModal(x) {
   const k = x.key || {}; const m = x.maker || {}; const N = hhNews(x); const max = Math.max(...hhAll().map(d => d.perf || 0));
-  const deck = hhById("steam-deck-oled");
-  const tests = (x.tests || []).map(t => { const ref = deck && deck !== x ? (deck.tests || []).find(r => r.game === t.game && r.settings === t.settings) : null; const top = Math.max(t.fps, ref ? ref.fps : 0, 60);
-    return `<div class="fpsrow"><div class="fpsg"><b>${h(t.game)}</b><small>${h(t.settings)}${t.src ? " · " + h(t.src) : ""}</small></div><div class="fpsbars"><div class="fb"><span style="width:${Math.round(t.fps / top * 100)}%;--c:${h(x.color)}"></span><em>${t.fps} fps</em></div>${ref ? `<div class="fb ref"><span style="width:${Math.round(ref.fps / top * 100)}%"></span><em>${ref.fps} fps · Steam Deck OLED</em></div>` : ""}</div></div>`; }).join("");
+  const testRow = t => { const b = bestOf(t); const top = Math.max(t.fps, b ? b.v : 0) || 1; const unit = t.unit === "punti" ? "punti" : "fps";
+    return `<div class="fpsrow"><div class="fpsg"><b>${h(t.game)}</b><small>${h(t.settings)}${t.src ? " · " + h(t.src) : ""}</small></div><div class="fpsbars"><div class="fb"><span style="width:${Math.max(3, Math.round(t.fps / top * 100))}%;--c:${h(x.color)}"></span><em>${fmtN(t.fps)} ${unit}</em></div>${b && b.d !== x ? `<div class="fb ref"><span style="width:${Math.round(b.v / top * 100)}%"></span><em>${fmtN(b.v)} · migliore: ${h(b.d.name)}</em></div>` : b && b.d === x && hhAll().some(d => d !== x && (d.tests || []).some(u => testKey(u) === testKey(t))) ? `<small class="topb">il migliore tra quelli provati</small>` : ""}</div></div>`; };
+  const T = x.tests || []; const tests = [...suites().map(su => { const L = T.filter(t => t.suite === su.id); return L.length ? `<h4 class="sut">${h(su.name)}</h4>` + L.map(testRow).join("") : ""; }), (() => { const L = T.filter(t => !t.suite); return L.length ? `<h4 class="sut">Altri test</h4>` + L.map(testRow).join("") : ""; })()].join("");
   const groups = Object.entries(x.specs || {}).map(([g, rows]) => `<div class="spg"><h4>${h(g)}</h4><table class="spec">${rows.map(([a, b]) => `<tr><th>${h(a)}</th><td>${h(b)}</td></tr>`).join("")}</table></div>`).join("");
   return `<div class="hhm" role="dialog" aria-modal="true" aria-label="${h(x.name)}"><div class="hhm-shade" data-hhclose="1"></div><div class="hhm-panel" style="--c:${h(x.color)}">
     <div class="hhm-bar"><button type="button" class="hhm-x" data-hhclose="1" aria-label="Chiudi">✕</button></div>
@@ -400,7 +404,7 @@ function hhModal(x) {
     <div class="hhm-body">
       <section><h3>Scheda tecnica completa</h3><div class="spgrid">${groups}</div><p class="sub">"n.d." = dato non ancora comunicato dal produttore.</p></section>
       <section class="hhm-side">
-        <h3>Prestazioni nei giochi</h3>${tests || ""}${x.testNote ? `<p class="sub">${h(x.testNote)}</p>` : ""}${!tests && !x.testNote ? `<p class="sub">Nessun test affidabile ancora pubblicato.</p>` : ""}
+        <h3>Prestazioni e test</h3>${tests || ""}${x.testNote ? `<p class="sub">${h(x.testNote)}</p>` : ""}${!tests && !x.testNote ? `<p class="sub">Nessun test affidabile ancora pubblicato.</p>` : ""}
         ${(x.battery || []).length ? `<h3>Autonomia giocando</h3>${x.battery.map(b => `<div class="fpsrow"><div class="fpsg"><b>${h(b.game)}</b><small>a 25 W</small></div><div class="fpsbars"><div class="fb bat"><span style="width:${Math.round(b.min / 330 * 100)}%"></span><em>${Math.floor(b.min / 60)} h ${pad(b.min % 60)} min</em></div></div></div>`).join("")}` : ""}
         <h3>Pro e contro</h3><ul class="pc">${(x.pros || []).map(p => `<li class="pro">${h(p)}</li>`).join("")}${(x.cons || []).map(p => `<li class="con">${h(p)}</li>`).join("")}</ul>
         ${(x.sources || []).length ? `<h3>Fonti</h3><ul class="srcl">${x.sources.map(s => `<li><a ${ext(s.url)}>${h(s.name)}</a></li>`).join("")}</ul>` : ""}
@@ -409,7 +413,7 @@ function hhModal(x) {
 }
 function hhCompare() {
   const L = st.hhCmp.map(hhById).filter(Boolean); if (L.length < 2) return "";
-  const max = Math.max(...L.map(x => x.perf || 0)); const G = D.handhelds.games || [];
+  const max = Math.max(...L.map(x => x.perf || 0));
   const row = (k, f, best) => `<tr><th>${k}</th>${L.map(x => { const v = f(x); return `<td class="${best && best(x) ? "best" : ""}">${v == null || v === "" ? "—" : v}</td>`; }).join("")}</tr>`;
   const maxBy = f => x => { const v = f(x); const all = L.map(f).filter(z => z != null); return v != null && all.length > 1 && v === Math.max(...all); };
   const minBy = f => x => { const v = f(x); const all = L.map(f).filter(z => z != null); return v != null && all.length > 1 && v === Math.min(...all); };
@@ -428,30 +432,32 @@ function hhCompare() {
     ${row("Batteria", x => h((x.key || {}).battery), maxBy(x => /wh/i.test((x.key || {}).battery || "") ? numOf(x.key.battery) : null))}
     ${row("Peso", x => h((x.key || {}).weight), minBy(x => numOf((x.key || {}).weight)))}
     ${groups.map(G2 => `<tr class="grp"><th colspan="${L.length + 1}">${h(G2.g)}</th></tr>` + G2.labels.map(a => row(h(a), x => val(x, G2.g, a))).join("")).join("")}
-    <tr class="grp"><th colspan="${L.length + 1}">Giochi (stessi test)</th></tr>
-    ${G.map((g, i) => row(`${h(g)}<small>${h((D.handhelds.gameSettings || [])[i] || "")}</small>`, x => { const t = (x.tests || []).find(t => t.game === g && t.settings === D.handhelds.gameSettings[i]); return t ? `<b>${t.fps}</b> fps` : ""; }, maxBy(x => { const t = (x.tests || []).find(t => t.game === g && t.settings === D.handhelds.gameSettings[i]); return t ? t.fps : null; }))).join("")}
+    ${suites().map(su => { const rows = su.tests.filter(([g, st2]) => L.some(x => (x.tests || []).some(t => t.suite === su.id && t.game === g && t.settings === st2))); if (!rows.length) return "";
+      const val = (x, g, st2) => { const t = (x.tests || []).find(t => t.suite === su.id && t.game === g && t.settings === st2); return t ? t.fps : null; };
+      return `<tr class="grp"><th colspan="${L.length + 1}">${h(su.name)}</th></tr>` + rows.map(([g, st2, u]) => row(`${h(g)}<small>${h(st2)}</small>`, x => { const v = val(x, g, st2); return v == null ? "" : `<b>${fmtN(v)}</b> ${u}`; }, maxBy(x => val(x, g, st2)))).join(""); }).join("")}
     </tbody></table></div><p class="sub">In verde il valore migliore. "—" = dato non disponibile.</p></div></div>`;
 }
 function vHandheld() {
   const HH = D.handhelds; const ss = savedSet();
   if (!HH || !hhAll().length) return vCat("Handheld e <em>PC portatili da gioco</em>", ["handheld"]);
   const L = hhList(); const max = Math.max(...hhAll().map(x => x.perf || 0)); let r = 0;
-  const G = HH.games || []; const withT = hhAll().filter(x => (x.tests || []).some(t => t.src === "SovisGames"));
   const N = byCat("handheld"); const deal = N.filter(n => (n.cats || []).includes("offerte")).slice(0, 8);
   const chips = (key, opts) => opts.map(([v, l]) => `<button type="button" class="chip" data-hhf="${key}:${v}" aria-pressed="${String(st[key]) === String(v)}">${l}</button>`).join("");
   const top = hhAll().filter(x => x.perf && x.gen === "attuale").sort((a, b) => b.perf - a.perf)[0];
   const sel = st.hhCmp.map(hhById).filter(Boolean);
   return `<section class="hh-intro" style="--c:${h(top ? top.color : "#333")}"><div><span class="kicker">Guida e classifica</span><h1>PC portatili <em>da gioco</em></h1>
-      <p>${hhAll().length} modelli, dal più potente al più economico, con scheda tecnica completa, prestazioni nei giochi, produttore e dove comprarli. Spunta "Confronta" su due o più modelli per vederli fianco a fianco.</p>
+      <p>${hhAll().length} modelli tra PC portatili, console e Android, dal più potente al più economico, con scheda tecnica completa, prestazioni nei giochi, produttore e dove comprarli. Spunta "Confronta" su due o più modelli per vederli fianco a fianco.</p>
       <p class="sub">${h(HH.perfNote || "")} Aggiornata il ${fmtD(HH.updated)}.</p></div>
       ${top ? `<button type="button" class="hh-intro-pic" data-hhopen="${h(top.id)}">${hhPhoto(top, true)}<span>Il più potente: <b>${h(top.name)}</b></span></button>` : ""}</section>
     <div class="hh-tools">
       <div class="filters"><label class="srch"><input id="hhQ" type="search" placeholder="Cerca modello, marca, processore…" value="${h(st.hhQ || "")}" aria-label="Cerca handheld"></label>
         <select id="hhSort" aria-label="Ordina">${Object.entries(HH_SORT).map(([k, v]) => `<option value="${k}" ${st.hhSort === k ? "selected" : ""}>${v}</option>`).join("")}</select></div>
-      <div class="filters">${chips("hhGen", [["attuale", "In commercio"], ["precedente", "Generazione precedente"], ["tutti", "Tutti"]])}<span class="sep"></span>${chips("hhOs", [["tutti", "Tutti i sistemi"], ["Windows", "Windows"], ["SteamOS", "SteamOS"], ["Console", "Console"]])}<span class="sep"></span>${chips("hhMax", [["", "Qualsiasi prezzo"], [700, "Fino a 700 €"], [1000, "Fino a 1.000 €"], [1600, "Fino a 1.600 €"]])}</div>
+      <div class="filters">${chips("hhGen", [["attuale", "In commercio"], ["precedente", "Generazione precedente"], ["tutti", "Tutti"]])}<span class="sep"></span>${chips("hhOs", [["tutti", "Tutti i sistemi"], ["Windows", "Windows"], ["SteamOS", "SteamOS"], ["Console", "Console e streaming"], ["Android", "Android"]])}<span class="sep"></span>${chips("hhMax", [["", "Qualsiasi prezzo"], [700, "Fino a 700 €"], [1000, "Fino a 1.000 €"], [1600, "Fino a 1.600 €"]])}</div>
     </div>
     <div class="hhgrid">${L.map(x => hhCard(x, st.hhSort === "perf" && x.perf ? ++r : 0, max)).join("") || empty("Nessun modello con questi filtri.")}</div>
-    ${withT.length ? sh("Come girano i <em>giochi</em>", `<span class="sub">fps medi, stessi test e stesse impostazioni</span>`) + `<div class="tblwrap"><table class="cmpt fpsall"><thead><tr><th>Gioco</th>${withT.map(x => `<th><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</th>`).join("")}</tr></thead><tbody>${G.map((g, i) => `<tr><th>${h(g)}<small>${h((HH.gameSettings || [])[i] || "")}</small></th>${withT.map(x => { const t = (x.tests || []).find(t => t.game === g && t.src === "SovisGames"); return `<td>${t ? `<b>${t.fps}</b>` : "—"}</td>`; }).join("")}</tr>`).join("")}</tbody></table></div><p class="sub">Fonte: <a ${ext("https://sovisgames.com/posts/rog-ally-x20-vs-competition/")}>SovisGames</a>. Gli altri test sono nelle schede dei singoli modelli.</p>` : ""}
+    ${suites().map(su => { const devs = hhAll().filter(x => (x.tests || []).some(t => t.suite === su.id)).sort((a, b) => (b.perf || 0) - (a.perf || 0)); if (!devs.length) return "";
+      return sh(su.id === "sovis" ? "Come girano i <em>giochi</em>" : "Test a <em>parità di consumo</em>", `<span class="sub">${h(su.name)}</span>`) + `<div class="tblwrap"><table class="cmpt fpsall"><thead><tr><th>Test</th>${devs.map(x => `<th><button type="button" class="thbtn" data-hhopen="${h(x.id)}"><span class="dot" style="--c:${h(x.color)}"></span>${h(x.name)}</button></th>`).join("")}</tr></thead><tbody>${su.tests.map(([g, st2, u]) => { const vals = devs.map(x => { const t = (x.tests || []).find(t => t.suite === su.id && t.game === g && t.settings === st2); return t ? t.fps : null; }); const mx = Math.max(...vals.filter(v => v != null));
+        return `<tr><th>${h(g)}<small>${h(st2)} · ${u}</small></th>${vals.map(v => `<td class="${v != null && v === mx && vals.filter(z => z != null).length > 1 ? "best" : ""}">${v == null ? "—" : `<b>${fmtN(v)}</b>`}</td>`).join("")}</tr>`; }).join("")}</tbody></table></div><p class="sub">Fonte: <a ${ext(su.src.url)}>${h(su.src.name)}</a>. In verde il migliore. Gli altri test sono nelle schede dei singoli modelli.</p>`; }).join("")}
     ${deal.length ? sh("Offerte handheld <em>dalle testate</em>") + `<div class="grid">${deal.map(n => newsCard(n, ss)).join("")}</div>` : ""}
     ${N.length ? sh("Notizie <em>handheld</em>", `<span class="sub">${N.length} notizie</span>`) + `<div class="grid g3">${N.slice(0, st.page).map(n => newsCard(n, ss)).join("")}</div>${N.length > st.page ? `<button class="btn ghost loadmore" type="button" data-more="news">Carica altre (${N.length - st.page})</button>` : ""}` : ""}
     ${sel.length ? `<div class="cmpbar">${sel.map(x => `<span class="cmpbar-it">${hhPhoto(x)}<button type="button" data-hhrm="${h(x.id)}" aria-label="Togli ${h(x.name)}">✕</button></span>`).join("")}<span class="cmpbar-t">${sel.length === 1 ? "Scegline almeno un altro" : sel.length + " modelli"}</span>${sel.length > 1 ? `<button type="button" class="btn small" id="cmpOpen">Confronta ora</button>` : ""}</div>` : ""}

@@ -543,3 +543,8 @@ body.lock{overflow:hidden}
   .cal-tools{gap:8px}
 }
 .ph-note{position:absolute;left:10px;bottom:8px;font-size:10.5px;font-weight:700;color:var(--muted);background:color-mix(in srgb,var(--paper) 80%,transparent);padding:2px 6px;border-radius:4px}
+.sut{margin:14px 0 4px;font:800 12px var(--f-b);letter-spacing:.1em;text-transform:uppercase;color:var(--accent)}
+.topb{font-size:11px;font-weight:700;color:var(--good)}
+.thbtn{border:0;background:none;padding:0;font:inherit;color:inherit;text-transform:inherit;text-align:left}
+.thbtn:hover{color:var(--accent)}
+.cmpt.fpsall th small{display:block}

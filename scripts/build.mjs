@@ -645,35 +645,51 @@ async function steamImages(items, st, max) {
   });
   for (const x of items) { const c = x.appid && st.steamImg[x.appid]; if (c && c.img) { if (x.img && x.img !== c.img) x.img2 = x.img2 || x.img; x.img = c.img; } }
 }
-// foto dei PC portatili: Wikimedia Commons, poi pagina Wikipedia (memorizzate per 7 giorni)
+// foto dei portatili: negozi (WooCommerce / Shopify), pagine ufficiali, poi Wikimedia (memorizzate per 7 giorni)
+const PHOTO_V = 3;
+async function shopPhoto(sh, acc) {
+  const must = new RegExp(sh.must || ".", "i");
+  if (sh.type === "woo") {
+    const L = await fetchJSON(`https://${sh.host}/wp-json/wc/store/v1/products?search=${encodeURIComponent(sh.q)}&per_page=20`);
+    for (const p of Array.isArray(L) ? L : []) { const n = decode(stripHtml(p.name || "")); const im = (p.images || [])[0];
+      if (im && must.test(n) && !acc.test(n)) return { img: im.src, page: p.permalink, title: `${n} (${sh.host})`, exact: true }; }
+  } else if (sh.type === "shopify") {
+    const j = await fetchJSON(`https://${sh.host}/search/suggest.json?q=${encodeURIComponent(sh.q)}&resources[type]=product&resources[limit]=10`);
+    for (const p of (((j.resources || {}).results || {}).products) || []) { const n = decode(p.title || ""); const im = p.image || (p.featured_image && p.featured_image.url);
+      if (im && must.test(n) && !acc.test(n)) return { img: absUrl(im, `https://${sh.host}/`), page: `https://${sh.host}${String(p.url || "").split("?")[0]}`, title: `${n} (${sh.host})`, exact: true }; }
+  }
+  return null;
+}
 async function handheldPhotos(HH, st) {
-  st.hhPhoto ||= {};
+  st.hhPhoto ||= {}; const acc = new RegExp(HH.accessories || "battery|dock|case|charger", "i");
   await pool(HH.devices || [], 3, async d => {
-    const c = st.hhPhoto[d.id]; const P0 = d.photo || {};
-    if (c && /fps|kbit|\(\d{3,4}p/i.test(c.title || "")) delete st.hhPhoto[d.id];
-    else if (c && NOW.getTime() - Date.parse(c.at) < (c.img ? 7 : 1) * 864e5 && !FIXTURES) { if (c.img) { Object.assign(d, { photoUrl: c.img, photoPage: c.page, photoTitle: c.title }); if (P0.exact) d.photoExact = new RegExp(P0.exact, "i").test(c.title || ""); } return; }
-    const P = d.photo || {}; const re = P.match ? new RegExp(P.match, "i") : null; let res = { img: "", at: NOW.toISOString() };
+    const P = d.photo || {}; const c = st.hhPhoto[d.id];
+    const use = r => { if (r && r.img) Object.assign(d, { photoUrl: r.img, photoPage: r.page || "", photoTitle: r.title || "", photoExact: r.exact != null ? r.exact : (P.exact ? new RegExp(P.exact, "i").test(r.title || "") : true) }); };
+    if (c && c.v === PHOTO_V && NOW.getTime() - Date.parse(c.at) < (c.img ? 7 : 1) * 864e5 && !FIXTURES) { use(c); return; }
+    let res = null;
+    for (const sh of P.shops || []) { if (res) break; try { res = await shopPhoto(sh, acc); } catch {} }
+    for (const u of P.pages || []) { if (res) break; try { const im = await ogImage(u); if (im && !/logo|favicon|default|placeholder/i.test(im)) res = { img: im, page: u, title: "pagina " + new URL(u).hostname.replace(/^www\./, ""), exact: true }; } catch {} }
+    const re = P.match ? new RegExp(P.match, "i") : null;
     for (const q of P.commons || []) {
-      if (res.img) break;
+      if (res) break;
       try {
         const j = await fetchJSON(`https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=${encodeURIComponent(q)}&prop=imageinfo&iiprop=url|mime&iiurlwidth=900`, { headers: WIKI_H });
         const pages = Object.values((j.query && j.query.pages) || {}).sort((a, b) => (a.index || 0) - (b.index || 0));
         const hit = pages.find(p => (!re || re.test(p.title)) && p.imageinfo && /jpe?g|png|webp/.test(p.imageinfo[0].mime || "") && !/logo|icon|screenshot|box art|fps|kbit|\bAAC\b|\bAV1\b|\(\d{3,4}p|youtube|video|\.webm|\.ogv/i.test(p.title));
-        if (hit) res = { ...res, img: hit.imageinfo[0].thumburl || hit.imageinfo[0].url, page: hit.imageinfo[0].descriptionurl || "", title: hit.title.replace(/^File:/, "").replace(/\.\w+$/, "") };
+        if (hit) res = { img: hit.imageinfo[0].thumburl || hit.imageinfo[0].url, page: hit.imageinfo[0].descriptionurl || "", title: hit.title.replace(/^File:/, "").replace(/\.\w+$/, "") + " (Wikimedia)" };
       } catch {}
     }
-    if (!res.img && (P.wiki || []).length) {
+    if (!res && (P.wiki || []).length) {
       try {
         const j = await fetchJSON(`https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&pilicense=any&titles=${encodeURIComponent(P.wiki.join("|"))}`, { headers: WIKI_H });
-        const pages = Object.values((j.query && j.query.pages) || {});
-        for (const t of P.wiki) { const pg = pages.find(p => p.title && p.title.toLowerCase() === t.toLowerCase() && p.thumbnail && !/logo|\.svg/i.test(p.thumbnail.source)); if (pg) { res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; break; } }
-        if (!res.img) { const pg = pages.find(p => p.thumbnail && !/logo|\.svg/i.test(p.thumbnail.source)); if (pg) res = { ...res, img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: "Wikipedia: " + pg.title }; }
+        const pages = Object.values((j.query && j.query.pages) || {}).filter(p => p.thumbnail && !/logo|\.svg/i.test(p.thumbnail.source));
+        const pg = P.wiki.map(t => pages.find(p => p.title && p.title.toLowerCase() === t.toLowerCase())).find(Boolean) || pages[0];
+        if (pg) res = { img: pg.thumbnail.source, page: `https://en.wikipedia.org/wiki/${encodeURIComponent(pg.title.replace(/ /g, "_"))}`, title: pg.title + " (Wikipedia)" };
       } catch {}
     }
-    st.hhPhoto[d.id] = res; if (res.img) Object.assign(d, { photoUrl: res.img, photoPage: res.page, photoTitle: res.title });
-    if (d.photoUrl && P.exact) d.photoExact = new RegExp(P.exact, "i").test(d.photoTitle || "");
+    st.hhPhoto[d.id] = { ...(res || {}), v: PHOTO_V, at: NOW.toISOString() }; use(res);
   });
-  const ok = (HH.devices || []).filter(d => d.photoUrl).length; log(`foto handheld: ${ok}/${(HH.devices || []).length} → ` + (HH.devices || []).map(d => d.id + "=" + (d.photoTitle || "-")).join("; "));
+  const ok = (HH.devices || []).filter(d => d.photoUrl).length; log(`foto handheld: ${ok}/${(HH.devices || []).length} → ` + (HH.devices || []).map(d => d.id + "=" + (d.photoTitle || "-") + (d.photoExact === false ? " [indicativa]" : "")).join("; "));
 }
 /* ---------------------------------------------------------- uscite */
 async function collectReleases(featured, st, health) {

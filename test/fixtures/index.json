@@ -31,5 +31,7 @@
  "https://store.steampowered.com/api/storesearch/?term=Crymelight&cc=it&l=english": "ss2.json",
  "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=640&pilicense=any&generator=search&gsrlimit=1&gsrsearch=Crymelight%20video%20game": "wiki1.json",
  "https://commons.wikimedia.org/w/api.php?action=query&format=json&generator=search&gsrnamespace=6&gsrlimit=10&gsrsearch=Steam%20Deck%20OLED&prop=imageinfo&iiprop=url|mime&iiurlwidth=900": "cm_deck.json",
- "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&pilicense=any&titles=ROG%20Xbox%20Ally%7CROG%20Ally": "wp_ally.json"
+ "https://en.wikipedia.org/w/api.php?action=query&format=json&redirects=1&prop=pageimages&piprop=thumbnail&pithumbsize=900&pilicense=any&titles=ROG%20Xbox%20Ally%7CROG%20Ally": "wp_ally.json",
+ "https://droix.net/wp-json/wc/store/v1/products?search=GPD%20WIN%205&per_page=20": "woo_w5.json",
+ "https://onexplayerstore.com/search/suggest.json?q=apex&resources[type]=product&resources[limit]=10": "sh_apex.json"
 }
