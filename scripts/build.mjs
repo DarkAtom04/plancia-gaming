@@ -238,7 +238,7 @@ async function readSource(src, st) {
   const tried = [];
   for (const u of src.feeds || []) {
     const r = await fetchText(u, { accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*" });
-    tried.push(`${u} → ${r.status || r.error}`);
+    tried.push(`${u} → ${r.status || r.error}${r.ok && !/<(rss|feed|rdf)[\s>]/i.test(r.text) ? " (non è un feed: " + JSON.stringify(r.text.slice(0, 80)) + ")" : ""}`);
     if (r.ok && /<(rss|feed|rdf)[\s>]/i.test(r.text)) { const it = parseFeed(r.text, u); if (it.length) return { items: it, feed: u }; }
   }
   if (src.home) {
@@ -246,6 +246,23 @@ async function readSource(src, st) {
     const f = h.ok ? discoverFeed(h.text, src.home) : "";
     tried.push(`autodiscovery ${src.home} → ${f || h.status || h.error}`);
     if (f) { const r = await fetchText(f); if (r.ok) { const it = parseFeed(r.text, f); if (it.length) return { items: it, feed: f }; } }
+  }
+  // Riserva 1: molti siti italiani sono WordPress e hanno anche un elenco articoli in JSON
+  if (src.home) {
+    const base = src.home.replace(/\/$/, "");
+    const r = await fetchText(`${base}/wp-json/wp/v2/posts?per_page=30&_embed=wp:featuredmedia&_fields=title,link,date_gmt,excerpt,_links,_embedded`, { accept: "application/json" });
+    tried.push(`wp-json → ${r.status || r.error}`);
+    if (r.ok) { try { const L = JSON.parse(r.text); const it = (Array.isArray(L) ? L : []).map(p => { const m = (((p._embedded || {})["wp:featuredmedia"]) || [])[0] || {}; const sz = (m.media_details || {}).sizes || {};
+        return { title: decode(stripHtml((p.title || {}).rendered || "")), url: p.link, dateStr: p.date_gmt ? p.date_gmt + "Z" : "", summary: cleanSummary(stripHtml((p.excerpt || {}).rendered || "")), img: (sz.large || sz.medium_large || sz.full || {}).source_url || m.source_url || "", tags: [] }; }).filter(x => x.title && x.url);
+      if (it.length) return { items: it, feed: base + "/wp-json/wp/v2/posts" }; } catch {} }
+  }
+  // Riserva 2: Google News limitato al sito (titoli e date veri, ma senza foto)
+  if (src.home) {
+    const host = new URL(src.home).hostname.replace(/^www\./, "");
+    const g = `https://news.google.com/rss/search?q=site:${host}+when:3d&hl=it&gl=IT&ceid=IT:it`;
+    const r = await fetchText(g, { accept: "application/rss+xml, */*" });
+    tried.push(`Google News → ${r.status || r.error}`);
+    if (r.ok) { const it = parseFeed(r.text, g).map(x => ({ ...x, title: x.title.replace(/\s+-\s+[^-]+$/, ""), img: "" })); if (it.length) return { items: it, feed: g, via: "Google News" }; }
   }
   throw new Error(tried.join(" | "));
 }
@@ -261,7 +278,7 @@ async function ogImage(url) {
 async function collectNews(st, health) {
   const keepMs = (CFG.keepHours || 72) * 3600e3;
   const res = await pool(CFG.feeds, 6, async src => {
-    try { const r = await readSource(src, st); health.push({ id: src.id, name: src.name, ok: true, count: r.items.length, feed: r.feed }); return r.items.map(x => ({ ...x, src })); }
+    try { const r = await readSource(src, st); health.push({ id: src.id, name: src.name, ok: true, count: r.items.length, feed: r.feed, via: r.via || (/wp-json/.test(r.feed) ? "archivio articoli del sito" : "") }); return r.items.map(x => ({ ...x, src })); }
     catch (e) { health.push({ id: src.id, name: src.name, ok: false, count: 0, error: String(e.message || e).slice(0, 600) }); log("ERRORE", src.name, String(e.message || e).slice(0, 300)); return []; }
   });
   let all = res.flat().filter(Boolean);
@@ -720,7 +737,7 @@ async function collectReleases(featured, st, health) {
     } catch (e) { health.push({ id: "rawg", name: "RAWG (uscite)", ok: false, error: String(e.message) }); }
   } else health.push({ id: "rawg", name: "RAWG (uscite)", ok: false, error: "chiave non impostata (facoltativa)" });
   // console: Nintendo eShop e Xbox Store (aggiornati ogni 6 ore)
-  const [nu, xu] = await Promise.all([cachedList(st, health, "nintendo-uscite", "Nintendo eShop (uscite)", 360, nintendoUpcoming), cachedList(st, health, "xbox-uscite", "Xbox Store (uscite)", 360, xboxUpcoming)]);
+  const [nu, xu] = await Promise.all([cachedList(st, health, "nintendo-uscite", "Nintendo eShop (uscite)", 360, nintendoUpcoming), (CFG.xboxUpcoming ? cachedList(st, health, "xbox-uscite", "Xbox Store (uscite)", 360, xboxUpcoming) : Promise.resolve([]))]);
   for (const r of [...nu, ...xu]) out.push({ ...r, big: r.pop < 8 });
   // elenco manuale (titoli attesi) con copertina trovata in automatico
   let manual = []; try { manual = JSON.parse(await fs.readFile(path.join(ROOT, "data/releases-manual.json"), "utf8")); } catch {}
