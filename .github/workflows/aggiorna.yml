@@ -126,9 +126,11 @@ jobs:
           # Riprova per qualche minuto se GitHub risponde con un errore: la catena non deve mai spezzarsi.
           for tentativo in 1 2 3 4 5 6 7 8 9 10; do
             altri=$(gh api "repos/${{ github.repository }}/actions/runs?per_page=30" \
-              --jq '[.workflow_runs[] | select(.path == ".github/workflows/aggiorna.yml" and .status != "completed" and .id != ${{ github.run_id }})] | length' 2>/dev/null || echo "errore")
+              --jq '[.workflow_runs[] | select(.path == ".github/workflows/aggiorna.yml" and .status != "completed" and .id > ${{ github.run_id }})] | length' 2>/dev/null || echo "errore")
+            # Si fa da parte solo se esiste un giro PIÙ NUOVO non ancora finito: quello porterà avanti la catena.
+            # (Prima bastava un giro qualsiasi: se due finivano insieme si facevano da parte entrambi e la catena moriva.)
             if [ "$altri" != "errore" ] && [ "$altri" -gt 0 ]; then
-              echo "C'è già un giro in corso o in coda ($altri): non ne prenoto un altro"; exit 0
+              echo "C'è già un giro più nuovo in corso o in coda ($altri): ci pensa lui"; exit 0
             fi
             if gh workflow run aggiorna.yml --ref main -f wait=100; then
               echo "Prossimo giro prenotato fra ~3 minuti"; exit 0
