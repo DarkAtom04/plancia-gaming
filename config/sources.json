@@ -385,17 +385,6 @@
    "color": "#0EA5E9",
    "cat": "gaming",
    "lang": "it"
-  },
-  {
-   "id": "psgen",
-   "name": "PlayStation Generation",
-   "home": "https://www.playstationgeneration.it/",
-   "feeds": [
-    "https://www.playstationgeneration.it/feed/"
-   ],
-   "color": "#2563EB",
-   "cat": "gaming",
-   "lang": "it"
   }
  ],
  "steam": {
