@@ -238,7 +238,7 @@ async function readSource(src, st) {
   const tried = [];
   for (const u of src.feeds || []) {
     const r = await fetchText(u, { accept: "application/rss+xml, application/atom+xml, application/xml, text/xml, */*" });
-    tried.push(`${u} → ${r.status || r.error}${r.ok && !/<(rss|feed|rdf)[\s>]/i.test(r.text) ? " (non è un feed: " + JSON.stringify(r.text.slice(0, 80)) + ")" : ""}`);
+    tried.push(`${u} → ${r.status || r.error}${r.ok && !/<(rss|feed|rdf)[\s>]/i.test(r.text) ? " (non è un feed: " + JSON.stringify(r.text.slice(0, 400)) + ")" : ""}`);
     if (r.ok && /<(rss|feed|rdf)[\s>]/i.test(r.text)) { const it = parseFeed(r.text, u); if (it.length) return { items: it, feed: u }; }
   }
   if (src.home) {
@@ -251,7 +251,7 @@ async function readSource(src, st) {
   if (src.home) {
     const base = src.home.replace(/\/$/, "");
     const r = await fetchText(`${base}/wp-json/wp/v2/posts?per_page=30&_embed=wp:featuredmedia&_fields=title,link,date_gmt,excerpt,_links,_embedded`, { accept: "application/json" });
-    tried.push(`wp-json → ${r.status || r.error}`);
+    tried.push(`wp-json → ${r.status || r.error}${r.ok ? " " + JSON.stringify(r.text.slice(0, 60)) : ""}`);
     if (r.ok) { try { const L = JSON.parse(r.text); const it = (Array.isArray(L) ? L : []).map(p => { const m = (((p._embedded || {})["wp:featuredmedia"]) || [])[0] || {}; const sz = (m.media_details || {}).sizes || {};
         return { title: decode(stripHtml((p.title || {}).rendered || "")), url: p.link, dateStr: p.date_gmt ? p.date_gmt + "Z" : "", summary: cleanSummary(stripHtml((p.excerpt || {}).rendered || "")), img: (sz.large || sz.medium_large || sz.full || {}).source_url || m.source_url || "", tags: [] }; }).filter(x => x.title && x.url);
       if (it.length) return { items: it, feed: base + "/wp-json/wp/v2/posts" }; } catch {} }
@@ -261,7 +261,7 @@ async function readSource(src, st) {
     const host = new URL(src.home).hostname.replace(/^www\./, "");
     const g = `https://news.google.com/rss/search?q=site:${host}+when:3d&hl=it&gl=IT&ceid=IT:it`;
     const r = await fetchText(g, { accept: "application/rss+xml, */*" });
-    tried.push(`Google News → ${r.status || r.error}`);
+    tried.push(`Google News → ${r.status || r.error}${r.ok ? " " + JSON.stringify(r.text.slice(0, 160)) : ""}`);
     if (r.ok) { const it = parseFeed(r.text, g).map(x => ({ ...x, title: x.title.replace(/\s+-\s+[^-]+$/, ""), img: "" })); if (it.length) return { items: it, feed: g, via: "Google News" }; }
   }
   throw new Error(tried.join(" | "));
