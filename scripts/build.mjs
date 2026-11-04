@@ -259,7 +259,7 @@ async function readSource(src, st) {
   // Riserva 2: Google News limitato al sito (titoli e date veri, ma senza foto)
   if (src.home) {
     const host = new URL(src.home).hostname.replace(/^www\./, "");
-    const g = `https://news.google.com/rss/search?q=site:${host}+when:3d&hl=it&gl=IT&ceid=IT:it`;
+    const g = `https://news.google.com/rss/search?q=site:${host}+when:7d&hl=it&gl=IT&ceid=IT:it`;
     const r = await fetchText(g, { accept: "application/rss+xml, */*" });
     tried.push(`Google News → ${r.status || r.error}${r.ok ? " " + JSON.stringify(r.text.slice(0, 160)) : ""}`);
     if (r.ok) { const it = parseFeed(r.text, g).map(x => ({ ...x, title: x.title.replace(/\s+-\s+[^-]+$/, ""), img: "" })); if (it.length) return { items: it, feed: g, via: "Google News" }; }

@@ -183,17 +183,6 @@
    "filter": true
   },
   {
-   "id": "nerd4life",
-   "name": "Nerd4Life",
-   "home": "https://www.nerd4.life/",
-   "color": "#E11D48",
-   "cat": "gaming",
-   "feeds": [
-    "https://www.nerd4.life/feed/"
-   ],
-   "lang": "it"
-  },
-  {
    "id": "gamelegends",
    "name": "GameLegends",
    "home": "https://www.gamelegends.it/",
@@ -201,17 +190,6 @@
    "cat": "gaming",
    "feeds": [
     "https://www.gamelegends.it/feed/"
-   ],
-   "lang": "it"
-  },
-  {
-   "id": "gamesoul",
-   "name": "Gamesoul",
-   "home": "https://www.gamesoul.it/",
-   "color": "#22C55E",
-   "cat": "gaming",
-   "feeds": [
-    "https://www.gamesoul.it/feed/"
    ],
    "lang": "it"
   },
@@ -385,6 +363,39 @@
    ],
    "lang": "en",
    "filter": true
+  },
+  {
+   "id": "gamesource",
+   "name": "GameSource",
+   "home": "https://www.gamesource.it/",
+   "feeds": [
+    "https://www.gamesource.it/feed/"
+   ],
+   "color": "#F97316",
+   "cat": "gaming",
+   "lang": "it"
+  },
+  {
+   "id": "gamemag",
+   "name": "GameMag",
+   "home": "https://www.gamemag.it/",
+   "feeds": [
+    "https://www.gamemag.it/feed/"
+   ],
+   "color": "#0EA5E9",
+   "cat": "gaming",
+   "lang": "it"
+  },
+  {
+   "id": "psgen",
+   "name": "PlayStation Generation",
+   "home": "https://www.playstationgeneration.it/",
+   "feeds": [
+    "https://www.playstationgeneration.it/feed/"
+   ],
+   "color": "#2563EB",
+   "cat": "gaming",
+   "lang": "it"
   }
  ],
  "steam": {

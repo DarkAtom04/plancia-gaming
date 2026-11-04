@@ -8,7 +8,7 @@ Si aggiorna da solo **circa ogni 5 minuti** grazie a GitHub Actions (ogni giro p
 
 | Cosa | Fonti |
 |---|---|
-| Notizie italiane | Multiplayer.it, Everyeye.it, IGN Italia, SpazioGames, Eurogamer.it, The Games Machine, Gamereactor, Nintendon, Nerd4Life, GameLegends, Gamesoul, GamingTalker, Lega Nerd, Tom's Hardware, Hardware Upgrade, HDblog, DDay.it, Wired Italia, SmartWorld, TuttoTech, AI4Business, IlSoftware.it |
+| Notizie italiane | Multiplayer.it, Everyeye.it, IGN Italia, SpazioGames, Eurogamer.it, The Games Machine, Gamereactor, Nintendon, GameLegends, GamingTalker, GameSource, GameMag, PlayStation Generation, Lega Nerd, Tom's Hardware, Hardware Upgrade, HDblog, DDay.it, Wired Italia, SmartWorld, TuttoTech, AI4Business, IlSoftware.it |
 | Notizie internazionali | IGN, GameSpot, VGC, PC Gamer, Eurogamer.net, Rock Paper Shotgun, Push Square, Pure Xbox, Nintendo Life, Gematsu, The Verge (si possono nascondere dalle impostazioni) |
 | Video e trailer | Canali YouTube di PlayStation, Xbox, Nintendo, IGN, GameSpot |
 | Offerte | Steam e GOG (euro), Nintendo eShop, Xbox Store, PlayStation Store, Ubisoft Store, EA, Epic, Humble, Fanatical, Green Man Gaming e altri tramite CheapShark (prezzi USA), IsThereAnyDeal (facoltativo, prezzi italiani di decine di store) |
