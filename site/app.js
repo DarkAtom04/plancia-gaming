@@ -500,41 +500,58 @@ async function forceUpdate() {
     if (!D) return;
     const mins = Math.max(0, Math.round((Date.now() - Date.parse(D.generatedAt)) / 60000));
     if (D.generatedAt !== before) { statusPop(`<b>Fatto: caricate le novità</b><span>Notizie e offerte raccolte alle ${hm(D.generatedAt)}.</span>`); return; }
-    if (mins > 10) { statusPop(`<b>Aggiornamento in ritardo</b><span>Gli ultimi dati sono delle <b>${hm(D.generatedAt)}</b> (${mins < 60 ? mins + " min" : Math.round(mins / 60) + " h"} fa). Di solito arrivano ogni 3 minuti: il sito ricontrolla da solo e li mostra appena ci sono.</span><button type="button" class="btn small" id="spConnect">Attiva la raccolta immediata</button>`); return; }
+    if (mins > 10) { statusPop(`<b>Il giro automatico è fermo</b><span>Gli ultimi dati sono delle <b>${hm(D.generatedAt)}</b> (${mins < 60 ? mins + " min" : Math.round(mins / 60) + " h"} fa): GitHub si è inceppato. Riparte da solo, ma se colleghi GitHub qui il sito lo fa ripartire subito, anche in automatico quando succede di nuovo.</span><button type="button" class="btn small" id="spConnect">Collega GitHub</button>`); return; }
     statusPop(`<b>Hai già le ultime notizie</b><span>Ho appena ricontrollato: i dati sono stati raccolti alle <b>${hm(D.generatedAt)}</b>${mins ? " (" + mins + " min fa)" : ", proprio adesso"}. Il prossimo giro automatico arriva ${mins < 3 ? "tra circa " + (3 - mins) + " min" : "a momenti"}.</span><span class="sp-note">Per far partire una raccolta nuova all'istante, invece di aspettare il giro automatico, serve collegare GitHub una volta sola su questo dispositivo (1 minuto).</span><button type="button" class="btn small" id="spConnect">Attiva la raccolta immediata</button>`);
     return;
   }
-  const btn = $("#forceBtn"); const t0 = new Date(Date.now() - 5000).toISOString(); st.forcing = { t0 };
-  btn.classList.add("spin"); setBanner("Avvio l'aggiornamento…");
-  try {
-    const r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/aggiorna.yml/dispatches`, { method: "POST", headers: gh(), body: JSON.stringify({ ref: "main" }) });
-    if (r.status === 401 || r.status === 403) throw new Error("auth");
-    if (!r.ok && r.status !== 204) throw new Error("http " + r.status);
-    const start = Date.now();
-    const tick = async () => {
-      const s = Math.round((Date.now() - start) / 1000);
-      let run = null; try { const q = await fetch(`https://api.github.com/repos/${repo}/actions/runs?event=workflow_dispatch&per_page=10`, { headers: gh() }); const j = await q.json(); run = (j.workflow_runs || []).filter(x => x.created_at >= t0 && !(x.triggering_actor && /\[bot\]$/.test(x.triggering_actor.login))).pop() || null; } catch (e) {}
-      if (run && run.status === "completed") {
-        if (run.conclusion === "success") { setBanner("Fatto! Carico le novità…"); setTimeout(async () => { await load(false, true); endForce("Sito aggiornato"); }, 15000); }
-        else endForce("L'aggiornamento non è riuscito: riprova tra poco");
-        return;
-      }
-      if (s > 420) { endForce("Ci sta mettendo più del solito: le novità arriveranno da sole"); return; }
-      setBanner(`Aggiornamento in corso… ${Math.floor(s / 60)}:${pad(s % 60)} ${run ? (run.status === "in_progress" ? "· raccolgo notizie e offerte" : "· in coda su GitHub") : "· avvio"}`);
-      st.forcing.timer = setTimeout(tick, 6000);
-    };
-    tick();
-  } catch (e) {
-    endForce(e.message === "auth" ? "Il collegamento a GitHub non è più valido: ricollegalo nelle impostazioni ⚙" : "Non riesco a contattare GitHub in questo momento");
-    if (e.message === "auth") { st.token = ""; LS.set("ghToken", null); }
-  }
+  const btn = $("#forceBtn"); btn.classList.add("spin"); setBanner("Avvio la raccolta su GitHub…");
+  const res = await dispatchRun(repo);
+  if (!res.ok) { btn.classList.remove("spin"); $("#banner").hidden = true; statusPop(`<b>Non sono riuscito a farlo partire</b><span>${res.msg}</span>${res.fix ? `<button type="button" class="btn small" id="spConnect">${res.fix}</button>` : ""}`); return; }
+  const t0 = res.t0; st.forcing = { t0 }; const start = Date.now(); let seen = false;
+  const tick = async () => {
+    const s = Math.round((Date.now() - start) / 1000);
+    let run = null; try { const q = await fetch(`https://api.github.com/repos/${repo}/actions/runs?event=workflow_dispatch&per_page=15`, { headers: gh(), cache: "no-store" }); const j = await q.json(); run = (j.workflow_runs || []).filter(x => x.created_at >= t0 && !(x.triggering_actor && /\[bot\]$/.test(x.triggering_actor.login))).pop() || null; } catch (e) {}
+    if (run) seen = true;
+    if (!seen && s > 45) { endForce(""); statusPop(`<b>GitHub non ha avviato il giro</b><span>La richiesta è stata accettata ma dopo 45 secondi non vedo nessun giro nuovo. Di solito è un rallentamento di GitHub: riprova tra un paio di minuti.</span>`); return; }
+    if (run && run.status === "completed") {
+      if (run.conclusion === "success") { setBanner("Fatto! Carico le novità…"); await load(false, true); endForce(""); statusPop(`<b>Fatto: sito aggiornato</b><span>Notizie e offerte raccolte alle ${D ? hm(D.generatedAt) : "--:--"}, in ${s} secondi.</span>`); }
+      else { endForce(""); statusPop(`<b>Il giro non è riuscito</b><span>GitHub ha segnato un errore (${h(run.conclusion || "sconosciuto")}). Riprova tra poco.</span>`); }
+      return;
+    }
+    if (s > 420) { endForce("Ci sta mettendo più del solito: le novità arriveranno da sole"); return; }
+    setBanner(`Raccolta in corso su GitHub… ${Math.floor(s / 60)}:${pad(s % 60)} ${run ? (run.status === "in_progress" ? "· raccolgo notizie e offerte" : "· in coda, aspetta il giro precedente") : "· avvio"}`);
+    st.forcing.timer = setTimeout(tick, 5000);
+  };
+  tick();
+}
+// Fa partire un giro su GitHub e spiega con precisione cosa non va se fallisce
+async function dispatchRun(repo) {
+  const t0 = new Date(Date.now() - 5000).toISOString();
+  let r; try { r = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/aggiorna.yml/dispatches`, { method: "POST", headers: gh(), body: JSON.stringify({ ref: "main" }) }); }
+  catch (e) { return { ok: false, msg: "Non riesco a contattare GitHub da questo dispositivo: controlla la connessione e riprova." }; }
+  if (r.status === 204 || r.ok) return { ok: true, t0 };
+  let m = ""; try { m = (await r.json()).message || ""; } catch (e) {}
+  if (r.status === 401) { st.token = ""; LS.set("ghToken", null); return { ok: false, msg: "Il codice di GitHub non è valido o è scaduto. Creane uno nuovo e incollalo di nuovo.", fix: "Ricollega GitHub" }; }
+  if (r.status === 403 || r.status === 404) { st.token = ""; LS.set("ghToken", null); }
+  if (r.status === 403) return { ok: false, msg: `Il codice non ha il permesso giusto. Quando lo crei, in <b>Repository permissions</b> metti <b>Actions: Read and write</b>.${m ? " (GitHub dice: " + h(m) + ")" : ""}`, fix: "Rifai il collegamento" };
+  if (r.status === 404) return { ok: false, msg: `Il codice non vede il repository <b>${h(repo)}</b>. Quando lo crei scegli <b>Only select repositories</b> → <b>plancia-gaming</b>, e in Repository permissions <b>Actions: Read and write</b>.`, fix: "Rifai il collegamento" };
+  if (r.status >= 500) return { ok: false, msg: `GitHub ha un problema in questo momento (errore ${r.status}). Riprova tra un minuto.` };
+  return { ok: false, msg: `GitHub ha rifiutato la richiesta (errore ${r.status}${m ? ": " + h(m) : ""}).`, fix: "Rifai il collegamento" };
+}
+// Se hai collegato GitHub e il giro automatico si è fermato, il sito lo fa ripartire da solo
+async function autoRevive() {
+  const repo = (D && D.repo) || guessRepo(); if (!st.token || !repo || st.forcing || !D) return;
+  const mins = (Date.now() - Date.parse(D.generatedAt)) / 60000; const last = +LS.get("revived", 0);
+  if (mins < 9 || Date.now() - last < 10 * 60000) return;
+  LS.set("revived", Date.now()); const res = await dispatchRun(repo);
+  if (res.ok) toast("Il giro automatico era fermo: l'ho fatto ripartire, le novità arrivano tra 1-2 minuti");
 }
 function gh() { return { "Authorization": "Bearer " + st.token, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28" }; }
 function guessRepo() { const m = location.hostname.match(/^([\w-]+)\.github\.io$/); const p = location.pathname.split("/").filter(Boolean)[0]; return m && p ? m[1] + "/" + p : ""; }
 function statusPop(html) { let p = $("#statusPop"); if (!p) { p = document.createElement("div"); p.id = "statusPop"; p.className = "statuspop"; p.setAttribute("role", "status"); document.body.appendChild(p); }
   p.innerHTML = html + '<button type="button" class="sp-x" data-spclose="1" aria-label="Chiudi">✕</button>'; p.hidden = false; clearTimeout(statusPop.t); statusPop.t = setTimeout(() => { p.hidden = true; }, 20000); }
 function setBanner(t) { const b = $("#banner"); b.textContent = t; b.hidden = false; }
-function endForce(msg) { if (st.forcing && st.forcing.timer) clearTimeout(st.forcing.timer); st.forcing = null; $("#forceBtn").classList.remove("spin"); $("#banner").hidden = true; toast(msg); }
+function endForce(msg) { if (st.forcing && st.forcing.timer) clearTimeout(st.forcing.timer); st.forcing = null; $("#forceBtn").classList.remove("spin"); $("#banner").hidden = true; if (msg) toast(msg); }
 
 /* ----------------------------------------------------------- render */
 function renderNav() {
@@ -628,7 +645,13 @@ let hhT; document.addEventListener("input", e => { if (e.target.id === "hhQ") { 
 document.addEventListener("submit", e => {
   if (e.target.id === "kwForm") { e.preventDefault(); const v = $("#kwIn").value.trim(); if (v && !st.kw.some(k => norm(k) === norm(v))) { st.kw.push(v); LS.set("kw", st.kw); toast("Ora segui: " + v); } render(true); }
   if (e.target.id === "searchForm") e.preventDefault();
-  if (e.target.id === "tokForm") { e.preventDefault(); const v = $("#tokIn").value.trim(); if (!/^(github_pat_|ghp_)[\w]{20,}$/.test(v)) { toast("Il codice non sembra giusto: deve iniziare con github_pat_"); return; } st.token = v; LS.set("ghToken", v); renderSettings(); toast("GitHub collegato: ora puoi usare Aggiorna ora"); }
+  if (e.target.id === "tokForm") { e.preventDefault(); const v = $("#tokIn").value.trim(); if (!/^(github_pat_|ghp_)[\w]{20,}$/.test(v)) { toast("Il codice non sembra giusto: deve iniziare con github_pat_"); return; } const repo = (D && D.repo) || guessRepo() || "DarkAtom04/plancia-gaming";
+    fetch(`https://api.github.com/repos/${repo}/actions/workflows/aggiorna.yml`, { headers: { "Authorization": "Bearer " + v, "Accept": "application/vnd.github+json" }, cache: "no-store" }).then(r => {
+      if (r.ok) { st.token = v; LS.set("ghToken", v); renderSettings(); toast("GitHub collegato e verificato: ora Aggiorna ora fa partire una raccolta vera"); }
+      else if (r.status === 401) toast("GitHub dice che il codice non è valido o è scaduto: creane uno nuovo");
+      else if (r.status === 404 || r.status === 403) toast("Il codice non vede plancia-gaming: ricrealo con Only select repositories → plancia-gaming e Actions: Read and write");
+      else toast("GitHub non risponde (errore " + r.status + "): riprova tra un minuto");
+    }).catch(() => toast("Non riesco a contattare GitHub: controlla la connessione")); }
 });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && (st.hhOpen || st.hhCmpOpen)) { st.hhOpen = null; st.hhCmpOpen = false; document.body.classList.remove("lock"); render(true); return; } if (e.key === "Escape" && !$("#settings").hidden) closeSettings(); if (e.key === "/" && !/INPUT|TEXTAREA/.test((document.activeElement || {}).tagName)) { e.preventDefault(); $("#q").focus(); } });
 let qT; $("#q").addEventListener("input", e => { clearTimeout(qT); qT = setTimeout(() => { st.q = e.target.value.trim(); render(); }, 180); });
@@ -665,6 +688,9 @@ async function freshDataUrl() {
 }
 let loadedSha = "";
 async function load(first, forceApply) {
+  try { await loadInner(first, forceApply); } finally { autoRevive().catch(() => {}); }
+}
+async function loadInner(first, forceApply) {
   try {
     const f = await freshDataUrl();
     if (!first && f && f.sha === loadedSha && D) { renderLive(); return; }

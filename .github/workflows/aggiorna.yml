@@ -4,10 +4,10 @@ name: Aggiorna Plancia Gaming
 # il cron di GitHub sui repository nuovi spesso non parte o parte con ore di ritardo,
 # quindi ogni giro, finito il lavoro, prenota da solo il giro successivo (catena).
 # Il giro prenotato aspetta ~1,5 minuti e poi raccoglie di nuovo: un giro ogni ~3 minuti.
-# Il cron qui sotto resta come riserva per far ripartire la catena se si interrompe.
+# Il cron qui sotto (ogni 5 minuti, ma GitHub spesso lo ritarda) resta come riserva per far ripartire la catena.
 on:
   schedule:
-    - cron: "11,41 * * * *"
+    - cron: "*/5 * * * *"
   push:
     branches: [main]
   workflow_dispatch:
@@ -39,7 +39,7 @@ jobs:
   aggiorna:
     needs: attesa
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 15
     concurrency:
       group: aggiorna
       cancel-in-progress: false
@@ -123,13 +123,21 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          altri=$(gh api "repos/${{ github.repository }}/actions/runs?per_page=30" \
-            --jq '[.workflow_runs[] | select(.path == ".github/workflows/aggiorna.yml" and .status != "completed" and .id != ${{ github.run_id }})] | length')
-          if [ "${altri:-0}" -gt 0 ]; then
-            echo "C'è già un giro in corso o in coda ($altri): non ne prenoto un altro"
-          else
-            gh workflow run aggiorna.yml --ref main -f wait=100 && echo "Prossimo giro prenotato fra ~3 minuti"
-          fi
+          # Riprova per qualche minuto se GitHub risponde con un errore: la catena non deve mai spezzarsi.
+          for tentativo in 1 2 3 4 5 6 7 8 9 10; do
+            altri=$(gh api "repos/${{ github.repository }}/actions/runs?per_page=30" \
+              --jq '[.workflow_runs[] | select(.path == ".github/workflows/aggiorna.yml" and .status != "completed" and .id != ${{ github.run_id }})] | length' 2>/dev/null || echo "errore")
+            if [ "$altri" != "errore" ] && [ "$altri" -gt 0 ]; then
+              echo "C'è già un giro in corso o in coda ($altri): non ne prenoto un altro"; exit 0
+            fi
+            if gh workflow run aggiorna.yml --ref main -f wait=100; then
+              echo "Prossimo giro prenotato fra ~3 minuti"; exit 0
+            fi
+            echo "GitHub non ha accettato la prenotazione (tentativo $tentativo), riprovo"
+            sleep $((tentativo * 10))
+          done
+          echo "::warning::Prenotazione non riuscita: ci penserà il giro di riserva"
+          exit 0
 
       # GitHub sospende i lavori programmati dopo 60 giorni senza attività nel repository:
       # una volta al mese registra un piccolo segno di vita per tenerli accesi.
