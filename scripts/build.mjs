@@ -538,6 +538,8 @@ async function collectDeals(featured, health, st) {
       : /games\s*planet/i.test(t) ? "Gamesplanet" : /ubisoft|uplay/i.test(t) ? "Ubisoft Store" : /^ea\b|origin|electronic arts/i.test(t) ? "EA app" : /humble/i.test(t) ? "Humble Store"
       : /microsoft/i.test(t) ? "Microsoft Store" : /^gog/i.test(t) ? "GOG" : /^steam$/i.test(t) ? "Steam" : /battle\.?net|blizzard/i.test(t) ? "Battle.net" : t; };
   for (const d of all) d.store = canon(d.store);
+  // niente offerte già scadute (alcuni negozi le lasciano nell'elenco per giorni)
+  for (let i = all.length - 1; i >= 0; i--) if (all[i].until && Date.parse(all[i].until) < NOW.getTime()) all.splice(i, 1);
   const storeKey = s => String(s).toLowerCase().replace(/ubisoft.*|uplay/, "ubisoft").replace(/^ea.*|origin/, "ea").replace(/humble.*/, "humble").replace(/green man.*|gmg/, "gmg").replace(/epic.*/, "epic").replace(/\W+/g, "");
   const seen = new Map(); const out = [];
   for (const d of all) { const k = normTitle(d.title) + "|" + storeKey(d.store); if (seen.has(k)) { const o = seen.get(k); if (!o.until && d.until) o.until = d.until; if (!o.img && d.img) o.img = d.img; continue; } seen.set(k, d); out.push(d); }
